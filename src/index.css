@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-surface text-ink font-body antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display;
+  }
+
+  ::selection {
+    @apply bg-ebp-green/20 text-ebp-blue;
+  }
+
+  :focus-visible {
+    outline: 2px solid #00873D;
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-ebp-green;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-ebp-green px-6 py-3.5 text-sm font-semibold text-white shadow-[0_10px_25px_-8px_rgba(0,135,61,0.6)] transition-all duration-200 hover:bg-ebp-green-light hover:shadow-[0_14px_30px_-8px_rgba(0,135,61,0.7)] active:scale-[0.98];
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-white/25 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:bg-white/20 active:scale-[0.98];
+  }
+
+  .btn-outline-blue {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-ebp-blue px-6 py-3.5 text-sm font-semibold text-ebp-blue transition-all duration-200 hover:bg-ebp-blue hover:text-white active:scale-[0.98];
+  }
+
+  .section-pad {
+    @apply py-20 lg:py-28;
+  }
+}
+
+@layer utilities {
+  .bg-grid-dots {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+}
