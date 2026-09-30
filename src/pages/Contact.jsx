@@ -3,7 +3,9 @@ import { MapPin, Mail, MessageCircle, Clock } from "lucide-react";
 import { CONTACT_INFO, WHATSAPP_DISPLAY } from "../data/siteContent";
 import { MEDIA, img } from "../data/media";
 import { buildWhatsAppLink } from "../lib/whatsapp";
+import { isValidEmailOrPhone } from "../lib/validation";
 import Waveform from "../components/Waveform";
+import Seo from "../components/Seo";
 
 export default function Contact() {
   const {
@@ -21,6 +23,11 @@ export default function Contact() {
 
   return (
     <>
+      <Seo
+        title="Contact"
+        description="Contactez EBP (English for Busy People) : centres à Cotonou et Calavi, WhatsApp, email. Réponse sous 5 minutes."
+        path="/contact"
+      />
       <section className="relative flex min-h-[42vh] items-end overflow-hidden bg-ink">
         <img
           src={img(MEDIA.contact.banner, { w: 1920, q: 60 })}
@@ -89,18 +96,26 @@ export default function Contact() {
                 <input
                   className="w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
                   placeholder="Votre nom"
-                  {...register("name", { required: true })}
+                  {...register("name", {
+                    required: "Ce champ est requis.",
+                    minLength: { value: 2, message: "Le nom doit contenir au moins 2 caractères." },
+                    maxLength: { value: 80, message: "Le nom est trop long." },
+                  })}
                 />
-                {errors.name && <p className="mt-1 text-xs text-ebp-red-soft">Ce champ est requis.</p>}
+                {errors.name && <p className="mt-1 text-xs text-ebp-red-soft">{errors.name.message}</p>}
               </div>
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-ink/50">WhatsApp ou email</label>
                 <input
                   className="w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
-                  placeholder="01 90 00 00 00"
-                  {...register("contact", { required: true })}
+                  placeholder="01 96 84 02 96 ou vous@exemple.com"
+                  {...register("contact", {
+                    required: "Ce champ est requis.",
+                    validate: (value) =>
+                      isValidEmailOrPhone(value) || "Entrez un numéro (8 à 15 chiffres) ou un email valide.",
+                  })}
                 />
-                {errors.contact && <p className="mt-1 text-xs text-ebp-red-soft">Ce champ est requis.</p>}
+                {errors.contact && <p className="mt-1 text-xs text-ebp-red-soft">{errors.contact.message}</p>}
               </div>
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-ink/50">Message</label>
@@ -108,9 +123,13 @@ export default function Contact() {
                   rows={4}
                   className="w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
                   placeholder="Votre question ou votre objectif avec l'anglais..."
-                  {...register("message", { required: true })}
+                  {...register("message", {
+                    required: "Ce champ est requis.",
+                    minLength: { value: 10, message: "Décrivez votre demande en quelques mots de plus (10 caractères min.)." },
+                    maxLength: { value: 1000, message: "Le message est trop long (1000 caractères max.)." },
+                  })}
                 />
-                {errors.message && <p className="mt-1 text-xs text-ebp-red-soft">Ce champ est requis.</p>}
+                {errors.message && <p className="mt-1 text-xs text-ebp-red-soft">{errors.message.message}</p>}
               </div>
             </div>
 

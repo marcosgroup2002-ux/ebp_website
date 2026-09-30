@@ -9,6 +9,12 @@
 export const WHATSAPP_NUMBER = "2290196840296";
 export const WHATSAPP_DISPLAY = "01 96 84 02 96";
 
+// TODO: remplacer par le vrai domaine de prod une fois le nom de domaine
+// définitif choisi et déployé. Sert de base aux URLs canoniques et og:url.
+export const SITE_URL = "https://ebp-benin.com";
+export const SITE_NAME = "EBP - English for Busy People";
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/brand/ebp-logo.jpg`;
+
 // TODO: mettre à jour à chaque nouvelle cohorte
 export const NEXT_COHORT_DATE = "6 Octobre 2026";
 export const SEATS_LEFT = 7;

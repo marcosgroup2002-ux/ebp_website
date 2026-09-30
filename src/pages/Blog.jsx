@@ -4,10 +4,16 @@ import { ArrowRight, Clock } from "lucide-react";
 import { BLOG_POSTS } from "../data/blogPosts";
 import { MEDIA, img } from "../data/media";
 import Waveform from "../components/Waveform";
+import Seo from "../components/Seo";
 
 export default function Blog() {
   return (
     <section className="section-pad pt-40">
+      <Seo
+        title="Blog"
+        description="Conseils pour parler anglais avec confiance : méthode, carrière, voyage et apprentissage en ligne, écrits pour des professionnels pressés."
+        path="/blog"
+      />
       <div className="container">
         <div className="mx-auto max-w-2xl text-center">
           <span className="eyebrow justify-center">

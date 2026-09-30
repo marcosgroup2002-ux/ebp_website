@@ -9,10 +9,16 @@ import {
 import { MEDIA, img } from "../data/media";
 import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
 import Waveform from "../components/Waveform";
+import Seo from "../components/Seo";
 
 export default function About() {
   return (
     <>
+      <Seo
+        title="À propos"
+        description="Découvrez la mission et la méthode d'EBP (English for Busy People) : des cohortes de 6 mois pensées pour que les professionnels de Cotonou et Calavi parlent anglais, pas seulement qu'ils l'apprennent."
+        path="/a-propos"
+      />
       {/* Banner */}
       <section className="relative flex min-h-[55vh] items-end overflow-hidden bg-ink">
         <img

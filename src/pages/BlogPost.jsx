@@ -3,6 +3,7 @@ import { ArrowLeft, Clock, MessageCircle } from "lucide-react";
 import { getPostBySlug, BLOG_POSTS } from "../data/blogPosts";
 import { MEDIA, img } from "../data/media";
 import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
+import Seo from "../components/Seo";
 
 export default function BlogPost() {
   const { slug } = useParams();
@@ -14,6 +15,12 @@ export default function BlogPost() {
 
   return (
     <article className="pt-32">
+      <Seo
+        title={post.title}
+        description={post.excerpt}
+        path={`/blog/${post.slug}`}
+        image={img(MEDIA.blog[post.slug], { w: 1200, q: 75 })}
+      />
       <div className="container max-w-3xl">
         <Link to="/blog" className="inline-flex items-center gap-1.5 text-sm font-medium text-ink/50 hover:text-ebp-blue">
           <ArrowLeft size={14} />

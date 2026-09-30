@@ -1,13 +1,48 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RotateCcw, Flag, Check } from "lucide-react";
-import { toggleChecklistItem, formatTimestamp } from "../../services/checklistsService";
+import {
+  toggleChecklistItem,
+  formatTimestamp,
+  fetchChecklistEntries,
+  saveChecklistEntry,
+} from "../../services/checklistsService";
 
-export default function ChecklistCard({ title, items, user, flaggableItem, onFlag }) {
+export default function ChecklistCard({ title, items, user, flaggableItem, onFlag, checklistKey }) {
   const [state, setState] = useState({});
   const [flaggedIndex, setFlaggedIndex] = useState(null);
 
-  const toggle = (i) => setState((s) => toggleChecklistItem(s, i, user));
-  const reset = () => setState({});
+  useEffect(() => {
+    if (!checklistKey) return;
+    let isMounted = true;
+    fetchChecklistEntries(checklistKey).then((entries) => {
+      if (isMounted && Object.keys(entries).length > 0) {
+        setState(entries);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, [checklistKey]);
+
+  const toggle = (i) => {
+    const isChecking = !state[i]?.checked;
+    if (checklistKey) {
+      saveChecklistEntry(checklistKey, i, isChecking, user);
+    }
+    setState((s) => toggleChecklistItem(s, i, user));
+  };
+
+  const reset = () => {
+    if (checklistKey) {
+      items.forEach((_, i) => {
+        if (state[i]?.checked) {
+          saveChecklistEntry(checklistKey, i, false, user);
+        }
+      });
+    }
+    setState({});
+  };
+
   const done = Object.values(state).filter((v) => v?.checked).length;
 
   const handleFlag = (item, index) => {

@@ -95,6 +95,29 @@ create table alertes_manager (
   created_at timestamptz default now()
 );
 
+-- ----------------------------------------------------------------------------
+-- ARTICLES DE BLOG (blog_posts)
+-- ----------------------------------------------------------------------------
+create table blog_posts (
+  id uuid primary key default uuid_generate_v4(),
+  slug text unique not null,
+  title text not null,
+  excerpt text,
+  category text not null default 'Méthode',
+  read_time text not null default '5 min',
+  date text not null default to_char(current_date, 'DD TMMonth YYYY'),
+  sections jsonb not null default '[]'::jsonb,
+  cover_image text,
+  published boolean not null default true,
+  author_id uuid references profiles(id),
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+create index idx_blog_posts_slug on blog_posts(slug);
+create index idx_blog_posts_published on blog_posts(published);
+create index idx_blog_posts_category on blog_posts(category);
+
 -- ============================================================================
 -- ROW LEVEL SECURITY : accès par rôle
 -- ============================================================================
@@ -103,6 +126,7 @@ alter table apprenants enable row level security;
 alter table paiements enable row level security;
 alter table checklist_entries enable row level security;
 alter table alertes_manager enable row level security;
+alter table blog_posts enable row level security;
 
 -- Chacun peut lire son propre profil
 create policy "Lecture de son propre profil"
@@ -167,3 +191,18 @@ create policy "Manager/Promoteur mettent à jour les alertes"
     where profiles.id = auth.uid()
     and profiles.role in ('manager', 'promoteur')
   ));
+
+-- Blog : lecture publique pour les articles publiés
+create policy "Tout le monde peut lire les articles publiés"
+  on blog_posts for select
+  using (published = true);
+
+-- Blog : l'équipe admin (manager, promoteur, secrétaire) gère les articles
+create policy "Équipe admin gère les articles de blog"
+  on blog_posts for all
+  using (exists (
+    select 1 from profiles
+    where profiles.id = auth.uid()
+    and profiles.role in ('manager', 'promoteur', 'secretaire')
+  ));
+

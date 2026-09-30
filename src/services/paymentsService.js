@@ -39,18 +39,70 @@ export function computeStatus(learner, today = new Date()) {
   return "a_jour";
 }
 
-/** Simule un appel réseau : à remplacer par un vrai fetch()/supabase.from(). */
+import { supabase } from "../lib/supabaseClient";
+
+/** Simule un appel réseau pour le fallback en mémoire. */
 function simulateLatency(value, ms = 250) {
   return new Promise((resolve) => setTimeout(() => resolve(value), ms));
 }
 
-/** GET /learners : équivalent Sheets : lecture de l'onglet "Paiements". */
-export async function fetchLearners(learners) {
-  return simulateLatency(learners);
+/** GET /learners : lecture depuis Supabase avec fallback sur données mémoire. */
+export async function fetchLearners(fallback = []) {
+  if (!supabase) return simulateLatency(fallback);
+
+  try {
+    const { data, error } = await supabase
+      .from("apprenants")
+      .select(`
+        id,
+        nom,
+        cohorte,
+        option_paiement,
+        total,
+        statut,
+        prochaine_echeance,
+        paiements (
+          id,
+          montant,
+          mode,
+          date_paiement
+        )
+      `)
+      .order("created_at", { ascending: false });
+
+    if (error || !data || data.length === 0) {
+      if (error) console.info("[paymentsService] Supabase indisponible ou vide, fallback mémoire :", error.message);
+      return simulateLatency(fallback);
+    }
+
+    return data.map((row) => {
+      const history = (row.paiements || []).map((p) => ({
+        id: p.id,
+        amount: Number(p.montant),
+        mode: p.mode,
+        date: p.date_paiement,
+      }));
+      const paid = history.reduce((sum, p) => sum + p.amount, 0);
+      return {
+        id: row.id,
+        name: row.nom,
+        cohort: row.cohorte,
+        option: row.option_paiement,
+        total: Number(row.total),
+        paid,
+        nextDueDate: row.prochaine_echeance,
+        status: row.statut,
+        history,
+      };
+    });
+  } catch (err) {
+    console.warn("[paymentsService] Erreur Supabase, utilisation du fallback :", err);
+    return simulateLatency(fallback);
+  }
 }
 
 /**
- * POST /learners : ajoute un nouvel apprenant.
+ * POST /learners : ajoute un nouvel apprenant dans Supabase (ou mémoire).
  * @param {Array} learners État actuel (le composant reste propriétaire du state).
  * @param {{name:string, cohort:string, option:'bloc'|'echelonne', initialPayment?:number, paymentMode?:string}} payload
  * @returns {Promise<Array>} La nouvelle liste (mise à jour immuable).
@@ -59,7 +111,66 @@ export async function createLearner(learners, payload) {
   const total = payload.option === "bloc" ? 150000 : 180000;
   const initialPayment = payload.initialPayment ?? 0;
   const today = new Date().toISOString().slice(0, 10);
+  const nextDue = initialPayment > 0 ? nextMonthISO() : today;
 
+  if (supabase) {
+    try {
+      const { data: created, error } = await supabase
+        .from("apprenants")
+        .insert({
+          nom: payload.name,
+          cohorte: payload.cohort,
+          option_paiement: payload.option,
+          total,
+          statut: initialPayment >= total ? "solde" : "a_jour",
+          prochaine_echeance: initialPayment >= total ? null : nextDue,
+        })
+        .select()
+        .single();
+
+      if (!error && created) {
+        let history = [];
+        if (initialPayment > 0) {
+          const { data: pData } = await supabase
+            .from("paiements")
+            .insert({
+              apprenant_id: created.id,
+              montant: initialPayment,
+              mode: payload.paymentMode || "Espèces",
+              date_paiement: today,
+            })
+            .select()
+            .single();
+
+          if (pData) {
+            history.push({
+              id: pData.id,
+              date: pData.date_paiement,
+              amount: Number(pData.montant),
+              mode: pData.mode,
+            });
+          }
+        }
+
+        const newLearner = {
+          id: created.id,
+          name: created.nom,
+          cohort: created.cohorte,
+          option: created.option_paiement,
+          total: Number(created.total),
+          paid: initialPayment,
+          nextDueDate: created.prochaine_echeance,
+          status: created.statut,
+          history,
+        };
+        return [newLearner, ...learners];
+      }
+    } catch (err) {
+      console.warn("[paymentsService] Échec insertion Supabase, fallback mémoire :", err);
+    }
+  }
+
+  // Fallback mémoire
   const learner = {
     id: nextId(),
     name: payload.name,
@@ -67,7 +178,7 @@ export async function createLearner(learners, payload) {
     option: payload.option,
     total,
     paid: initialPayment,
-    nextDueDate: initialPayment > 0 ? nextMonthISO() : today,
+    nextDueDate: nextDue,
     status: "a_jour",
     history: initialPayment > 0 ? [{ date: today, amount: initialPayment, mode: payload.paymentMode || "Espèces" }] : [],
   };
@@ -77,11 +188,41 @@ export async function createLearner(learners, payload) {
 }
 
 /**
- * POST /learners/:id/payments : enregistre un versement et met à jour le
- * statut de l'apprenant. C'est la fonction que le stagiaire remplacera par
- * un `INSERT` dans la table `paiements` (option Supabase).
+ * POST /learners/:id/payments : enregistre un versement et met à jour le statut.
  */
 export async function recordPayment(learners, learnerId, payment) {
+  if (supabase) {
+    try {
+      const { data: pData, error } = await supabase
+        .from("paiements")
+        .insert({
+          apprenant_id: learnerId,
+          montant: payment.amount,
+          mode: payment.mode,
+          date_paiement: payment.date,
+        })
+        .select()
+        .single();
+
+      if (!error && pData) {
+        const target = learners.find((l) => l.id === learnerId);
+        if (target) {
+          const newPaid = target.paid + payment.amount;
+          const newStatus = newPaid >= target.total ? "solde" : target.status;
+          await supabase
+            .from("apprenants")
+            .update({
+              statut: newStatus,
+              prochaine_echeance: newPaid >= target.total ? null : target.nextDueDate,
+            })
+            .eq("id", learnerId);
+        }
+      }
+    } catch (err) {
+      console.warn("[paymentsService] Échec recordPayment Supabase, fallback mémoire :", err);
+    }
+  }
+
   const updated = learners.map((l) => {
     if (l.id !== learnerId) return l;
     const paid = l.paid + payment.amount;

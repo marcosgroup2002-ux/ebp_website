@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Lock, ShieldAlert } from "lucide-react";
 import {
   SECRETARY_CHECKLIST,
@@ -7,7 +7,7 @@ import {
   ONBOARDING_CHECKLIST,
   FLAGGABLE_ITEM,
 } from "../../data/adminData";
-import { createManagerAlert, formatTimestamp } from "../../services/checklistsService";
+import { createManagerAlert, fetchManagerAlerts, formatTimestamp } from "../../services/checklistsService";
 import { useAdminUser } from "../../context/AdminUserContext";
 import ChecklistCard from "../../components/admin/ChecklistCard";
 import KeyDatesBanner from "../../components/admin/KeyDatesBanner";
@@ -16,8 +16,21 @@ export default function ChecklistsView() {
   const { user } = useAdminUser();
   const [alerts, setAlerts] = useState([]);
 
-  const handleFlag = (learnerNote) => {
-    setAlerts((a) => [createManagerAlert(learnerNote, user), ...a]);
+  useEffect(() => {
+    let isMounted = true;
+    fetchManagerAlerts([]).then((data) => {
+      if (isMounted && data) {
+        setAlerts(data);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleFlag = async (learnerNote) => {
+    const newAlert = await createManagerAlert(learnerNote, user);
+    setAlerts((a) => [newAlert, ...a]);
   };
 
   return (
@@ -33,15 +46,31 @@ export default function ChecklistsView() {
       </div>
 
       <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        <ChecklistCard title="Checklist quotidienne · Secrétaire" items={SECRETARY_CHECKLIST} user={user} />
-        <ChecklistCard title="Onboarding · Nouvel apprenant" items={ONBOARDING_CHECKLIST} user={user} />
-        <ChecklistCard title="Avant la séance · Formateur" items={TRAINER_CHECKLIST_BEFORE} user={user} />
+        <ChecklistCard
+          title="Checklist quotidienne · Secrétaire"
+          items={SECRETARY_CHECKLIST}
+          user={user}
+          checklistKey="secretaire"
+        />
+        <ChecklistCard
+          title="Onboarding · Nouvel apprenant"
+          items={ONBOARDING_CHECKLIST}
+          user={user}
+          checklistKey="onboarding"
+        />
+        <ChecklistCard
+          title="Avant la séance · Formateur"
+          items={TRAINER_CHECKLIST_BEFORE}
+          user={user}
+          checklistKey="formateur_avant"
+        />
         <ChecklistCard
           title="Après la séance · Formateur"
           items={TRAINER_CHECKLIST_AFTER}
           user={user}
           flaggableItem={FLAGGABLE_ITEM}
           onFlag={handleFlag}
+          checklistKey="formateur_apres"
         />
       </div>
 

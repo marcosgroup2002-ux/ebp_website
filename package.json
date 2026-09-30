@@ -6,11 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "postbuild": "node scripts/prerender-og.mjs",
     "preview": "vite preview",
     "lint": "oxlint",
     "audit:responsive": "node scripts/responsive-audit.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.117.2",
     "autoprefixer": "^10.5.4",
     "framer-motion": "^13.1.1",
     "lucide-react": "^1.33.0",

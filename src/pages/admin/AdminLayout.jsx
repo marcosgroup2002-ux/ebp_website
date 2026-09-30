@@ -2,6 +2,8 @@ import { NavLink, Outlet } from "react-router-dom";
 import { CreditCard, ListChecks, LogOut, ExternalLink } from "lucide-react";
 import { useAdminUser } from "../../context/AdminUserContext";
 
+import { supabase } from "../../lib/supabaseClient";
+
 const NAV = [
   { to: "/admin/paiements", label: "Paiements", icon: CreditCard },
   { to: "/admin/checklists", label: "Checklists", icon: ListChecks },
@@ -10,7 +12,14 @@ const NAV = [
 export default function AdminLayout() {
   const { user, clearUser } = useAdminUser();
 
-  const logout = () => {
+  const logout = async () => {
+    if (supabase) {
+      try {
+        await supabase.auth.signOut();
+      } catch {
+        // Ignorer les erreurs réseau lors de la déconnexion
+      }
+    }
     sessionStorage.removeItem("ebp_admin_authed");
     clearUser();
     window.location.href = "/";

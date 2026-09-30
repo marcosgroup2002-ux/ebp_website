@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search, AlertTriangle, UserPlus, Download, Bell, ChevronRight, Plus } from "lucide-react";
 import { SAMPLE_LEARNERS, STATUS_LABELS, formatFcfa } from "../../data/adminData";
 import {
+  fetchLearners,
   createLearner,
   recordPayment,
   getOverdueLearners,
@@ -21,6 +22,18 @@ const TONE_CLASSES = {
 
 export default function PaymentsView() {
   const [learners, setLearners] = useState(SAMPLE_LEARNERS);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchLearners(SAMPLE_LEARNERS).then((data) => {
+      if (isMounted && data && data.length > 0) {
+        setLearners(data);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 

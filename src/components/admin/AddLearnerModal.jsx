@@ -30,9 +30,13 @@ export default function AddLearnerModal({ open, onClose, onSubmitLearner }) {
           <label className="mb-1.5 block text-xs font-medium text-ink/50">Nom complet</label>
           <input
             className="w-full rounded-xl border border-ink/10 bg-surface px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
-            {...register("name", { required: true })}
+            {...register("name", {
+              required: "Ce champ est requis.",
+              minLength: { value: 2, message: "Le nom doit contenir au moins 2 caractères." },
+              maxLength: { value: 80, message: "Le nom est trop long." },
+            })}
           />
-          {errors.name && <p className="mt-1 text-xs text-ebp-red-soft">Ce champ est requis.</p>}
+          {errors.name && <p className="mt-1 text-xs text-ebp-red-soft">{errors.name.message}</p>}
         </div>
 
         <div>
@@ -78,8 +82,13 @@ export default function AddLearnerModal({ open, onClose, onSubmitLearner }) {
               type="number"
               min="0"
               className="w-full rounded-xl border border-ink/10 bg-surface px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
-              {...register("initialPayment")}
+              {...register("initialPayment", {
+                min: { value: 0, message: "Le montant ne peut pas être négatif." },
+              })}
             />
+            {errors.initialPayment && (
+              <p className="mt-1 text-xs text-ebp-red-soft">{errors.initialPayment.message}</p>
+            )}
           </div>
           <div>
             <label className="mb-1.5 block text-xs font-medium text-ink/50">Mode</label>
