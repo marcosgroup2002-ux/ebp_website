@@ -1,223 +1,111 @@
-# Brancher un vrai backend
+# Architecture Production, Sécurité & Supabase EBP
 
-Le dashboard fonctionne aujourd'hui sur des données en mémoire
-(`src/data/adminData.js`), lues et écrites via deux fichiers de service :
-
-- `src/services/paymentsService.js`
-- `src/services/checklistsService.js`
-
-**C'est volontaire.** Ces deux fichiers sont la seule couche qui touche aux
-données. Les composants (`PaymentsView`, `ChecklistsView`, les modales...)
-n'accèdent jamais directement à `adminData.js` pour écrire : ils appellent
-toujours une fonction de service. Résultat : brancher un vrai backend veut
-dire réécrire le **corps** de ces fonctions, pas les composants qui les
-appellent. Chaque fonction de `paymentsService.js` est déjà écrite comme une
-fonction `async`, comme si elle appelait une vraie API.
-
-Deux chemins possibles, comme demandé dans le brief. Aucun des deux n'est
-branché : les deux demandent des identifiants (Google Cloud ou Supabase) que
-seul EBP peut créer.
+Ce document décrit l'architecture de sécurité et le modèle de données de production pour l'espace d'administration du site **EBP (English for Busy People)**.
 
 ---
 
-## Option immédiate : Google Sheets API
+## 1. Rôles et Périmètres d'Accès
 
-Le plus rapide à mettre en place, cohérent avec les habitudes actuelles de
-l'équipe (Playbook 3.2 : "Accéder au tableau de suivi des paiements ici").
+Le système comporte 3 espaces d'accès avec des privilèges strictement définis :
 
-### 1. Créer le Web App (Google Apps Script)
+### 1.1 Espace Secrétaire (`secretaire`)
+- **Acteur :** Miss Amirath (Secrétaire)
+- **Identifiants de production :**
+  - Email : `josiasdevweb@gmail.com`
+  - Téléphone : `+229 0168897793`
+  - Mot de passe : `EbpSec2026!Secr`
+- **Mécanisme d'authentification :**
+  - Connexion soumise à un déclenchement d'OTP transmis au PDG pour validation.
+  - Notification d'audit instantanée enregistrant en arrière-plan : Date, Heure, Adresse IP et Lieu géographique.
+- **Fonctionnalités :**
+  - Gestion opérationnelle des apprenants pour les centres de **Calavi** et **Cotonou**.
+  - Affectation aux 3 cohortes actives : **18.6**, **18.7** et **18.8**.
+  - Enregistrement des versements et calcul en temps réel des impayés et relances (J+5, J+10).
+  - Gestion de la checklist quotidienne du secrétariat.
+  - Chaque création, modification ou suppression génère une trace immuable dans les journaux d'audit.
 
-Dans le Google Sheet qui sert de base de données : **Extensions → Apps
-Script**, puis coller ce code dans `Code.gs` :
+### 1.2 Espace Coachs (`coach`) - Page Unifiée
+- **Acteurs :** 6 Coachs au total (4 sur le centre de Calavi, 2 sur le centre de Cotonou).
+- **Identifiant d'accès :**
+  - Mot de passe unique partagé : `Mon-cours`
+- **Fonctionnalités :**
+  - Accès en lecture seule à leur emploi du temps hebdomadaire.
+  - Filtres interactifs par centre (Calavi / Cotonou), par cohorte (18.6, 18.7, 18.8) et par coach.
+  - Fil d'actualité pour consulter les consignes et communiqués officiels émis par le PDG.
+  - **Restriction absolue :** Aucun accès aux données financières ou administratives.
 
-```javascript
-// Code.gs : à coller dans l'éditeur Apps Script du Google Sheet
-const SHEET_NAME = "Paiements";
-
-function doGet(e) {
-  if (!isAuthorized(e)) return jsonResponse({ error: "unauthorized" });
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
-  const data = sheet.getDataRange().getValues();
-  const headers = data.shift();
-  const rows = data.map((row) =>
-    Object.fromEntries(headers.map((h, i) => [h, row[i]]))
-  );
-  return jsonResponse(rows);
-}
-
-function doPost(e) {
-  if (!isAuthorized(e)) return jsonResponse({ error: "unauthorized" });
-  const payload = JSON.parse(e.postData.contents);
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
-  sheet.appendRow([
-    payload.id,
-    payload.name,
-    payload.cohort,
-    payload.option,
-    payload.total,
-    payload.paid,
-    payload.nextDueDate,
-    payload.status,
-  ]);
-  return jsonResponse({ ok: true });
-}
-
-// Authentification minimale : une clé partagée, stockée dans les propriétés
-// du script (jamais en dur dans le code). Suffisant pour décourager un accès
-// non autorisé, pas pour protéger des données sensibles à grande échelle.
-function isAuthorized(e) {
-  const key =
-    (e.parameter && e.parameter.apiKey) ||
-    (e.postData && JSON.parse(e.postData.contents).apiKey);
-  return key === PropertiesService.getScriptProperties().getProperty("API_KEY");
-}
-
-function jsonResponse(obj) {
-  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(
-    ContentService.MimeType.JSON
-  );
-}
-```
-
-Puis : **Paramètres du projet → Propriétés du script**, ajouter `API_KEY`
-avec une valeur secrète générée. Enfin **Déployer → Nouveau déploiement →
-Application Web**, accès "Tout le monde" (l'API_KEY fait office de
-protection), et copier l'URL du déploiement.
-
-### 2. Brancher le frontend
-
-Dans `src/services/paymentsService.js`, remplacer le corps de
-`fetchLearners` et `recordPayment` par de vrais appels `fetch` vers cette
-URL, avec l'API_KEY passée en paramètre. Les signatures des fonctions ne
-changent pas : seuls les composants n'ont rien à modifier.
-
-### 3. Sauvegarde automatique
-
-Un Web App Apps Script n'a pas de sauvegarde intégrée. Ce script Node,
-lancé périodiquement, télécharge l'état du Sheet en JSON horodaté :
-
-```javascript
-// scripts/backup-sheet.mjs
-import fs from "node:fs/promises";
-
-const WEB_APP_URL = process.env.EBP_SHEET_WEBAPP_URL;
-const API_KEY = process.env.EBP_SHEET_API_KEY;
-
-async function backup() {
-  const res = await fetch(`${WEB_APP_URL}?apiKey=${API_KEY}`);
-  if (!res.ok) throw new Error(`Échec de récupération du Sheet : ${res.status}`);
-  const data = await res.json();
-
-  const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-  await fs.mkdir("backups", { recursive: true });
-  await fs.writeFile(`backups/paiements-${stamp}.json`, JSON.stringify(data, null, 2));
-  console.log(`Sauvegarde écrite : backups/paiements-${stamp}.json (${data.length} lignes)`);
-}
-
-backup().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
-```
-
-Et un déclenchement quotidien via GitHub Actions
-(`.github/workflows/backup.yml`) :
-
-```yaml
-name: Sauvegarde quotidienne du Sheet EBP
-on:
-  schedule:
-    - cron: "0 2 * * *" # 02h00 UTC chaque jour
-  workflow_dispatch: {}
-jobs:
-  backup:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: node scripts/backup-sheet.mjs
-        env:
-          EBP_SHEET_WEBAPP_URL: ${{ secrets.EBP_SHEET_WEBAPP_URL }}
-          EBP_SHEET_API_KEY: ${{ secrets.EBP_SHEET_API_KEY }}
-      - uses: actions/upload-artifact@v4
-        with:
-          name: backup-${{ github.run_id }}
-          path: backups/
-```
-
-**Limite honnête de cette option** : Apps Script n'offre pas de vrais rôles
-utilisateurs ni de Row Level Security. L'authentification par rôle
-(Secrétaire / Formateur / Manager / Promoteur) demandée dans le brief n'est
-réalisable proprement qu'avec l'option Supabase ci-dessous.
+### 1.3 Espace PDG (`pdg`) - Supervision & Analytics
+- **Acteur :** Mr Sessou Fernando (PDG)
+- **Identifiants de production :**
+  - Email : `marcosgroup2002@gmail.com`
+  - Téléphone : `+229 0159123494`
+  - Mot de passe Maître : `EbpBoss2026#Master`
+- **Fonctionnalités :**
+  - **Posture 100% contrôle / supervision analytique** (aucune saisie opérationnelle).
+  - Validation et approbation en direct des requêtes OTP déclenchées par la secrétaire.
+  - Consultation et exportation des **Journaux d'Audit (Audit Logs)** retraçant toutes les actions avec IP et localisation.
+  - **Dashboard Analytique en temps réel :**
+    - Taux de recouvrement financier (%) et montant des impayés.
+    - Suivi des retards critiques J+5 et J+10.
+    - Taux de régularité globale des apprenants.
+    - Graphiques d'évolution des inscriptions par centre (Calavi vs Cotonou) et par cohorte (18.6, 18.7, 18.8).
+  - Module d'émission de communiqués et consignes urgentes pour les coachs.
 
 ---
 
-## Option recommandée : Supabase
+## 2. Déploiement de la Base de Données Supabase
 
-Le schéma complet, prêt à coller dans l'éditeur SQL de Supabase, est dans
-[`docs/schema.sql`](./schema.sql) : tables `profiles`, `apprenants`,
-`paiements`, `checklist_entries`, `alertes_manager`, avec des politiques RLS
-qui appliquent déjà les 4 rôles du Playbook.
+Le schéma complet de production se trouve dans [`docs/schema.sql`](./schema.sql).
 
-### Étapes
-
-1. Créer un projet sur [supabase.com](https://supabase.com).
-2. Coller `docs/schema.sql` dans **SQL Editor → New query**, exécuter.
-3. Activer l'authentification par email (**Authentication → Providers**).
-4. `npm install @supabase/supabase-js`
-5. Créer `src/lib/supabaseClient.js` :
-
-```javascript
-import { createClient } from "@supabase/supabase-js";
-
-export const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
-```
-
-6. Remplacer le corps des fonctions dans `paymentsService.js` /
-   `checklistsService.js` par des appels `supabase.from(...)`. Exemple pour
-   `recordPayment` :
-
-```javascript
-export async function recordPayment(learnerId, payment) {
-  const { data, error } = await supabase
-    .from("paiements")
-    .insert({
-      apprenant_id: learnerId,
-      montant: payment.amount,
-      mode: payment.mode,
-      date_paiement: payment.date,
-    })
-    .select()
-    .single();
-  if (error) throw error;
-  return data;
-}
-```
-
-7. Remplacer `AdminGate` (mot de passe unique en dur) par
-   `supabase.auth.signInWithPassword()`, et lire le rôle depuis la table
-   `profiles` une fois connecté : ce qui remplace aussi le sélecteur
-   d'identité de démonstration dans `AdminGate.jsx`.
-
-C'est le chemin qui satisfait vraiment "authentification par rôles avec
-gestion fine des accès" : la Row Level Security de `schema.sql` s'applique
-au niveau de la base de données elle-même, pas seulement dans le code
-frontend (qui peut toujours être contourné par un utilisateur curieux).
+### Étapes d'exécution :
+1. Connectez-vous à votre console [Supabase](https://supabase.com).
+2. Ouvrez votre projet (ex: `https://qkdhidsqyzahesvjpcqo.supabase.co`).
+3. Allez dans **SQL Editor → New query**.
+4. Collez l'intégralité du contenu de [`docs/schema.sql`](./schema.sql) et cliquez sur **Run**.
+5. Récupérez vos clés API dans **Project Settings → API** :
+   - URL : `https://qkdhidsqyzahesvjpcqo.supabase.co`
+   - Clé publique `anon` / `publishable` : reportez-la dans le fichier `.env.local` sous `VITE_SUPABASE_ANON_KEY`.
 
 ---
 
-## Résumé des points de bascule
+## 3. Traçabilité et Audit Logs
 
-| Aujourd'hui | À remplacer par |
-| --- | --- |
-| `SAMPLE_LEARNERS` (`src/data/adminData.js`) | Table `apprenants` |
-| `learner.history` en mémoire | Table `paiements` |
-| État React local des checklists | Table `checklist_entries` |
-| Mot de passe unique + sélecteur d'identité (`AdminGate.jsx`) | `supabase.auth` + table `profiles` |
-| `src/services/paymentsService.js` | Mêmes signatures, corps branché sur Sheets ou Supabase |
-| `src/services/checklistsService.js` | Idem |
+Chaque action sensible appelle la fonction `logAuditEvent()` dans `src/services/auditService.js` :
+- Action exécutée (`CONNEXION_OTP_DEMANDEE`, `CREATION_APPRENANT`, `ENREGISTREMENT_PAIEMENT`, `SUPPRESSION_APPRENANT`, etc.)
+- Auteur et rôle
+- Horodatage ISO
+- Adresse IP et Localisation client
+- Détails explicites
+
+Ces données sont stockées dans la table Supabase `audit_logs` ainsi que dans le stockage local persistant pour garantir une disponibilité continue même en cas d'interruption réseau.
+
+---
+
+## 4. Envoi automatique d'OTP par Email et SMS au PDG
+
+Lors de chaque tentative de connexion de la secrétaire Miss Amirath, la fonction `sendOtpNotification()` dans `src/services/authService.js` est automatiquement invoquée :
+
+### 4.1 Spécifications des messages :
+- **Email transmis au PDG** :
+  - **Destinataire** : `marcosgroup2002@gmail.com`
+  - **Sujet** : `[EBP Admin] Code d'autorisation de connexion - Miss Amirath`
+  - **Contenu** : Demande d'accès, code OTP à 6 chiffres (valable 10 min), heure, adresse IP et lieu de connexion.
+- **SMS transmis au PDG** :
+  - **Destinataire** : `+2290159123494`
+  - **Texte** : `[EBP Admin] Code OTP pour Miss Amirath : {OTP_CODE}. IP: {IP_ADDRESS}. Valide 10 min.`
+
+### 4.2 Déploiement de la Edge Function Supabase :
+La Edge Function prête à l'emploi est disponible dans [`supabase/functions/send-otp-notification/index.ts`](../supabase/functions/send-otp-notification/index.ts).
+
+Pour la déployer dans votre projet Supabase avec les clés API de messagerie :
+```bash
+# 1. Configurer les secrets de messagerie (ex: Resend pour Email, Termii pour SMS)
+supabase secrets set RESEND_API_KEY="votre_cle_resend"
+supabase secrets set TERMII_API_KEY="votre_cle_termii"
+supabase secrets set SENDER_EMAIL="securite@ebp-benin.com"
+
+# 2. Déployer la fonction
+supabase functions deploy send-otp-notification
+```
+En l'absence de passerelle externe connectée, le système consigne immédiatement les notifications formatées dans la console et dans les journaux d'audit de sécurité, tout en maintenant actif le sas de validation côté PDG et la saisie de l'OTP par la secrétaire.
+

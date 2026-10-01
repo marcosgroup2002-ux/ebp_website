@@ -1,30 +1,14 @@
 // ============================================================================
-// SERVICE CHECKLISTS : traçabilité (qui a coché quoi, et quand)
+// SERVICE CHECKLISTS SECRÉTARIAT (EBP Production)
 // ============================================================================
-// Chaque checklist est représentée en mémoire comme un objet
-// { [index]: { checked: boolean, by: string, at: string } }.
-// Connecté à Supabase (`checklist_entries`, `alertes_manager`) avec fallback mémoire.
+// Traçabilité des vérifications opérationnelles de la secrétaire.
+// Chaque action est horodatée, persistée et enregistrée dans les Audit Logs.
 
 import { supabase } from "../lib/supabaseClient";
+import { logAuditEvent } from "./auditService";
 
-/**
- * Bascule un item de checklist et l'horodate au nom de l'utilisateur actif.
- * @param {Object} state État actuel de la checklist.
- * @param {number} index Index de l'item.
- * @param {{name:string, role:string, id?:string}} user Utilisateur connecté.
- */
-export function toggleChecklistItem(state, index, user) {
-  const current = state[index];
-  const isChecking = !current?.checked;
-  return {
-    ...state,
-    [index]: isChecking
-      ? { checked: true, by: user?.name ?? "Utilisateur", role: user?.role ?? "", at: new Date().toISOString() }
-      : { checked: false, by: null, role: null, at: null },
-  };
-}
+const LOCAL_CHECKLIST_KEY = "ebp_secretary_checklists";
 
-/** Formatte un horodatage ISO en "12 août 2026, 14:32". */
 export function formatTimestamp(iso) {
   if (!iso) return "";
   return new Date(iso).toLocaleString("fr-FR", {
@@ -36,129 +20,117 @@ export function formatTimestamp(iso) {
 }
 
 /**
- * Charge les alertes Manager depuis Supabase ou renvoie le fallback.
+ * Bascule un item de checklist et l'horodate au nom de l'utilisateur actif.
  */
-export async function fetchManagerAlerts(fallback = []) {
-  if (!supabase) return fallback;
-
-  try {
-    const { data, error } = await supabase
-      .from("alertes_manager")
-      .select(`
-        id,
-        note,
-        resolu,
-        created_at,
-        profiles (
-          nom,
-          role
-        )
-      `)
-      .order("created_at", { ascending: false });
-
-    if (error || !data || data.length === 0) {
-      return fallback;
-    }
-
-    return data.map((a) => ({
-      id: a.id,
-      learnerName: a.note,
-      raisedBy: a.profiles?.nom || "Formateur",
-      role: a.profiles?.role || "formateur",
-      at: a.created_at,
-    }));
-  } catch (err) {
-    console.warn("[checklistsService] Erreur alertes Supabase :", err);
-    return fallback;
-  }
-}
-
-/**
- * Génère une alerte Manager pour un apprenant en difficulté (Playbook 5.7).
- */
-export async function createManagerAlert(learnerName, user) {
-  const alert = {
-    id: `alert-${Date.now()}`,
-    learnerName,
-    raisedBy: user?.name ?? "Utilisateur",
-    role: user?.role ?? "formateur",
-    at: new Date().toISOString(),
+export function toggleChecklistItem(state, index, user) {
+  const current = state[index];
+  const isChecking = !current?.checked;
+  return {
+    ...state,
+    [index]: isChecking
+      ? { checked: true, by: user?.name ?? "Miss Amirath (Secrétaire)", role: user?.role ?? "secretaire", at: new Date().toISOString() }
+      : { checked: false, by: null, role: null, at: null },
   };
-
-  if (supabase) {
-    try {
-      await supabase.from("alertes_manager").insert({
-        note: learnerName,
-        signale_par: typeof user?.id === "string" && user.id.length === 36 ? user.id : null,
-      });
-    } catch (err) {
-      console.warn("[checklistsService] Insertion Supabase impossible (fallback local) :", err);
-    }
-  }
-
-  return alert;
 }
 
 /**
- * Charge les coches enregistrées pour une checklist.
+ * Récupère les coches enregistrées pour la checklist du secrétariat.
  */
-export async function fetchChecklistEntries(checklistKey) {
-  if (!supabase) return {};
+export async function fetchChecklistEntries(checklistKey = "secretaire") {
+  const local = (() => {
+    try {
+      const stored = localStorage.getItem(`${LOCAL_CHECKLIST_KEY}_${checklistKey}`);
+      return stored ? JSON.parse(stored) : {};
+    } catch {
+      return {};
+    }
+  })();
+
+  if (!supabase) return local;
+
   try {
     const { data, error } = await supabase
       .from("checklist_entries")
-      .select(`
-        item_index,
-        coche,
-        horodatage,
-        profiles (
-          nom,
-          role
-        )
-      `)
+      .select("item_index, coche, horodatage, coche_par")
       .eq("checklist", checklistKey)
       .eq("coche", true);
 
-    if (error || !data) return {};
+    if (error || !data) return local;
 
-    const entries = {};
+    const entries = { ...local };
     data.forEach((row) => {
       entries[row.item_index] = {
         checked: true,
-        by: row.profiles?.nom || "Équipe EBP",
-        role: row.profiles?.role || "",
+        by: row.coche_par || "Miss Amirath (Secrétaire)",
+        role: "secretaire",
         at: row.horodatage,
       };
     });
     return entries;
   } catch {
-    return {};
+    return local;
   }
 }
 
 /**
- * Sauvegarde la coche d'un item dans Supabase.
+ * Sauvegarde la coche ou décoche d'un item de checklist (avec Audit Log).
  */
-export async function saveChecklistEntry(checklistKey, index, isChecking, user) {
-  if (!supabase) return;
-  try {
-    if (isChecking) {
-      await supabase.from("checklist_entries").insert({
-        checklist: checklistKey,
-        item_index: index,
-        coche: true,
-        utilisateur_id: typeof user?.id === "string" && user.id.length === 36 ? user.id : null,
-      });
-    } else {
-      await supabase
-        .from("checklist_entries")
-        .delete()
-        .eq("checklist", checklistKey)
-        .eq("item_index", index);
-    }
-  } catch {
-    // Ignorer les erreurs d'écriture hors-ligne
+export async function saveChecklistEntry(checklistKey, index, isChecking, itemLabelOrUser, maybeUser) {
+  let itemLabel = "";
+  let user = null;
+  if (typeof itemLabelOrUser === "string") {
+    itemLabel = itemLabelOrUser;
+    user = maybeUser;
+  } else {
+    user = itemLabelOrUser;
   }
+
+  // 1. Stockage local
+  try {
+    const stored = JSON.parse(localStorage.getItem(`${LOCAL_CHECKLIST_KEY}_${checklistKey}`) || "{}");
+    if (isChecking) {
+      stored[index] = {
+        checked: true,
+        by: user?.name || "Miss Amirath (Secrétaire)",
+        role: user?.role || "secretaire",
+        at: new Date().toISOString(),
+      };
+    } else {
+      delete stored[index];
+    }
+    localStorage.setItem(`${LOCAL_CHECKLIST_KEY}_${checklistKey}`, JSON.stringify(stored));
+  } catch {
+    //
+  }
+
+  // 2. Écriture Supabase
+  if (supabase) {
+    try {
+      if (isChecking) {
+        await supabase.from("checklist_entries").insert({
+          checklist: checklistKey,
+          item_index: index,
+          coche: true,
+          coche_par: user?.name || "Miss Amirath (Secrétaire)",
+        });
+      } else {
+        await supabase
+          .from("checklist_entries")
+          .delete()
+          .eq("checklist", checklistKey)
+          .eq("item_index", index);
+      }
+    } catch (err) {
+      console.warn("[checklistsService] Erreur synchronisation checklist Supabase :", err);
+    }
+  }
+
+  // 3. Traçabilité dans l'Audit Log
+  await logAuditEvent({
+    action: isChecking ? "CHECKLIST_VALIDEE" : "CHECKLIST_ANNULEE",
+    details: `${isChecking ? "Validation" : "Annulation"} de l'item "${itemLabel || `Tâche #${index + 1}`}" par la secrétaire.`,
+    user,
+  });
 }
 
 /** Calcule, pour la date du jour, quelle échéance clé du mois est la plus proche. */

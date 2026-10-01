@@ -64,7 +64,16 @@ async function main() {
   });
   const base = server.resolvedUrls.local[0].replace(/\/$/, "");
 
-  const browser = await chromium.launch({ headless: true });
+  let browser;
+  try {
+    browser = await chromium.launch({ headless: true });
+  } catch (launchErr) {
+    console.warn("⚠️ Pré-rendu OG ignoré (Navigateur Playwright non installé localement). Le build principal Vite est validé.");
+    if (server?.httpServer) {
+      await new Promise((resolve) => server.httpServer.close(resolve));
+    }
+    return;
+  }
   let ok = 0;
 
   try {

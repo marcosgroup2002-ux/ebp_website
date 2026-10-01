@@ -2,8 +2,9 @@ import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
+import { useAdminUser } from "./context/AdminUserContext";
 
-// Chargement différé (Lazy Loading) des routes secondaires pour alléger le bundle initial
+// Chargement différé (Lazy Loading) des routes secondaires
 const About = lazy(() => import("./pages/About"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
@@ -12,6 +13,9 @@ const AdminGate = lazy(() => import("./pages/admin/AdminGate"));
 const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
 const PaymentsView = lazy(() => import("./pages/admin/PaymentsView"));
 const ChecklistsView = lazy(() => import("./pages/admin/ChecklistsView"));
+const CoachsView = lazy(() => import("./pages/admin/CoachsView"));
+const PdgSupervisionView = lazy(() => import("./pages/admin/PdgSupervisionView"));
+const AuditLogsView = lazy(() => import("./pages/admin/AuditLogsView"));
 
 function PageLoader() {
   return (
@@ -19,6 +23,13 @@ function PageLoader() {
       <div className="h-8 w-8 animate-spin rounded-full border-2 border-ebp-blue border-t-transparent" />
     </div>
   );
+}
+
+function AdminIndexRedirect() {
+  const { user } = useAdminUser();
+  if (user?.role === "coach") return <Navigate to="/admin/coachs" replace />;
+  if (user?.role === "pdg") return <Navigate to="/admin/pdg" replace />;
+  return <Navigate to="/admin/paiements" replace />;
 }
 
 export default function App() {
@@ -34,12 +45,15 @@ export default function App() {
           <Route path="/contact" element={<Contact />} />
         </Route>
 
-        {/* Espace admin : jamais lié depuis la navigation publique */}
+        {/* Espace admin sécurisé avec gestion des rôles */}
         <Route path="/admin" element={<AdminGate />}>
           <Route element={<AdminLayout />}>
-            <Route index element={<Navigate to="/admin/paiements" replace />} />
+            <Route index element={<AdminIndexRedirect />} />
             <Route path="paiements" element={<PaymentsView />} />
             <Route path="checklists" element={<ChecklistsView />} />
+            <Route path="coachs" element={<CoachsView />} />
+            <Route path="pdg" element={<PdgSupervisionView />} />
+            <Route path="audit" element={<AuditLogsView />} />
           </Route>
         </Route>
 

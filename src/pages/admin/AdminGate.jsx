@@ -1,147 +1,336 @@
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import { ShieldCheck, ChevronRight } from "lucide-react";
+import { ShieldCheck, GraduationCap, ArrowRight, ShieldAlert, CheckCircle2, Mail } from "lucide-react";
 import { AdminUserProvider, useAdminUser } from "../../context/AdminUserContext";
-import { SAMPLE_USERS } from "../../data/adminData";
-import { supabase } from "../../lib/supabaseClient";
+import {
+  initiateSecretaryLogin,
+  verifySecretaryOtp,
+  loginCoach,
+  loginPdg,
+  CREDENTIALS,
+} from "../../services/authService";
 
-const DEMO_PASSWORD_HASH = "247cb54108d43e4359913fe4b410f2624b041fc8cc3fe95ceedac895171f930d";
 const SESSION_KEY = "ebp_admin_authed";
 
-async function sha256Hex(text) {
-  const bytes = new TextEncoder().encode(text);
-  const digest = await crypto.subtle.digest("SHA-256", bytes);
-  return Array.from(new Uint8Array(digest))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-}
-
-function AuthStep({ onSuccess }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [checking, setChecking] = useState(false);
+function GateForm({ onSuccess }) {
   const { setUser } = useAdminUser();
+  const [activeTab, setActiveTab] = useState("secretaire"); // 'secretaire' | 'coach' | 'pdg'
 
-  const handleSubmit = async (e) => {
+  // États pour Secrétaire
+  const [secEmail, setSecEmail] = useState(CREDENTIALS.secretaire.email);
+  const [secPassword, setSecPassword] = useState("");
+  const [otpStep, setOtpStep] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+
+  // États pour Coach
+  const [coachPassword, setCoachPassword] = useState("");
+
+  // États pour PDG
+  const [pdgEmail, setPdgEmail] = useState(CREDENTIALS.pdg.email);
+  const [pdgPassword, setPdgPassword] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // 1. Soumission Secrétaire (Étape 1 : Email + Mot de passe -> Génération OTP)
+  const handleSecretarySubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setChecking(true);
+    setLoading(true);
 
     try {
-      // 1. Si un email est renseigné et que Supabase est disponible, tente Supabase Auth
-      if (email.trim() && supabase) {
-        const { data, error: authErr } = await supabase.auth.signInWithPassword({
-          email: email.trim(),
-          password,
-        });
-
-        if (authErr) {
-          setChecking(false);
-          setError(authErr.message || "Email ou mot de passe incorrect.");
-          return;
-        }
-
-        if (data?.user) {
-          // Récupération du profil depuis la table profiles
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", data.user.id)
-            .single();
-
-          const authUser = profile
-            ? { id: profile.id, name: profile.nom, role: profile.role }
-            : {
-                id: data.user.id,
-                name: data.user.user_metadata?.nom || data.user.email?.split("@")[0] || "Administrateur",
-                role: data.user.user_metadata?.role || "secretaire",
-              };
-
-          setUser(authUser);
-          sessionStorage.setItem(SESSION_KEY, "true");
-          setChecking(false);
-          onSuccess();
-          return;
-        }
-      }
-
-      // 2. Fallback démo : vérification du mot de passe direct
-      const hash = await sha256Hex(password);
-      setChecking(false);
-
-      if (hash === DEMO_PASSWORD_HASH) {
-        sessionStorage.setItem(SESSION_KEY, "true");
-        onSuccess();
-      } else {
-        setError("Mot de passe ou identifiants incorrects.");
-      }
+      await initiateSecretaryLogin(secEmail, secPassword);
+      setOtpStep(true);
+      setLoading(false);
     } catch (err) {
-      console.warn("[AdminGate] Erreur authentification :", err);
-      setChecking(false);
-      setError("Erreur de connexion. Veuillez réessayer.");
+      setLoading(false);
+      setError(err.message || "Identifiants incorrects.");
+    }
+  };
+
+  // 2. Soumission Secrétaire (Étape 2 : Validation OTP)
+  const handleSecretaryOtpSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const authUser = await verifySecretaryOtp(otpCode);
+      setUser(authUser);
+      sessionStorage.setItem(SESSION_KEY, "true");
+      setLoading(false);
+      onSuccess();
+    } catch (err) {
+      setLoading(false);
+      setError(err.message || "Code OTP invalide.");
+    }
+  };
+
+  // 3. Soumission Coach (Mot de passe unique partagé)
+  const handleCoachSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const authUser = await loginCoach(coachPassword);
+      setUser(authUser);
+      sessionStorage.setItem(SESSION_KEY, "true");
+      setLoading(false);
+      onSuccess();
+    } catch (err) {
+      setLoading(false);
+      setError(err.message || "Mot de passe incorrect.");
+    }
+  };
+
+  // 4. Soumission PDG (Mot de passe Maître)
+  const handlePdgSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const authUser = await loginPdg(pdgEmail, pdgPassword);
+      setUser(authUser);
+      sessionStorage.setItem(SESSION_KEY, "true");
+      setLoading(false);
+      onSuccess();
+    } catch (err) {
+      setLoading(false);
+      setError(err.message || "Identifiants PDG invalides.");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mt-6">
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email professionnel (ou vide pour démo)"
-        className="w-full rounded-xl border border-ink/10 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
-        autoFocus
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Mot de passe"
-        className="mt-3 w-full rounded-xl border border-ink/10 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
-      />
-      {error && <p className="mt-2 text-xs text-ebp-red-soft">{error}</p>}
-      <button type="submit" className="btn-primary mt-4 w-full" disabled={checking}>
-        {checking ? "Vérification..." : "Se connecter"}
-      </button>
-    </form>
-  );
-}
-
-function IdentityStep() {
-  const { setUser } = useAdminUser();
-
-  return (
-    <div className="mt-6">
-      <p className="text-xs font-medium text-ink/50">Connecté en tant que</p>
-      <div className="mt-3 space-y-2">
-        {SAMPLE_USERS.map((u) => (
-          <button
-            key={u.id}
-            onClick={() => setUser(u)}
-            className="flex w-full items-center justify-between rounded-xl border border-ink/10 px-4 py-3 text-left text-sm transition-colors hover:border-ebp-green hover:bg-ebp-green/5"
-          >
-            <span>
-              <span className="font-medium text-ink">{u.name}</span>
-              <span className="ml-2 text-xs text-ink/40">{u.role}</span>
-            </span>
-            <ChevronRight size={15} className="text-ink/30" />
-          </button>
-        ))}
+    <div className="w-full">
+      {/* Onglets de sélection du rôle */}
+      <div className="mt-5 grid grid-cols-3 gap-1 rounded-xl bg-surface p-1 border border-ink/10">
+        <button
+          type="button"
+          onClick={() => {
+            setActiveTab("secretaire");
+            setError("");
+            setOtpStep(false);
+          }}
+          className={`rounded-lg py-2 text-xs font-bold transition-all ${
+            activeTab === "secretaire"
+              ? "bg-white text-ebp-blue shadow-xs"
+              : "text-ink/60 hover:text-ink"
+          }`}
+        >
+          Secrétaire
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setActiveTab("coach");
+            setError("");
+            setOtpStep(false);
+          }}
+          className={`rounded-lg py-2 text-xs font-bold transition-all ${
+            activeTab === "coach"
+              ? "bg-white text-ebp-green shadow-xs"
+              : "text-ink/60 hover:text-ink"
+          }`}
+        >
+          Coachs
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setActiveTab("pdg");
+            setError("");
+            setOtpStep(false);
+          }}
+          className={`rounded-lg py-2 text-xs font-bold transition-all ${
+            activeTab === "pdg"
+              ? "bg-white text-ink shadow-xs"
+              : "text-ink/60 hover:text-ink"
+          }`}
+        >
+          PDG
+        </button>
       </div>
-      <p className="mt-4 text-xs text-ink/40">
-        Rôle démo actif : pour vous connecter avec votre vrai profil, saisissez votre email sur l'écran précédent.
-      </p>
+
+      {/* FORMULAIRE 1 : ESPACE SECRÉTAIRE */}
+      {activeTab === "secretaire" && (
+        <div className="mt-5">
+          {!otpStep ? (
+            <form onSubmit={handleSecretarySubmit} className="space-y-3">
+              <div>
+                <label className="block text-xs font-semibold text-ink/60 mb-1">Email professionnel</label>
+                <input
+                  type="email"
+                  value={secEmail}
+                  onChange={(e) => setSecEmail(e.target.value)}
+                  placeholder="josiasdevweb@gmail.com"
+                  className="w-full rounded-xl border border-ink/10 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-ink/60 mb-1">Mot de passe</label>
+                <input
+                  type="password"
+                  value={secPassword}
+                  onChange={(e) => setSecPassword(e.target.value)}
+                  placeholder="••••••••••••"
+                  className="w-full rounded-xl border border-ink/10 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
+                  required
+                />
+              </div>
+
+              {error && <p className="text-xs text-ebp-red-soft">{error}</p>}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn-primary w-full shadow-md flex items-center justify-center gap-2"
+              >
+                {loading ? "Vérification..." : "Demander le code d'accès OTP"}
+                <ArrowRight size={14} />
+              </button>
+
+              <div className="rounded-lg bg-blue-50/60 p-2.5 text-[11px] text-blue-900 border border-blue-100">
+                🔒 <span className="font-semibold">Protocole OTP :</span> La connexion déclenche un code à usage unique
+                transmis à la direction (+ journalisation d'audit : Date, Heure, IP, Lieu).
+              </div>
+            </form>
+          ) : (
+            <form onSubmit={handleSecretaryOtpSubmit} className="space-y-4">
+              <div className="rounded-xl border border-blue-200 bg-blue-50/80 p-3.5 text-xs text-blue-900 flex items-center gap-2.5">
+                <Mail size={16} className="text-ebp-blue shrink-0" />
+                <p className="font-medium text-blue-950 leading-relaxed">
+                  Un code d'autorisation a été envoyé par email au PDG.
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-ink/60 mb-1">Code de validation OTP (6 chiffres)</label>
+                <input
+                  type="text"
+                  maxLength={6}
+                  value={otpCode}
+                  onChange={(e) => setOtpCode(e.target.value)}
+                  placeholder="Ex : 548912"
+                  autoFocus
+                  className="w-full rounded-xl border border-ink/10 px-3.5 py-2.5 text-center font-mono text-lg tracking-widest font-bold text-ink focus:outline-none focus:ring-2 focus:ring-ebp-green"
+                  required
+                />
+              </div>
+
+              {error && <p className="text-xs text-ebp-red-soft">{error}</p>}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn-primary w-full bg-ebp-green hover:bg-ebp-green-light shadow-md flex items-center justify-center gap-2"
+              >
+                {loading ? "Vérification OTP..." : "Déverrouiller l'Espace Secrétaire"}
+                <CheckCircle2 size={15} />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setOtpStep(false)}
+                className="w-full text-center text-xs text-ink/50 hover:text-ink pt-1"
+              >
+                ← Revenir aux identifiants
+              </button>
+            </form>
+          )}
+        </div>
+      )}
+
+      {/* FORMULAIRE 2 : ESPACE COACHS */}
+      {activeTab === "coach" && (
+        <form onSubmit={handleCoachSubmit} className="mt-5 space-y-3">
+          <div>
+            <label className="block text-xs font-semibold text-ink/60 mb-1">Mot de passe unique partagé</label>
+            <input
+              type="password"
+              value={coachPassword}
+              onChange={(e) => setCoachPassword(e.target.value)}
+              placeholder="Mot de passe commun aux 6 coachs"
+              className="w-full rounded-xl border border-ink/10 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
+              required
+            />
+          </div>
+
+          {error && <p className="text-xs text-ebp-red-soft">{error}</p>}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn-primary w-full bg-ebp-green hover:bg-ebp-green-light shadow-md flex items-center justify-center gap-2"
+          >
+            {loading ? "Connexion..." : "Accéder à l'Espace Coachs (Lecture Seule)"}
+            <GraduationCap size={15} />
+          </button>
+
+          <div className="rounded-lg bg-emerald-50/60 p-2.5 text-[11px] text-emerald-900 border border-emerald-100">
+            📚 <span className="font-semibold">Accès réservé :</span> Consultez votre emploi du temps et les communiqués
+            de la direction. Aucun accès aux données financières.
+          </div>
+        </form>
+      )}
+
+      {/* FORMULAIRE 3 : ESPACE PDG */}
+      {activeTab === "pdg" && (
+        <form onSubmit={handlePdgSubmit} className="mt-5 space-y-3">
+          <div>
+            <label className="block text-xs font-semibold text-ink/60 mb-1">Email Direction</label>
+            <input
+              type="email"
+              value={pdgEmail}
+              onChange={(e) => setPdgEmail(e.target.value)}
+              placeholder="marcosgroup2002@gmail.com"
+              className="w-full rounded-xl border border-ink/10 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-ink/60 mb-1">Mot de passe Maître</label>
+            <input
+              type="password"
+              value={pdgPassword}
+              onChange={(e) => setPdgPassword(e.target.value)}
+              placeholder="••••••••••••"
+              className="w-full rounded-xl border border-ink/10 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
+              required
+            />
+          </div>
+
+          {error && <p className="text-xs text-ebp-red-soft">{error}</p>}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn-primary w-full shadow-md flex items-center justify-center gap-2"
+          >
+            {loading ? "Vérification..." : "Accéder à la Supervision & Analytics"}
+            <ShieldAlert size={15} />
+          </button>
+
+          <div className="rounded-lg bg-slate-100 p-2.5 text-[11px] text-ink/70 border border-ink/10">
+            📊 <span className="font-semibold text-ink">Supervision PDG :</span> Validation des OTP, journaux d'audit et
+            courbes analytiques de production.
+          </div>
+        </form>
+      )}
     </div>
   );
 }
 
 function GateContent({ children }) {
-  const [passwordOk, setPasswordOk] = useState(() => sessionStorage.getItem(SESSION_KEY) === "true");
-  const { user, setUser } = useAdminUser();
+  const [authed, setAuthed] = useState(() => sessionStorage.getItem(SESSION_KEY) === "true");
+  const { user } = useAdminUser();
 
   useEffect(() => {
-    document.title = "Espace Admin · EBP";
+    document.title = "Administration EBP · Accès Sécurisé";
     let meta = document.querySelector('meta[name="robots"]');
     if (!meta) {
       meta = document.createElement("meta");
@@ -149,47 +338,26 @@ function GateContent({ children }) {
       document.head.appendChild(meta);
     }
     meta.content = "noindex, nofollow";
+  }, []);
 
-    // Vérifie si une session Supabase existe déjà
-    if (supabase) {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        if (session?.user && !user) {
-          supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", session.user.id)
-            .single()
-            .then(({ data: profile }) => {
-              if (profile) {
-                setUser({ id: profile.id, name: profile.nom, role: profile.role });
-              } else {
-                setUser({
-                  id: session.user.id,
-                  name: session.user.user_metadata?.nom || session.user.email?.split("@")[0] || "Administrateur",
-                  role: session.user.user_metadata?.role || "secretaire",
-                });
-              }
-              setPasswordOk(true);
-            });
-        }
-      });
-    }
-  }, [user, setUser]);
-
-  if (passwordOk && user) return children;
+  if (authed && user) return children;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-ink px-4">
-      <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-card">
-        <img src="/brand/ebp-logo.jpg" alt="EBP" className="h-11 w-auto rounded-md" />
-        <h1 className="mt-5 font-display text-lg font-semibold text-ink">Espace Admin EBP</h1>
-        <p className="mt-1 text-sm text-ink/50">Accès réservé à l'équipe EBP.</p>
+    <div className="flex min-h-screen items-center justify-center bg-ink px-4 py-8">
+      <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-card border border-white/10">
+        <div className="flex items-center gap-3">
+          <img src="/brand/ebp-logo.jpg" alt="EBP" className="h-10 w-auto rounded-lg shadow-sm" />
+          <div>
+            <h1 className="font-display text-lg font-bold text-ink">Espace Administration</h1>
+            <p className="text-xs text-ink/50">Système sécurisé d'exploitation EBP</p>
+          </div>
+        </div>
 
-        {!passwordOk ? <AuthStep onSuccess={() => setPasswordOk(true)} /> : <IdentityStep />}
+        <GateForm onSuccess={() => setAuthed(true)} />
 
-        <div className="mt-6 flex items-start gap-2 rounded-lg bg-emerald-50 p-3 text-xs text-emerald-800">
-          <ShieldCheck size={14} className="mt-0.5 shrink-0 text-ebp-green" />
-          Authentification Supabase Auth active. Vous pouvez vous connecter avec votre compte ou via le mot de passe d'équipe.
+        <div className="mt-6 flex items-center justify-center gap-2 border-t border-ink/5 pt-4 text-[11px] text-ink/40">
+          <ShieldCheck size={14} className="text-ebp-green" />
+          <span>Plateforme de production chiffrée · Calavi & Cotonou</span>
         </div>
       </div>
     </div>
