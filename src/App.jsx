@@ -16,6 +16,8 @@ const ChecklistsView = lazy(() => import("./pages/admin/ChecklistsView"));
 const CoachsView = lazy(() => import("./pages/admin/CoachsView"));
 const PdgSupervisionView = lazy(() => import("./pages/admin/PdgSupervisionView"));
 const AuditLogsView = lazy(() => import("./pages/admin/AuditLogsView"));
+const AnalyticsView = lazy(() => import("./pages/admin/AnalyticsView"));
+import AnalyticsTracker from "./components/AnalyticsTracker";
 
 function PageLoader() {
   return (
@@ -35,6 +37,7 @@ function AdminIndexRedirect() {
 export default function App() {
   return (
     <Suspense fallback={<PageLoader />}>
+      <AnalyticsTracker />
       <Routes>
         {/* Site public */}
         <Route element={<Layout />}>
@@ -54,6 +57,7 @@ export default function App() {
             <Route path="coachs" element={<CoachsView />} />
             <Route path="pdg" element={<PdgSupervisionView />} />
             <Route path="audit" element={<AuditLogsView />} />
+            <Route path="analytics" element={<AnalyticsView />} />
           </Route>
         </Route>
 
