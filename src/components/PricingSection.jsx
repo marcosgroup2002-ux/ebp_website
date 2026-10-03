@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Check, Sparkles } from "lucide-react";
+import { Check } from "lucide-react";
 import { PRICING_OPTIONS, FEES } from "../data/siteContent";
 import { usePricingStore } from "../store/usePricingStore";
 import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
@@ -41,8 +41,7 @@ export default function PricingSection() {
                 } ${isSelected ? "ring-2 ring-ebp-green ring-offset-2 ring-offset-white" : ""}`}
               >
                 {option.badge && (
-                  <span className="absolute -top-3 right-6 inline-flex items-center gap-1 rounded-full bg-ebp-red px-3 py-1 text-[11px] font-semibold text-white">
-                    <Sparkles size={11} />
+                  <span className="absolute -top-3 right-6 inline-flex items-center rounded-full bg-ebp-red px-3 py-1 text-[11px] font-semibold text-white shadow-xs">
                     {option.badge}
                   </span>
                 )}

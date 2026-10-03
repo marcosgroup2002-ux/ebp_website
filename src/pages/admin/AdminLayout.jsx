@@ -40,7 +40,7 @@ export default function AdminLayout() {
     }
     if (role === "pdg") {
       return [
-        { to: "/admin/analytics", label: "Analytics & Boosts", icon: BarChart3 },
+        { to: "/admin/analytics", label: "Audience & Clics", icon: BarChart3 },
         { to: "/admin/pdg", label: "Supervision Générale", icon: TrendingUp },
         { to: "/admin/paiements", label: "Suivi Apprenants (Lecture)", icon: CreditCard },
         { to: "/admin/audit", label: "Journaux d'Audit", icon: ShieldAlert },
@@ -51,7 +51,6 @@ export default function AdminLayout() {
     return [
       { to: "/admin/paiements", label: "Paiements & Apprenants", icon: CreditCard },
       { to: "/admin/checklists", label: "Checklists Secrétariat", icon: ListChecks },
-      { to: "/admin/analytics", label: "Analytics & Boosts", icon: BarChart3 },
     ];
   })();
 
@@ -60,7 +59,7 @@ export default function AdminLayout() {
   if (role === "coach" && (pathname.includes("/admin/paiements") || pathname.includes("/admin/checklists") || pathname.includes("/admin/pdg") || pathname.includes("/admin/audit") || pathname.includes("/admin/analytics"))) {
     return <Navigate to="/admin/coachs" replace />;
   }
-  if (role === "secretaire" && (pathname.includes("/admin/pdg") || pathname.includes("/admin/audit"))) {
+  if (role === "secretaire" && (pathname.includes("/admin/pdg") || pathname.includes("/admin/audit") || pathname.includes("/admin/analytics"))) {
     return <Navigate to="/admin/paiements" replace />;
   }
 

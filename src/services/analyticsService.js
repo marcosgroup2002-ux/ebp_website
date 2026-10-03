@@ -12,9 +12,11 @@ const TRACKED_FLAG_KEY = "ebp_analytics_tracked";
  * Génère un UUID v4 standard
  */
 function generateUUID() {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-    return crypto.randomUUID();
-  }
+  try {
+    if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+      return crypto.randomUUID();
+    }
+  } catch {}
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
     const v = c === "x" ? r : (r & 0x3) | 0x8;
@@ -317,7 +319,9 @@ export async function fetchAnalyticsData() {
 
     let todayCount = 0;
     let weekCount = 0;
+    let totalRawClicks = 0;
     rows.forEach((r) => {
+      totalRawClicks += Number(r.visits_count) || 1;
       const t = new Date(r.created_at).getTime();
       if (t >= startOfToday) todayCount += 1;
       if (t >= sevenDaysAgo) weekCount += 1;
@@ -325,6 +329,7 @@ export async function fetchAnalyticsData() {
 
     return {
       totalVisitors,
+      totalRawClicks,
       mobilePercentage,
       desktopPercentage,
       tabletPercentage,

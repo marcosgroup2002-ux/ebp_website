@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import { ShieldCheck, GraduationCap, ArrowRight, ShieldAlert, CheckCircle2, Mail } from "lucide-react";
+import { ShieldCheck, GraduationCap, ArrowRight, ShieldAlert, CheckCircle2, Mail, Eye, EyeOff } from "lucide-react";
 import { AdminUserProvider, useAdminUser } from "../../context/AdminUserContext";
 import {
   initiateSecretaryLogin,
@@ -19,15 +19,18 @@ function GateForm({ onSuccess }) {
   // États pour Secrétaire
   const [secEmail, setSecEmail] = useState(CREDENTIALS.secretaire.email);
   const [secPassword, setSecPassword] = useState("");
+  const [showSecPassword, setShowSecPassword] = useState(false);
   const [otpStep, setOtpStep] = useState(false);
   const [otpCode, setOtpCode] = useState("");
 
   // États pour Coach
   const [coachPassword, setCoachPassword] = useState("");
+  const [showCoachPassword, setShowCoachPassword] = useState(false);
 
   // États pour PDG
   const [pdgEmail, setPdgEmail] = useState(CREDENTIALS.pdg.email);
   const [pdgPassword, setPdgPassword] = useState("");
+  const [showPdgPassword, setShowPdgPassword] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -172,14 +175,24 @@ function GateForm({ onSuccess }) {
 
               <div>
                 <label className="block text-xs font-semibold text-ink/60 mb-1">Mot de passe</label>
-                <input
-                  type="password"
-                  value={secPassword}
-                  onChange={(e) => setSecPassword(e.target.value)}
-                  placeholder="••••••••••••"
-                  className="w-full rounded-xl border border-ink/10 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
-                  required
-                />
+                <div className="relative">
+                  <input
+                    type={showSecPassword ? "text" : "password"}
+                    value={secPassword}
+                    onChange={(e) => setSecPassword(e.target.value)}
+                    placeholder="••••••••••••"
+                    className="w-full rounded-xl border border-ink/10 pl-3.5 pr-10 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowSecPassword(!showSecPassword)}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-ink/40 hover:text-ink transition-colors"
+                    aria-label={showSecPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                  >
+                    {showSecPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
               </div>
 
               {error && <p className="text-xs text-ebp-red-soft">{error}</p>}
@@ -249,14 +262,24 @@ function GateForm({ onSuccess }) {
         <form onSubmit={handleCoachSubmit} className="mt-5 space-y-3">
           <div>
             <label className="block text-xs font-semibold text-ink/60 mb-1">Mot de passe unique partagé</label>
-            <input
-              type="password"
-              value={coachPassword}
-              onChange={(e) => setCoachPassword(e.target.value)}
-              placeholder="Mot de passe commun aux 6 coachs"
-              className="w-full rounded-xl border border-ink/10 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
-              required
-            />
+            <div className="relative">
+              <input
+                type={showCoachPassword ? "text" : "password"}
+                value={coachPassword}
+                onChange={(e) => setCoachPassword(e.target.value)}
+                placeholder="Mot de passe commun aux 6 coachs"
+                className="w-full rounded-xl border border-ink/10 pl-3.5 pr-10 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowCoachPassword(!showCoachPassword)}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-ink/40 hover:text-ink transition-colors"
+                aria-label={showCoachPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+              >
+                {showCoachPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
           </div>
 
           {error && <p className="text-xs text-ebp-red-soft">{error}</p>}
@@ -294,14 +317,24 @@ function GateForm({ onSuccess }) {
 
           <div>
             <label className="block text-xs font-semibold text-ink/60 mb-1">Mot de passe Maître</label>
-            <input
-              type="password"
-              value={pdgPassword}
-              onChange={(e) => setPdgPassword(e.target.value)}
-              placeholder="••••••••••••"
-              className="w-full rounded-xl border border-ink/10 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
-              required
-            />
+            <div className="relative">
+              <input
+                type={showPdgPassword ? "text" : "password"}
+                value={pdgPassword}
+                onChange={(e) => setPdgPassword(e.target.value)}
+                placeholder="••••••••••••"
+                className="w-full rounded-xl border border-ink/10 pl-3.5 pr-10 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPdgPassword(!showPdgPassword)}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-ink/40 hover:text-ink transition-colors"
+                aria-label={showPdgPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+              >
+                {showPdgPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
           </div>
 
           {error && <p className="text-xs text-ebp-red-soft">{error}</p>}
