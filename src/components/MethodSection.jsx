@@ -9,9 +9,9 @@ export default function MethodSection() {
       {/* Bandeau photo + citation de philosophie pédagogique */}
       <div className="relative overflow-hidden">
         <img
-          src={img(MEDIA.hero.slides[1], { w: 1920, q: 65 })}
-          alt="Classe EBP en session interactive"
-          className="h-[380px] w-full object-cover sm:h-[420px]"
+          src={img(MEDIA.method.banner, { w: 1920, q: 65 })}
+          alt="Classe EBP en session interactive de pratique orale"
+          className="h-[380px] w-full object-cover object-center sm:h-[420px]"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/50 to-ink/20" />
         <div className="absolute inset-0 flex items-end">

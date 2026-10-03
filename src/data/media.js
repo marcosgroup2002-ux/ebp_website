@@ -1,47 +1,58 @@
 // ============================================================================
-// MÉDIATHÈQUE EBP : photos & vidéo réelles, sous licence libre
+// MÉDIATHÈQUE EBP : photos réelles du centre & vidéo d'accueil
 // ============================================================================
-// Toutes les images proviennent d'Unsplash (Unsplash License, usage commercial
-// libre, sans attribution obligatoire) et la vidéo de Pexels (Pexels License,
-// même principe). Aucune image "Unsplash+" (payante) n'est utilisée.
-//
-// Le helper `img()` s'appuie sur le CDN imgix d'Unsplash pour ne charger que le
-// poids nécessaire à chaque contexte (largeur + qualité ajustables), afin de
-// rester "premium mais léger" comme demandé.
-//
-// À REMPLACER progressivement par de vraies photos EBP (élèves, formateurs,
-// centres de Cotonou/Calavi) dès qu'elles seront disponibles (voir README).
+// Les photos réelles de l'équipe, des coachs, des salles de formation et du PDG
+// proviennent du dossier ebp-photo (servies depuis /photos/...).
+// La vidéo Hero et la toute première photo de transition sont conservées intactes
+// selon les règles strictes d'inviolabilité du projet.
 
 const unsplashBase = (id) => `https://images.unsplash.com/${id}`;
 
 export function img(id, { w = 1200, q = 75 } = {}) {
+  if (!id) return "";
+  // Si c'est un chemin local ou une URL externe complète, on la retourne directement
+  if (id.startsWith("/") || id.startsWith("http://") || id.startsWith("https://")) {
+    return id;
+  }
   return `${unsplashBase(id)}?auto=format&fit=crop&w=${w}&q=${q}`;
 }
 
 export const MEDIA = {
   hero: {
     slides: [
+      // 1ère image (RÈGLE D'INVIOLABILITÉ : conservée intacte)
       "photo-1637856794303-d864ce316444", // révisions en duo, laptop
-      "photo-1758270705518-b61b40527e76", // classe en ligne, visioconférence
-      "photo-1543807535-eceef0bc6599", // trois amis qui rient, énergie de groupe
+      // Photos réelles EBP ajoutées dans le même design
+      "/photos/classroom-session.jpeg", // cours interactif avec apprenants et formateur EBP
+      "/photos/team-all.jpeg", // équipe EBP et PDG réunis
+      "/photos/team-meeting.jpeg", // équipe pédagogique EBP autour du PDG
     ],
     video: {
+      // RÈGLE D'INVIOLABILITÉ : vidéo conservée intacte
       mp4: "https://videos.pexels.com/video-files/8123989/8123989-hd_1080_1920_30fps.mp4",
       poster:
         "https://images.pexels.com/videos/8123989/age-aging-aging-active-aging-positive-8123989.jpeg?auto=compress&cs=tinysrgb&w=1200",
     },
   },
   about: {
-    portrait1: "photo-1611432579402-7037e3e2c1e4", // femme souriante, tablette
-    portrait2: "photo-1563132337-f159f484226c", // femme, blazer orange
-    team: "photo-1543807535-eceef0bc6599",
+    portrait1: "/photos/pdg.jpeg", // Photo officielle du PDG (Fondateur Fernando Sessou)
+    portrait2: "/photos/pdg-desk.jpeg", // PDG au bureau EBP
+    team: "/photos/team-all.jpeg", // Équipe complète EBP
   },
   method: {
-    group: "photo-1573497701240-345a300b8d36", // 5 personnes, discussion de groupe
+    group: "/photos/classroom-session.jpeg", // Séance de pratique en groupe
+    banner: "/photos/classroom-whiteboard.jpeg", // Enseignement au tableau blanc
   },
   team: {
-    coaching1: "photo-1573497491208-6b1acb260507", // deux femmes, échange
-    coaching2: "photo-1573496267526-08a69e46a409",
+    coaching1: "/photos/team-coaches.jpeg", // Équipe des coachs EBP en uniforme
+    coaching2: "/photos/coach-portrait.jpeg", // Coach EBP individuel
+    meeting: "/photos/team-meeting.jpeg", // Réunion de travail
+  },
+  coverage: {
+    banner: "/photos/classroom-group.jpeg", // Classe active avec support visuel
+  },
+  formats: {
+    banner: "/photos/team-meeting.jpeg",
   },
   testimonials: {
     rachidatou: "photo-1616901987621-9267100a6c5f",
@@ -49,12 +60,12 @@ export const MEDIA = {
     sandra: "photo-1628551019295-99fc72f7fc66",
   },
   blog: {
-    "parler-anglais-confiance": "photo-1573497019418-b400bb3ab074",
-    "reussir-entretien-embauche-anglais": "photo-1666867540898-aaa1993ffabc",
-    "anglais-voyage-opportunites": "photo-1612534574950-b349c9f5781f",
-    "apprendre-en-ligne-efficacement": "photo-1653669486397-b802144ae64a",
+    "parler-anglais-confiance": "/photos/classroom-group.jpeg",
+    "reussir-entretien-embauche-anglais": "/photos/team-meeting.jpeg",
+    "anglais-voyage-opportunites": "/photos/team-banner.jpeg",
+    "apprendre-en-ligne-efficacement": "/photos/classroom-session.jpeg",
   },
   contact: {
-    banner: "photo-1655720357740-bdf90f34483f",
+    banner: "/photos/team-banner.jpeg", // Photo officielle équipe EBP devant le banner
   },
 };

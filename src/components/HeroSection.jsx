@@ -7,12 +7,13 @@ import { NEXT_COHORT_DATE } from "../data/siteContent";
 import { MEDIA, img } from "../data/media";
 import Waveform from "./Waveform";
 
-// Carrousel plein écran : la vidéo Pexels en premier, puis 3 photos réelles.
+// Carrousel plein écran : la vidéo Pexels en premier, 1ère image conservée intacte, puis photos réelles EBP.
 const SLIDES = [
   { type: "video" },
-  { type: "image", id: MEDIA.hero.slides[0] },
-  { type: "image", id: MEDIA.hero.slides[1] },
-  { type: "image", id: MEDIA.hero.slides[2] },
+  { type: "image", id: MEDIA.hero.slides[0] }, // Inviolable : première image originale conservée
+  { type: "image", id: MEDIA.hero.slides[1] }, // Photo réelle EBP : session interactive
+  { type: "image", id: MEDIA.hero.slides[2] }, // Photo réelle EBP : équipe complète
+  { type: "image", id: MEDIA.hero.slides[3] }, // Photo réelle EBP : pédagogie et direction
 ];
 
 export default function HeroSection() {

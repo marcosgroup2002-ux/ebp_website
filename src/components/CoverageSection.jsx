@@ -11,8 +11,8 @@ export default function CoverageSection() {
   return (
     <section className="relative overflow-hidden">
       <img
-        src={img(MEDIA.hero.slides[1], { w: 1920, q: 60 })}
-        alt="Apprenants en classe en ligne"
+        src={img(MEDIA.coverage.banner, { w: 1920, q: 60 })}
+        alt="Communauté et apprenants EBP"
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-ebp-blue-dark/85" />

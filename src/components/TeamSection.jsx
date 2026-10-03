@@ -45,8 +45,8 @@ export default function TeamSection() {
         >
           <img
             src={img(MEDIA.team.coaching1, { w: 900, q: 72 })}
-            alt="Coach EBP en accompagnement individuel"
-            className="aspect-[4/5] w-full rounded-3xl object-cover shadow-card"
+            alt="Équipe des formateurs et coachs certifiés EBP"
+            className="aspect-[4/3] w-full rounded-3xl object-cover object-top shadow-card sm:aspect-[4/5]"
           />
 
           <div className="absolute -bottom-6 left-6 right-6 rounded-2xl bg-white p-5 shadow-card sm:left-8 sm:right-auto sm:w-72">
@@ -54,10 +54,10 @@ export default function TeamSection() {
               <span className="flex h-9 w-9 items-center justify-center rounded-full bg-ebp-blue/10 text-ebp-blue">
                 <MessagesSquare size={16} />
               </span>
-              <p className="font-display text-sm font-semibold text-ink">Coach du mois</p>
+              <p className="font-display text-sm font-semibold text-ink">Équipe Pédagogique</p>
             </div>
             <p className="mt-2 text-xs text-ink/60">
-              Suivi individuel chaque semaine, relances personnalisées en cas de difficulté.
+              Formateurs certifiés, suivi individuel chaque semaine et relances personnalisées.
             </p>
             <span className="mt-3 inline-flex items-center rounded-full bg-ebp-green/10 px-2.5 py-1 text-[10px] font-semibold text-ebp-green">
               Early Warning System actif

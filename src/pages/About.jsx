@@ -23,8 +23,8 @@ export default function About() {
       <section className="relative flex min-h-[55vh] items-end overflow-hidden bg-ink">
         <img
           src={img(MEDIA.about.team, { w: 1920, q: 65 })}
-          alt="Communauté EBP"
-          className="absolute inset-0 h-full w-full object-cover"
+          alt="L'équipe et la communauté EBP"
+          className="absolute inset-0 h-full w-full object-cover object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/10" />
         <div className="container relative pb-16 pt-40">
@@ -60,11 +60,17 @@ export default function About() {
               "{PHILOSOPHY_QUOTE}"
             </blockquote>
           </div>
-          <img
-            src={img(MEDIA.about.portrait1, { w: 900, q: 75 })}
-            alt="Équipe pédagogique EBP"
-            className="aspect-[4/5] w-full rounded-3xl object-cover shadow-card"
-          />
+          <div className="relative">
+            <img
+              src={img(MEDIA.about.portrait1, { w: 900, q: 75 })}
+              alt={`${FOUNDER_NAME}, Fondateur et Directeur Général d'EBP`}
+              className="aspect-[4/5] w-full rounded-3xl object-cover object-top shadow-card"
+            />
+            <div className="absolute -bottom-5 left-5 right-5 rounded-2xl border border-ink/5 bg-white p-4 shadow-card sm:left-6 sm:right-auto sm:w-64">
+              <p className="font-display text-sm font-bold text-ink">{FOUNDER_NAME}</p>
+              <p className="text-xs text-ink/60">Fondateur & Directeur Général</p>
+            </div>
+          </div>
         </div>
       </section>
 

@@ -8,8 +8,8 @@ export default function FormatsBanner() {
   return (
     <section id="formats" className="relative overflow-hidden">
       <img
-        src={img(MEDIA.hero.slides[2], { w: 1600, q: 60 })}
-        alt=""
+        src={img(MEDIA.formats.banner, { w: 1600, q: 60 })}
+        alt="Formations EBP"
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-gradient-to-r from-ebp-green/95 to-ebp-green-light/90" />

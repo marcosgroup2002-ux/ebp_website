@@ -31,8 +31,8 @@ export default function Contact() {
       <section className="relative flex min-h-[42vh] items-end overflow-hidden bg-ink">
         <img
           src={img(MEDIA.contact.banner, { w: 1920, q: 60 })}
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover"
+          alt="L'équipe EBP à votre écoute"
+          className="absolute inset-0 h-full w-full object-cover object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/10" />
         <div className="container relative pb-14 pt-32">
