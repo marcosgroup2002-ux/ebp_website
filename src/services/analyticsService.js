@@ -222,7 +222,22 @@ export async function fetchAnalyticsData() {
 
     if (error || !rows) {
       console.error("[analyticsService] Erreur chargement analytics:", error);
-      return null;
+      return {
+        error: error?.message || "Erreur de connexion à Supabase",
+        totalVisitors: 0,
+        totalRawClicks: 0,
+        mobilePercentage: 0,
+        desktopPercentage: 0,
+        tabletPercentage: 0,
+        sources: [],
+        campaigns: [],
+        devices: [],
+        systems: [],
+        browsers: [],
+        recentVisitors: [],
+        todayCount: 0,
+        weekCount: 0,
+      };
     }
 
     const totalVisitors = rows.length;

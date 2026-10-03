@@ -149,6 +149,20 @@ export default function AnalyticsView() {
         </div>
       </div>
 
+      {data?.error && (
+        <div className="rounded-2xl border border-amber-200 bg-amber-50/90 p-4 text-xs text-amber-900 shadow-xs">
+          <div className="flex items-center gap-2 font-bold text-amber-950 mb-1">
+            <ShieldAlert size={16} className="text-amber-600 shrink-0" />
+            <span>Synchronisation Supabase en attente :</span>
+          </div>
+          <p className="leading-relaxed">
+            {data.error.includes("API key") || data.error.includes("JWT")
+              ? "Pour activer le comptage multi-machines en temps réel, remplacez la clé dans Vercel par la clé 'anon public' de votre Dashboard Supabase (Project Settings > API > Project API keys > anon public)."
+              : data.error}
+          </p>
+        </div>
+      )}
+
       {/* LES 3 MÉTRIQUES CLÉS DEMANDÉES */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {/* 1. Appareils / Visiteurs Uniques */}

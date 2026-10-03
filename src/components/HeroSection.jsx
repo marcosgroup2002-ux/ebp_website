@@ -36,7 +36,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section id="top" className="relative flex min-h-[100svh] items-end overflow-hidden bg-ink sm:min-h-[92vh]">
+    <section id="top" className="relative flex min-h-screen min-h-[100vh] items-end overflow-hidden bg-ink sm:min-h-[92vh]">
       {/* Carrousel vidéo + photos en arrière-plan */}
       <div className="absolute inset-0">
         <AnimatePresence mode="sync">
