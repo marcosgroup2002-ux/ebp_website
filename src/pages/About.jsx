@@ -19,7 +19,6 @@ export default function About() {
         description="Découvrez la mission et la méthode d'EBP (English for Busy People) : des cohortes de 6 mois pensées pour que les professionnels de Cotonou et Calavi parlent anglais, pas seulement qu'ils l'apprennent."
         path="/a-propos"
       />
-
       <section className="relative flex min-h-[55vh] items-end overflow-hidden bg-ink">
         <img
           src={img(MEDIA.about.team, { w: 1920, q: 65 })}
@@ -28,18 +27,30 @@ export default function About() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/10" />
         <div className="container relative pb-16 pt-40">
-          <span className="eyebrow text-ebp-green-light">
-            <Waveform color="bg-ebp-green-light" barClassName="w-[2.5px] h-3" />
-            À propos d'EBP
-          </span>
-          <h1 className="mt-4 max-w-2xl font-display text-4xl font-bold text-white sm:text-5xl">
-            Une méthode pensée pour que vous parliez, pas seulement pour que vous appreniez.
-          </h1>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <span className="eyebrow text-ebp-green-light">
+              <Waveform color="bg-ebp-green-light" barClassName="w-[2.5px] h-3" />
+              À propos d'EBP
+            </span>
+            <h1 className="mt-4 max-w-2xl font-display text-4xl font-bold text-white sm:text-5xl">
+              Une méthode pensée pour que vous parliez, pas seulement pour que vous appreniez.
+            </h1>
+          </motion.div>
         </div>
       </section>
+
       <section className="section-pad bg-white">
         <div className="container grid gap-14 lg:grid-cols-2 lg:items-center">
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+          >
             <span className="eyebrow">Notre mission</span>
             <h2 className="mt-4 text-3xl font-bold text-ink sm:text-4xl">
               Donner à chaque professionnel les moyens de parler anglais sans hésitation
@@ -57,8 +68,15 @@ export default function About() {
             <blockquote className="mt-6 border-l-4 border-ebp-green pl-4 font-display text-lg italic text-ink">
               "{PHILOSOPHY_QUOTE}"
             </blockquote>
-          </div>
-          <div className="relative">
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            className="relative"
+          >
             <img
               src={img(MEDIA.about.portrait1, { w: 900, q: 75 })}
               alt={`${FOUNDER_NAME}, Fondateur et Directeur Général d'EBP`}
@@ -68,12 +86,19 @@ export default function About() {
               <p className="font-display text-sm font-bold text-ink">{FOUNDER_NAME}</p>
               <p className="text-xs text-ink/60">Fondateur & Directeur Général</p>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
+
       <section className="section-pad bg-surface">
         <div className="container">
-          <div className="mx-auto max-w-2xl text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="mx-auto max-w-2xl text-center"
+          >
             <span className="eyebrow justify-center">Notre culture</span>
             <h2 className="mt-4 text-3xl font-bold text-ink sm:text-4xl">
               Excellence. Engagement. Impact.
@@ -82,35 +107,49 @@ export default function About() {
               Trois mots que toute personne qui rejoint l'équipe EBP doit incarner, pas seulement
               connaître.
             </p>
-          </div>
+          </motion.div>
 
           <div className="mt-14 grid gap-6 sm:grid-cols-2">
-            {CULTURE_VALUES.map((value) => (
-              <div key={value.title} className="rounded-2xl border border-ink/10 bg-white p-6">
+            {CULTURE_VALUES.map((value, i) => (
+              <motion.div
+                key={value.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                className="rounded-2xl border border-ink/10 bg-white p-6"
+              >
                 <h3 className="font-display text-base font-semibold text-ink">{value.title}</h3>
                 <p className="mt-2 text-sm text-ink/60">{value.description}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
+
       <section className="section-pad bg-white">
         <div className="container">
-          <div className="mx-auto max-w-2xl text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="mx-auto max-w-2xl text-center"
+          >
             <span className="eyebrow justify-center">
               Le Creed EBP
             </span>
             <h2 className="mt-4 text-3xl font-bold text-ink sm:text-4xl">Les principes qui nous guident</h2>
-          </div>
+          </motion.div>
 
           <div className="mx-auto mt-12 grid max-w-3xl gap-3 sm:grid-cols-2">
             {CREED_PRINCIPLES.map((principle, i) => (
               <motion.div
                 key={principle}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 14 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.35, delay: i * 0.04 }}
+                transition={{ duration: 0.45, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
                 className="flex items-start gap-3 rounded-xl bg-surface px-4 py-3.5"
               >
                 <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ebp-blue/10 text-[11px] font-bold text-ebp-blue">
@@ -122,8 +161,15 @@ export default function About() {
           </div>
         </div>
       </section>
+
       <section className="bg-ebp-blue">
-        <div className="container flex flex-col items-center gap-5 py-14 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="container flex flex-col items-center gap-5 py-14 text-center"
+        >
           <h2 className="font-display text-2xl font-bold text-white sm:text-3xl">
             Envie de rejoindre la prochaine cohorte ?
           </h2>
@@ -136,7 +182,7 @@ export default function About() {
             <MessageCircle size={16} />
             Passer le Test de Niveau
           </a>
-        </div>
+        </motion.div>
       </section>
     </>
   );

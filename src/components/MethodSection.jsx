@@ -15,7 +15,13 @@ export default function MethodSection() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/50 to-ink/20" />
         <div className="absolute inset-0 flex items-end">
-          <div className="container pb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="container pb-12"
+          >
             <span className="eyebrow text-ebp-green-light">
               <Waveform color="bg-ebp-green-light" barClassName="w-[2.5px] h-3" />
               Notre philosophie
@@ -24,28 +30,34 @@ export default function MethodSection() {
               "{PHILOSOPHY_QUOTE}"
             </p>
             <p className="mt-3 max-w-xl text-sm text-white/75">{PHILOSOPHY_TEXT}</p>
-          </div>
+          </motion.div>
         </div>
       </div>
 
       <div className="section-pad">
         <div className="container">
-          <div className="mx-auto max-w-2xl text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="mx-auto max-w-2xl text-center"
+          >
             <h2 className="text-3xl font-bold text-ink sm:text-4xl">Le déroulé d'une séance EBP</h2>
             <p className="mt-4 text-ink/60">
               7 étapes non négociables, dans cet ordre, à chaque séance, pour garantir que la pratique
               orale reste au centre.
             </p>
-          </div>
+          </motion.div>
 
           <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {SESSION_STEPS.map((step, i) => (
               <motion.div
                 key={step.title}
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.4, delay: i * 0.05 }}
+                transition={{ duration: 0.5, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }}
                 className="rounded-2xl border border-ink/10 bg-surface p-5"
               >
                 <div className="flex items-center gap-2">

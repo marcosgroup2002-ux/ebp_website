@@ -11,7 +11,13 @@ export default function PricingSection() {
   return (
     <section id="tarifs" className="section-pad bg-white">
       <div className="container">
-        <div className="mx-auto max-w-2xl text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="mx-auto max-w-2xl text-center"
+        >
           <span className="eyebrow justify-center">
             <Waveform barClassName="w-[2.5px] h-3" />
             Moteur de Tarification Transparent
@@ -20,7 +26,7 @@ export default function PricingSection() {
           <p className="mt-4 text-ink/60">
             Deux façons de financer votre progression : choisissez celle qui correspond à votre rythme.
           </p>
-        </div>
+        </motion.div>
 
         <div className="mx-auto mt-14 grid max-w-3xl gap-6 sm:grid-cols-2">
           {PRICING_OPTIONS.map((option, i) => {
@@ -30,10 +36,10 @@ export default function PricingSection() {
                 key={option.id}
                 type="button"
                 onClick={() => setSelectedOption(option.id)}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
+                transition={{ duration: 0.55, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
                 className={`relative rounded-3xl border p-7 text-left transition-all ${
                   option.highlight
                     ? "border-transparent bg-ebp-blue text-white shadow-card"

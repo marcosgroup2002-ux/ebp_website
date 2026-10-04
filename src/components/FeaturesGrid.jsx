@@ -9,7 +9,13 @@ export default function FeaturesGrid() {
   return (
     <section className="section-pad bg-surface">
       <div className="container">
-        <div className="mx-auto max-w-2xl text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="mx-auto max-w-2xl text-center"
+        >
           <span className="eyebrow justify-center">
             <Waveform barClassName="w-[2.5px] h-3" />
             Le Parcours EBP
@@ -21,7 +27,7 @@ export default function FeaturesGrid() {
             De la prise en charge en 5 minutes jusqu'à la certification finale, chaque étape est pensée
             pour vous faire progresser à l'oral.
           </p>
-        </div>
+        </motion.div>
 
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {PILLARS.map((pillar, i) => {
@@ -29,10 +35,10 @@ export default function FeaturesGrid() {
             return (
               <motion.div
                 key={pillar.title}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.5, delay: i * 0.08 }}
+                transition={{ duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
                 className={`rounded-2xl border p-6 transition-shadow hover:shadow-soft ${
                   pillar.highlighted
                     ? "border-transparent bg-ebp-blue text-white shadow-card"

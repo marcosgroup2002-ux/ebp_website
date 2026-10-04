@@ -13,12 +13,11 @@ export function img(id, { w = 1200, q = 75 } = {}) {
 export const MEDIA = {
   hero: {
     slides: [
-
-      "photo-1637856794303-d864ce316444", 
-
-      "/photos/classroom-session.jpeg", 
-      "/photos/team-all.jpeg", 
-      "/photos/team-meeting.jpeg", 
+      "/photos/classroom-session.jpeg",
+      "/photos/team-all.jpeg",
+      "/photos/classroom-group.jpeg",
+      "/photos/classroom-whiteboard.jpeg",
+      "/photos/team-meeting.jpeg",
     ],
     video: {
 

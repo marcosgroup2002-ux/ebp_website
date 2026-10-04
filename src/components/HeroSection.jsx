@@ -9,10 +9,7 @@ import Waveform from "./Waveform";
 
 const SLIDES = [
   { type: "video" },
-  { type: "image", id: MEDIA.hero.slides[0] }, 
-  { type: "image", id: MEDIA.hero.slides[1] }, 
-  { type: "image", id: MEDIA.hero.slides[2] }, 
-  { type: "image", id: MEDIA.hero.slides[3] }, 
+  ...MEDIA.hero.slides.map((id) => ({ type: "image", id })),
 ];
 
 export default function HeroSection() {
@@ -84,7 +81,11 @@ export default function HeroSection() {
       </div>
 
       <div className="container relative z-10 grid gap-8 pb-12 pt-28 sm:gap-10 sm:pb-16 sm:pt-36 lg:grid-cols-[1.1fr,0.9fr] lg:items-end lg:pt-40">
-        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+        >
           <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 backdrop-blur-sm">
             <Waveform color="bg-ebp-green-light" barClassName="w-[2.5px] h-3" />
             <span className="text-xs font-semibold uppercase tracking-wider text-white/90">
@@ -126,9 +127,9 @@ export default function HeroSection() {
         </motion.div>
 
         <motion.form
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.15 }}
+          transition={{ duration: 0.75, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
           className="w-full rounded-2xl bg-white p-5 shadow-card sm:p-6"
         >
           <p className="font-display text-sm font-semibold text-ink">Démarrez votre inscription</p>

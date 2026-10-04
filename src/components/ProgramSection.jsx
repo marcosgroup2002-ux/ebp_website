@@ -14,7 +14,13 @@ export default function ProgramSection() {
       <div className="container">
         <div className="grid min-w-0 gap-12 lg:grid-cols-[0.9fr,1.1fr] lg:items-start">
 
-          <div className="min-w-0 lg:sticky lg:top-28">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="min-w-0 lg:sticky lg:top-28"
+          >
             <span className="eyebrow">
               <Waveform barClassName="w-[2.5px] h-3" />
               Programme Détaillé
@@ -48,9 +54,15 @@ export default function ProgramSection() {
                 </button>
               ))}
             </div>
-          </div>
+          </motion.div>
 
-          <div className="relative min-w-0 min-h-[280px] rounded-3xl border border-ink/10 bg-surface p-8 sm:p-10">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            className="relative min-w-0 min-h-[280px] rounded-3xl border border-ink/10 bg-surface p-8 sm:p-10"
+          >
             <AnimatePresence mode="wait">
               <motion.div
                 key={active}
@@ -87,7 +99,7 @@ export default function ProgramSection() {
                 />
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

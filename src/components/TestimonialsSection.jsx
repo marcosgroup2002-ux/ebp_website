@@ -20,7 +20,13 @@ export default function TestimonialsSection() {
   return (
     <section id="temoignages" className="section-pad bg-surface">
       <div className="container">
-        <div className="mx-auto max-w-2xl text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="mx-auto max-w-2xl text-center"
+        >
           <span className="eyebrow justify-center">
             <Waveform barClassName="w-[2.5px] h-3" />
             Graduation Ceremony
@@ -29,9 +35,15 @@ export default function TestimonialsSection() {
           <p className="mt-4 text-ink/60">
             Témoignages d'impétrants et projets Capstone présentés lors de nos cérémonies de graduation.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="mx-auto mt-14 grid max-w-3xl gap-0 overflow-hidden rounded-3xl bg-white shadow-card sm:grid-cols-[220px,1fr]">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.7, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+          className="mx-auto mt-14 grid max-w-3xl gap-0 overflow-hidden rounded-3xl bg-white shadow-card sm:grid-cols-[220px,1fr]"
+        >
           <div className="relative h-48 sm:h-full">
             <AnimatePresence mode="wait">
               <motion.img
@@ -70,7 +82,7 @@ export default function TestimonialsSection() {
               </motion.div>
             </AnimatePresence>
           </div>
-        </div>
+        </motion.div>
 
         <div className="mx-auto mt-6 flex max-w-3xl items-center justify-between">
           <div className="flex gap-2">

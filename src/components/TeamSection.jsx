@@ -9,10 +9,10 @@ export default function TeamSection() {
     <section className="section-pad bg-surface">
       <div className="container grid gap-14 lg:grid-cols-2 lg:items-center">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
         >
           <span className="eyebrow">
             <Waveform barClassName="w-[2.5px] h-3" />
@@ -37,10 +37,10 @@ export default function TeamSection() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.96 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
           className="relative"
         >
           <img

@@ -9,10 +9,10 @@ export default function CTASection() {
     <section className="section-pad bg-surface">
       <div className="container">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 28, scale: 0.98 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
           className="relative overflow-hidden rounded-3xl bg-ebp-red px-8 py-12 text-center sm:px-14"
         >
           <div className="pointer-events-none absolute inset-0 bg-grid-dots opacity-10" />

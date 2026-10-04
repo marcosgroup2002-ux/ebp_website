@@ -18,7 +18,12 @@ export default function CoverageSection() {
       <div className="absolute inset-0 bg-ebp-blue-dark/85" />
 
       <div className="container relative section-pad grid gap-12 lg:grid-cols-2 lg:items-center">
-        <div>
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+        >
           <span className="eyebrow">
             <Waveform barClassName="w-[2.5px] h-3" />
             Portée Régionale
@@ -34,9 +39,15 @@ export default function CoverageSection() {
             <Globe2 size={16} className="text-ebp-green-light" />
             Cours en direct, mêmes standards de pratique orale, où que vous soyez.
           </div>
-        </div>
+        </motion.div>
 
-        <div className="relative aspect-[4/3] w-full rounded-3xl border border-white/15 bg-white/5 backdrop-blur-sm">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="relative aspect-[4/3] w-full rounded-3xl border border-white/15 bg-white/5 backdrop-blur-sm"
+        >
           <svg viewBox="0 0 100 75" className="absolute inset-0 h-full w-full" preserveAspectRatio="none">
             {SECONDARY.map((hub) =>
               PRIMARY.map((p) => (
@@ -79,7 +90,7 @@ export default function CoverageSection() {
               </span>
             </div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
