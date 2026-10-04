@@ -60,7 +60,7 @@ export default function HeroSection() {
         {SLIDES.map((s, i) => (
           <div
             key={i}
-            className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
               i === slide ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
             }`}
           >
@@ -82,7 +82,12 @@ export default function HeroSection() {
                 alt=""
                 loading="eager"
                 decoding="async"
-                className="h-full w-full object-cover"
+                className={`h-full w-full object-cover transition-transform ease-out ${
+                  i === slide ? "scale-110" : "scale-100"
+                }`}
+                style={{
+                  transitionDuration: i === slide ? "5500ms" : "0ms",
+                }}
               />
             )}
           </div>
