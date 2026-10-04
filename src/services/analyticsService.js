@@ -1,16 +1,9 @@
-// ============================================================================
-// SERVICE ANALYTICS EBP - SUIVI D'AUDIENCE & BOOSTS MARKETING (0 FCFA)
-// Règle Machine Unique : 1 Appareil = 1 Seul Visiteur Comptabilisé
-// ============================================================================
 
 import { supabase } from "../lib/supabaseClient";
 
 const VISITOR_ID_STORAGE_KEY = "ebp_visitor_id";
 const TRACKED_FLAG_KEY = "ebp_analytics_tracked";
 
-/**
- * Génère un UUID v4 standard
- */
 function generateUUID() {
   try {
     if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
@@ -24,9 +17,6 @@ function generateUUID() {
   });
 }
 
-/**
- * Récupère ou initialise l'identifiant machine unique (stocké dans localStorage)
- */
 export function getOrCreateVisitorId() {
   try {
     let visitorId = localStorage.getItem(VISITOR_ID_STORAGE_KEY);
@@ -40,9 +30,6 @@ export function getOrCreateVisitorId() {
   }
 }
 
-/**
- * Détecte le type d'appareil (mobile, tablet, desktop)
- */
 function detectDeviceType() {
   if (typeof navigator === "undefined") return "desktop";
   const ua = navigator.userAgent.toLowerCase();
@@ -64,9 +51,6 @@ function detectDeviceType() {
   return "desktop";
 }
 
-/**
- * Détecte le système d'exploitation
- */
 function detectOperatingSystem() {
   if (typeof navigator === "undefined") return "Inconnu";
   const ua = navigator.userAgent;
@@ -80,26 +64,19 @@ function detectOperatingSystem() {
   return "Autre";
 }
 
-/**
- * Détecte le navigateur web
- */
 function detectBrowser() {
   if (typeof navigator === "undefined") return "Inconnu";
   const ua = navigator.userAgent;
 
-  if (/Edg\//i.test(ua)) return "Edge";
-  if (/OPR\//i.test(ua) || /Opera/i.test(ua)) return "Opera";
-  if (/SamsungBrowser/i.test(ua)) return "Samsung Internet";
-  if (/Chrome\//i.test(ua) && !/Edg\//i.test(ua)) return "Chrome";
-  if (/Safari\//i.test(ua) && !/Chrome\//i.test(ua)) return "Safari";
-  if (/Firefox\//i.test(ua)) return "Firefox";
+  if (ua.includes("Edg/")) return "Edge";
+  if (ua.includes("OPR/") || ua.includes("Opera")) return "Opera";
+  if (ua.includes("SamsungBrowser")) return "Samsung Internet";
+  if (ua.includes("Chrome/") && !ua.includes("Edg/")) return "Chrome";
+  if (ua.includes("Safari/") && !ua.includes("Chrome/")) return "Safari";
+  if (ua.includes("Firefox/")) return "Firefox";
   return "Autre";
 }
 
-/**
- * Enregistre ou actualise le visiteur unique dans Supabase
- * Règle d'unicité : ON CONFLICT (visitor_id) DO NOTHING (ou incrément visits_count)
- */
 export async function trackVisitorVisit(customParams = {}) {
   try {
     if (typeof window === "undefined") return null;
@@ -107,7 +84,6 @@ export async function trackVisitorVisit(customParams = {}) {
     const visitorId = getOrCreateVisitorId();
     const urlParams = new URLSearchParams(window.location.search);
 
-    // Extraction des UTM (Facebook Boost, TikTok Ads, etc.)
     const utmSource =
       customParams.utm_source ||
       urlParams.get("utm_source") ||
@@ -152,13 +128,12 @@ export async function trackVisitorVisit(customParams = {}) {
       last_seen: new Date().toISOString(),
     };
 
-    // 1. Envoi prioritaire direct via Supabase (client JS avec RLS)
     if (supabase) {
       const { data, error } = await supabase
         .from("analytics_visitors")
         .upsert(payload, {
           onConflict: "visitor_id",
-          ignoreDuplicates: false, // Met à jour last_seen sans dupliquer le visiteur
+          ignoreDuplicates: false, 
         })
         .select("id, visitor_id")
         .maybeSingle();
@@ -170,7 +145,6 @@ export async function trackVisitorVisit(customParams = {}) {
       console.warn("[analyticsService] Supabase direct error, fallback API:", error.message);
     }
 
-    // 2. Relai de secours vers l'endpoint serveur /api/analytics/track si disponible
     try {
       const response = await fetch("/api/analytics/track", {
         method: "POST",
@@ -182,7 +156,7 @@ export async function trackVisitorVisit(customParams = {}) {
         return { success: true };
       }
     } catch {
-      //
+
     }
 
     return { success: false, visitorId };
@@ -192,9 +166,6 @@ export async function trackVisitorVisit(customParams = {}) {
   }
 }
 
-/**
- * Récupère les données et statistiques agrégées pour le Dashboard Admin
- */
 export async function fetchAnalyticsData() {
   if (!supabase) {
     return {
@@ -258,7 +229,6 @@ export async function fetchAnalyticsData() {
       };
     }
 
-    // Répartition par appareil
     const deviceCounts = { mobile: 0, desktop: 0, tablet: 0 };
     rows.forEach((r) => {
       const dev = r.device_type || "desktop";
@@ -269,7 +239,6 @@ export async function fetchAnalyticsData() {
     const desktopPercentage = Math.round(((deviceCounts.desktop || 0) / totalVisitors) * 100);
     const tabletPercentage = Math.round(((deviceCounts.tablet || 0) / totalVisitors) * 100);
 
-    // Répartition par Source UTM (Facebook, TikTok, etc.)
     const sourceMap = {};
     rows.forEach((r) => {
       const src = r.utm_source || "direct";
@@ -283,7 +252,6 @@ export async function fetchAnalyticsData() {
       }))
       .sort((a, b) => b.count - a.count);
 
-    // Répartition par Campagne UTM (Boosts Facebook / TikTok)
     const campaignMap = {};
     rows.forEach((r) => {
       const camp = r.utm_campaign || "organic";
@@ -313,7 +281,6 @@ export async function fetchAnalyticsData() {
       }))
       .sort((a, b) => b.count - a.count);
 
-    // Répartition par OS
     const osMap = {};
     rows.forEach((r) => {
       const os = r.operating_system || "Autre";
@@ -327,7 +294,6 @@ export async function fetchAnalyticsData() {
       }))
       .sort((a, b) => b.count - a.count);
 
-    // Visiteurs aujourd'hui et 7 derniers jours
     const now = new Date();
     const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
     const sevenDaysAgo = startOfToday - 7 * 24 * 3600 * 1000;

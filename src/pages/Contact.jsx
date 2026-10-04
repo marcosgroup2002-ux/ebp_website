@@ -46,7 +46,7 @@ export default function Contact() {
 
       <section className="section-pad bg-white">
         <div className="container grid gap-12 lg:grid-cols-[1fr,1.1fr]">
-          {/* Centers */}
+
           <div className="space-y-4">
             {CONTACT_INFO.centers.map((center) => (
               <div key={center.name} className="flex items-start gap-4 rounded-2xl border border-ink/10 p-5">
@@ -85,7 +85,6 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="rounded-3xl border border-ink/10 bg-surface p-7 sm:p-9">
             <p className="font-display text-lg font-semibold text-ink">Envoyez-nous un message</p>
             <p className="mt-1 text-sm text-ink/50">Votre message s'ouvrira directement dans WhatsApp, prêt à envoyer.</p>

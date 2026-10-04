@@ -2,10 +2,6 @@
 
 import AnalyticsView from "../../../pages/admin/AnalyticsView";
 
-/**
- * Page Dashboard Admin Analytics Next.js App Router
- * Route : /admin/analytics
- */
 export default function AdminAnalyticsPage() {
   return (
     <div className="min-h-screen bg-slate-950 p-4 sm:p-6 lg:p-8">

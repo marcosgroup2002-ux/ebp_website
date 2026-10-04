@@ -60,7 +60,6 @@ export default function ChecklistsView() {
         </div>
       </div>
 
-      {/* Échéance clé du mois */}
       <div className="mt-6 rounded-2xl border border-ink/10 bg-white p-5 shadow-sm">
         <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-ebp-blue">
           <Calendar size={15} />
@@ -83,7 +82,6 @@ export default function ChecklistsView() {
         </div>
       </div>
 
-      {/* Carte checklist principale */}
       <div className="mt-6 rounded-2xl border border-ink/10 bg-white p-6 shadow-sm">
         <div className="flex items-center justify-between">
           <div>
@@ -98,7 +96,6 @@ export default function ChecklistsView() {
           </div>
         </div>
 
-        {/* Barre de progression */}
         <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-surface">
           <div
             className="h-full rounded-full bg-ebp-green transition-all duration-300"

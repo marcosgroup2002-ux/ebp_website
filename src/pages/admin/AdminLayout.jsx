@@ -21,12 +21,10 @@ export default function AdminLayout() {
   const location = useLocation();
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
-  // Fermer le drawer lors d'un changement de route
   useEffect(() => {
     setMobileDrawerOpen(false);
   }, [location.pathname]);
 
-  // Verrouiller le défilement arrière-plan quand le drawer mobile est ouvert
   useEffect(() => {
     if (mobileDrawerOpen) {
       document.body.style.overflow = "hidden";
@@ -48,7 +46,7 @@ export default function AdminLayout() {
       try {
         await supabase.auth.signOut();
       } catch {
-        //
+
       }
     }
     sessionStorage.removeItem("ebp_admin_authed");
@@ -58,7 +56,6 @@ export default function AdminLayout() {
 
   const role = user?.role || "secretaire";
 
-  // Menu dynamique selon le rôle (Analytics strictly réservé au PDG)
   const navItems = (() => {
     if (role === "coach") {
       return [
@@ -74,14 +71,13 @@ export default function AdminLayout() {
         { to: "/admin/coachs", label: "Aperçu Espace Coachs", icon: GraduationCap },
       ];
     }
-    // Secrétaire par défaut (Pas d'accès Analytics)
+
     return [
       { to: "/admin/paiements", label: "Paiements & Apprenants", icon: CreditCard },
       { to: "/admin/checklists", label: "Checklists Secrétariat", icon: ListChecks },
     ];
   })();
 
-  // Vérification de sécurité des accès par rôle
   const pathname = location.pathname;
   if (role === "coach" && (pathname.includes("/admin/paiements") || pathname.includes("/admin/checklists") || pathname.includes("/admin/pdg") || pathname.includes("/admin/audit") || pathname.includes("/admin/analytics"))) {
     return <Navigate to="/admin/coachs" replace />;
@@ -98,7 +94,7 @@ export default function AdminLayout() {
 
   return (
     <div className="flex min-h-screen bg-surface">
-      {/* Sidebar Desktop Fixe */}
+
       <aside className="hidden w-64 shrink-0 flex-col border-r border-ink/10 bg-white p-5 lg:flex">
         <div className="flex items-center gap-2.5 px-1">
           <img src="/brand/ebp-logo.jpg" alt="EBP" className="h-9 w-auto rounded-md shadow-xs" />
@@ -108,7 +104,6 @@ export default function AdminLayout() {
           </div>
         </div>
 
-        {/* Profil utilisateur connecté */}
         {user && (
           <div className="mt-6 rounded-xl bg-surface p-3.5 border border-ink/5">
             <div className="flex items-center gap-2">
@@ -125,7 +120,6 @@ export default function AdminLayout() {
           </div>
         )}
 
-        {/* Navigation Desktop */}
         <nav className="mt-6 flex flex-1 flex-col gap-1.5">
           {navItems.map((item) => (
             <NavLink
@@ -145,7 +139,6 @@ export default function AdminLayout() {
           ))}
         </nav>
 
-        {/* Pied de navigation Desktop */}
         <div className="border-t border-ink/5 pt-4 space-y-1">
           <a
             href="/"
@@ -164,9 +157,8 @@ export default function AdminLayout() {
         </div>
       </aside>
 
-      {/* Zone de contenu principale */}
       <div className="min-w-0 flex-1 flex flex-col min-h-screen">
-        {/* BARRE SUPÉRIEURE MOBILE AVEC BOUTON HAMBURGER */}
+
         <header className="flex h-16 items-center justify-between border-b border-ink/10 bg-white px-4 lg:hidden sticky top-0 z-30">
           <div className="flex items-center gap-2.5 min-w-0">
             <img src="/brand/ebp-logo.jpg" alt="EBP" className="h-8 w-auto rounded-md shadow-xs shrink-0" />
@@ -178,7 +170,6 @@ export default function AdminLayout() {
             </div>
           </div>
 
-          {/* Bouton Hamburger Mobile (touch-friendly min 44x44px) */}
           <button
             type="button"
             onClick={() => setMobileDrawerOpen(true)}
@@ -189,7 +180,6 @@ export default function AdminLayout() {
           </button>
         </header>
 
-        {/* OVERLAY SOMBRE AVEC BACKDROP-BLUR POUR L'ESPACE ADMIN */}
         <div
           className={`fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
             mobileDrawerOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
@@ -198,14 +188,13 @@ export default function AdminLayout() {
           aria-hidden={!mobileDrawerOpen}
         />
 
-        {/* MENU LATÉRAL DROIT (DRAWER) SLIDE-IN DANS L'ADMIN */}
         <aside
           className={`fixed inset-y-0 right-0 z-50 flex w-[85%] max-w-sm flex-col bg-white shadow-2xl transition-transform duration-300 ease-out transform lg:hidden ${
             mobileDrawerOpen ? "translate-x-0" : "translate-x-full"
           }`}
           aria-label="Menu administration mobile"
         >
-          {/* En-tête du drawer */}
+
           <div className="flex h-16 items-center justify-between border-b border-ink/10 px-5">
             <div className="flex items-center gap-2.5">
               <img src="/brand/ebp-logo.jpg" alt="EBP" className="h-8 w-auto rounded-md shadow-xs" />
@@ -214,7 +203,6 @@ export default function AdminLayout() {
               </span>
             </div>
 
-            {/* Bouton de fermeture "X" */}
             <button
               type="button"
               onClick={() => setMobileDrawerOpen(false)}
@@ -225,7 +213,6 @@ export default function AdminLayout() {
             </button>
           </div>
 
-          {/* Profil connecté dans le drawer */}
           {user && (
             <div className="p-4 border-b border-ink/5 bg-slate-50/70">
               <div className="flex items-center gap-2.5">
@@ -242,7 +229,6 @@ export default function AdminLayout() {
             </div>
           )}
 
-          {/* Liens de navigation Admin verticaux espacés au toucher */}
           <nav className="flex-1 overflow-y-auto px-4 py-5 space-y-1.5">
             {navItems.map((item) => (
               <NavLink
@@ -266,7 +252,6 @@ export default function AdminLayout() {
             ))}
           </nav>
 
-          {/* Actions de bas de drawer */}
           <div className="border-t border-ink/10 p-4 space-y-2 bg-slate-50/50">
             <a
               href="/"
@@ -286,7 +271,6 @@ export default function AdminLayout() {
           </div>
         </aside>
 
-        {/* Contenu principal de la vue Admin */}
         <main className="p-3.5 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full flex-1">
           <Outlet />
         </main>

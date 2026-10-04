@@ -1,16 +1,10 @@
 import { WHATSAPP_NUMBER } from "../data/siteContent";
 
-/**
- * Construit un lien wa.me avec un message pré-rempli.
- * @param {string} message - Le texte pré-rempli dans WhatsApp.
- * @returns {string} URL wa.me prête à l'emploi.
- */
 export function buildWhatsAppLink(message) {
   const encoded = encodeURIComponent(message);
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`;
 }
 
-// Messages pré-remplis réutilisés dans tout le site, pour un closing < 5 min.
 export const WHATSAPP_MESSAGES = {
   levelTest: "Bonjour EBP ! Je souhaite passer le Test de Niveau gratuit.",
   enroll: "Bonjour EBP ! Je souhaite m'inscrire et réserver ma place (acompte 20 000 F).",

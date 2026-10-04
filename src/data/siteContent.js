@@ -1,21 +1,11 @@
-// ============================================================================
-// CONTENU DU SITE EBP : fichier centralisé
-// Modifie les valeurs ici plutôt que dans les composants (date de rentrée,
-// numéro WhatsApp, tarifs, etc.)
-// ============================================================================
 
-// ⚠️ Numéro au format international pour les liens wa.me (sans "+", sans espace)
-// 0196840296 -> format Bénin post-2021 (préfixe 01 inclus) -> +229 0196840296
 export const WHATSAPP_NUMBER = "2290196840296";
 export const WHATSAPP_DISPLAY = "01 96 84 02 96";
 
-// TODO: remplacer par le vrai domaine de prod une fois le nom de domaine
-// définitif choisi et déployé. Sert de base aux URLs canoniques et og:url.
 export const SITE_URL = "https://ebp-benin.com";
 export const SITE_NAME = "EBP - English for Busy People";
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/brand/ebp-logo.jpg`;
 
-// TODO: mettre à jour à chaque nouvelle cohorte
 export const NEXT_COHORT_DATE = "6 Octobre 2026";
 export const SEATS_LEFT = 7;
 
@@ -172,12 +162,6 @@ export const FEES = [
   },
 ];
 
-// --------------------------------------------------------------------------
-// À PROPOS : contenu tiré du Playbook Opérationnel EBP (parties publiques :
-// philosophie, culture, méthode). Les procédures internes (RH, finance,
-// tags WhatsApp...) restent dans l'espace admin, pas sur le site public.
-// --------------------------------------------------------------------------
-
 export const FOUNDER_NAME = "Fernando SESSOU";
 
 export const PHILOSOPHY_QUOTE =
@@ -217,8 +201,6 @@ export const CULTURE_VALUES = [
   },
 ];
 
-// Déroulé standard d'une séance EBP (Playbook 5.3) : 7 étapes, 60% du temps
-// de parole pour l'apprenant.
 export const SESSION_STEPS = [
   { title: "Notion du jour", duration: "20 min", description: "Objectifs clairs, exemples concrets, contexte réel." },
   { title: "Pretest", duration: "10 min", description: "Mesure du niveau de départ, sans correction immédiate." },

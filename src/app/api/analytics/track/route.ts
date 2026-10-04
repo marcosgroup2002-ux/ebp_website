@@ -1,10 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-/**
- * Route API Next.js App Router : POST /api/analytics/track
- * Règle Machine Unique : 1 Appareil = 1 Compte
- */
 export async function POST(request: Request) {
   try {
     const supabaseUrl =
@@ -49,7 +45,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Insertion avec gestion silencieuse des doublons (ON CONFLICT DO NOTHING)
     const { data, error } = await supabase
       .from("analytics_visitors")
       .upsert(

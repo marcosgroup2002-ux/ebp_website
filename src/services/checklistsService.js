@@ -1,8 +1,3 @@
-// ============================================================================
-// SERVICE CHECKLISTS SECRÉTARIAT (EBP Production)
-// ============================================================================
-// Traçabilité des vérifications opérationnelles de la secrétaire.
-// Chaque action est horodatée, persistée et enregistrée dans les Audit Logs.
 
 import { supabase } from "../lib/supabaseClient";
 import { logAuditEvent } from "./auditService";
@@ -19,9 +14,6 @@ export function formatTimestamp(iso) {
   });
 }
 
-/**
- * Bascule un item de checklist et l'horodate au nom de l'utilisateur actif.
- */
 export function toggleChecklistItem(state, index, user) {
   const current = state[index];
   const isChecking = !current?.checked;
@@ -33,9 +25,6 @@ export function toggleChecklistItem(state, index, user) {
   };
 }
 
-/**
- * Récupère les coches enregistrées pour la checklist du secrétariat.
- */
 export async function fetchChecklistEntries(checklistKey = "secretaire") {
   const local = (() => {
     try {
@@ -72,9 +61,6 @@ export async function fetchChecklistEntries(checklistKey = "secretaire") {
   }
 }
 
-/**
- * Sauvegarde la coche ou décoche d'un item de checklist (avec Audit Log).
- */
 export async function saveChecklistEntry(checklistKey, index, isChecking, itemLabelOrUser, maybeUser) {
   let itemLabel = "";
   let user = null;
@@ -85,7 +71,6 @@ export async function saveChecklistEntry(checklistKey, index, isChecking, itemLa
     user = itemLabelOrUser;
   }
 
-  // 1. Stockage local
   try {
     const stored = JSON.parse(localStorage.getItem(`${LOCAL_CHECKLIST_KEY}_${checklistKey}`) || "{}");
     if (isChecking) {
@@ -100,10 +85,9 @@ export async function saveChecklistEntry(checklistKey, index, isChecking, itemLa
     }
     localStorage.setItem(`${LOCAL_CHECKLIST_KEY}_${checklistKey}`, JSON.stringify(stored));
   } catch {
-    //
+
   }
 
-  // 2. Écriture Supabase
   if (supabase) {
     try {
       if (isChecking) {
@@ -125,7 +109,6 @@ export async function saveChecklistEntry(checklistKey, index, isChecking, itemLa
     }
   }
 
-  // 3. Traçabilité dans l'Audit Log
   await logAuditEvent({
     action: isChecking ? "CHECKLIST_VALIDEE" : "CHECKLIST_ANNULEE",
     details: `${isChecking ? "Validation" : "Annulation"} de l'item "${itemLabel || `Tâche #${index + 1}`}" par la secrétaire.`,
@@ -133,7 +116,6 @@ export async function saveChecklistEntry(checklistKey, index, isChecking, itemLa
   });
 }
 
-/** Calcule, pour la date du jour, quelle échéance clé du mois est la plus proche. */
 export function getUpcomingKeyDate(keyDates, today = new Date()) {
   const day = today.getDate();
   const upcoming = keyDates.find((k) => k.day >= day);

@@ -7,13 +7,12 @@ import { NEXT_COHORT_DATE } from "../data/siteContent";
 import { MEDIA, img } from "../data/media";
 import Waveform from "./Waveform";
 
-// Carrousel plein écran : la vidéo Pexels en premier, 1ère image conservée intacte, puis photos réelles EBP.
 const SLIDES = [
   { type: "video" },
-  { type: "image", id: MEDIA.hero.slides[0] }, // Inviolable : première image originale conservée
-  { type: "image", id: MEDIA.hero.slides[1] }, // Photo réelle EBP : session interactive
-  { type: "image", id: MEDIA.hero.slides[2] }, // Photo réelle EBP : équipe complète
-  { type: "image", id: MEDIA.hero.slides[3] }, // Photo réelle EBP : pédagogie et direction
+  { type: "image", id: MEDIA.hero.slides[0] }, 
+  { type: "image", id: MEDIA.hero.slides[1] }, 
+  { type: "image", id: MEDIA.hero.slides[2] }, 
+  { type: "image", id: MEDIA.hero.slides[3] }, 
 ];
 
 export default function HeroSection() {
@@ -38,7 +37,7 @@ export default function HeroSection() {
 
   return (
     <section id="top" className="relative flex min-h-screen min-h-[100vh] items-end overflow-hidden bg-ink sm:min-h-[92vh]">
-      {/* Carrousel vidéo + photos en arrière-plan */}
+
       <div className="absolute inset-0">
         <AnimatePresence mode="sync">
           {SLIDES.map((s, i) =>
@@ -69,11 +68,10 @@ export default function HeroSection() {
             ) : null
           )}
         </AnimatePresence>
-        {/* Dégradé pour la lisibilité du texte, pas un aplat de couleur de marque */}
+
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/20" />
       </div>
 
-      {/* slide indicators */}
       <div className="absolute right-6 top-24 z-10 hidden flex-col gap-2 sm:flex">
         {SLIDES.map((_, i) => (
           <button
@@ -127,7 +125,6 @@ export default function HeroSection() {
           </div>
         </motion.div>
 
-        {/* Capture form */}
         <motion.form
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}

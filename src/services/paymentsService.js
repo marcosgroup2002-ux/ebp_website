@@ -1,9 +1,3 @@
-// ============================================================================
-// SERVICE PAIEMENTS & GESTION DES APPRENANTS (Production EBP)
-// ============================================================================
-// Toutes les données de démonstration ont été purgées.
-// Les données proviennent de Supabase (tables 'apprenants' et 'paiements').
-// Chaque action de la secrétaire est tracée dans l'Audit Log.
 
 import { supabase } from "../lib/supabaseClient";
 import { REMINDER_TEMPLATES } from "../data/adminData";
@@ -16,9 +10,6 @@ const MONTHS_FR = [
 
 const LOCAL_LEARNERS_KEY = "ebp_production_learners";
 
-/**
- * Normalise la cohorte et le centre depuis les libellés.
- */
 export function parseCohortAndCenter(rawCohort, rawCenter) {
   if (rawCenter && rawCohort) {
     return {
@@ -39,25 +30,19 @@ export function parseCohortAndCenter(rawCohort, rawCenter) {
   };
 }
 
-/**
- * Calcule dynamiquement le statut de l'apprenant à partir des règles EBP.
- */
 export function computeStatus(learner, today = new Date()) {
   if (learner.paid >= learner.total) return "solde";
   if (!learner.nextDueDate) return "a_jour";
 
   const due = new Date(learner.nextDueDate);
   const graceEnd = new Date(due);
-  graceEnd.setDate(graceEnd.getDate() + 10); // J+10 : délai de grâce max avant suspension
+  graceEnd.setDate(graceEnd.getDate() + 10); 
 
   if (today > graceEnd) return "suspendu";
   if (today > due) return "en_retard";
   return "a_jour";
 }
 
-/**
- * GET /learners : Lecture depuis Supabase avec stockage persistant local de secours.
- */
 export async function fetchLearners() {
   const localList = (() => {
     try {
@@ -119,11 +104,10 @@ export async function fetchLearners() {
       };
     });
 
-    // Mettre à jour le cache local
     try {
       localStorage.setItem(LOCAL_LEARNERS_KEY, JSON.stringify(loaded));
     } catch {
-      //
+
     }
 
     return loaded;
@@ -133,9 +117,6 @@ export async function fetchLearners() {
   }
 }
 
-/**
- * POST /learners : Ajout d'un nouvel apprenant par la secrétaire (avec Audit Log).
- */
 export async function createLearner(learners, payload, user) {
   const total = payload.option === "bloc" ? 150000 : 180000;
   const initialPayment = payload.initialPayment ?? 0;
@@ -208,14 +189,12 @@ export async function createLearner(learners, payload, user) {
 
   const updated = [newLearner, ...learners];
 
-  // Sauvegarde locale persistante
   try {
     localStorage.setItem(LOCAL_LEARNERS_KEY, JSON.stringify(updated));
   } catch {
-    //
+
   }
 
-  // Traçabilité Audit Log
   await logAuditEvent({
     action: "CREATION_APPRENANT",
     details: `Inscription de l'apprenant ${newLearner.name} dans la ${cohortLabel} (${payload.option === "bloc" ? "Bloc 150k" : "Échelonné 180k"}${initialPayment > 0 ? ` avec versement initial de ${initialPayment.toLocaleString("fr-FR")} F` : ""}).`,
@@ -225,9 +204,6 @@ export async function createLearner(learners, payload, user) {
   return updated;
 }
 
-/**
- * POST /learners/:id/payments : Enregistre un versement pour un apprenant (avec Audit Log).
- */
 export async function recordPayment(learners, learnerId, payment, user) {
   const target = learners.find((l) => l.id === learnerId);
   const learnerName = target ? target.name : `Apprenant #${learnerId}`;
@@ -274,10 +250,9 @@ export async function recordPayment(learners, learnerId, payment, user) {
   try {
     localStorage.setItem(LOCAL_LEARNERS_KEY, JSON.stringify(updated));
   } catch {
-    //
+
   }
 
-  // Traçabilité Audit Log
   await logAuditEvent({
     action: "ENREGISTREMENT_PAIEMENT",
     details: `Versement de ${payment.amount.toLocaleString("fr-FR")} F (${payment.mode}) enregistré pour ${learnerName}.`,
@@ -287,9 +262,6 @@ export async function recordPayment(learners, learnerId, payment, user) {
   return updated;
 }
 
-/**
- * DELETE /learners/:id : Supprime un apprenant (avec Audit Log).
- */
 export async function deleteLearner(learners, learnerId, user) {
   const target = learners.find((l) => l.id === learnerId);
   const learnerName = target ? target.name : `Apprenant #${learnerId}`;
@@ -306,7 +278,7 @@ export async function deleteLearner(learners, learnerId, user) {
   try {
     localStorage.setItem(LOCAL_LEARNERS_KEY, JSON.stringify(updated));
   } catch {
-    //
+
   }
 
   await logAuditEvent({
@@ -325,9 +297,6 @@ function nextMonthISO() {
   return d.toISOString().slice(0, 10);
 }
 
-/**
- * Filtre les apprenants en retard selon le stade de relance (J+5 ou J+10).
- */
 export function getOverdueLearners(learners, stage, today = new Date()) {
   return learners.filter((l) => {
     if (!l.nextDueDate || l.paid >= l.total) return false;
@@ -339,9 +308,6 @@ export function getOverdueLearners(learners, stage, today = new Date()) {
   });
 }
 
-/**
- * Construit le message de relance pré-rempli (Playbook 3.3).
- */
 export function buildReminderMessage(learner, stage) {
   const firstName = learner.name.split(" ")[0];
   const month = MONTHS_FR[new Date().getMonth()];
@@ -349,9 +315,6 @@ export function buildReminderMessage(learner, stage) {
   return REMINDER_TEMPLATES[stage]({ firstName, month, amount });
 }
 
-/**
- * Exporte les apprenants en CSV.
- */
 export function learnersToCSV(learners) {
   const headers = ["ID", "Nom", "Centre", "Cohorte", "Option", "Total", "Payé", "Restant", "Statut", "Prochaine échéance"];
   const rows = learners.map((l) => [

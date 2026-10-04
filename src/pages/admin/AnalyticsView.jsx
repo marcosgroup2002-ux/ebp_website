@@ -19,7 +19,6 @@ import { useAdminUser } from "../../context/AdminUserContext";
 export default function AnalyticsView() {
   const { user } = useAdminUser();
 
-  // 1. RESTRICTION STRICTE DE SÉCURITÉ : RÉSERVÉ AU PDG UNIQUEMENT
   const isPdg = user?.role === "pdg";
 
   const [data, setData] = useState(null);
@@ -41,7 +40,6 @@ export default function AnalyticsView() {
     }
   }, [isPdg]);
 
-  // Si l'utilisateur n'est pas le PDG, blocage strict
   if (!isPdg) {
     return (
       <div className="flex min-h-[50vh] flex-col items-center justify-center p-6 text-center">
@@ -62,7 +60,6 @@ export default function AnalyticsView() {
     );
   }
 
-  // Filtrage des campagnes
   const filteredCampaigns = useMemo(() => {
     if (!data?.campaigns) return [];
     if (!searchTerm.trim()) return data.campaigns;
@@ -75,7 +72,6 @@ export default function AnalyticsView() {
     );
   }, [data, searchTerm]);
 
-  // Export CSV
   const exportCsv = () => {
     if (!data?.recentVisitors || data.recentVisitors.length === 0) return;
     const headers = ["Visitor_ID", "Appareil", "OS", "Navigateur", "Source_UTM", "Campagne_UTM", "Page", "Date"];
@@ -110,7 +106,7 @@ export default function AnalyticsView() {
 
   return (
     <div className="space-y-6 w-full">
-      {/* En-tête de section */}
+
       <div className="flex flex-col gap-4 rounded-2xl bg-white p-5 sm:p-6 shadow-xs border border-ink/10">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -163,9 +159,8 @@ export default function AnalyticsView() {
         </div>
       )}
 
-      {/* LES 3 MÉTRIQUES CLÉS DEMANDÉES */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {/* 1. Appareils / Visiteurs Uniques */}
+
         <div className="rounded-2xl bg-white p-5 sm:p-6 shadow-xs border border-ink/10">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-ink/60">
@@ -184,7 +179,6 @@ export default function AnalyticsView() {
           </div>
         </div>
 
-        {/* 2. Total des Clics Bruts sur le site */}
         <div className="rounded-2xl bg-white p-5 sm:p-6 shadow-xs border border-ink/10">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-ink/60">
@@ -202,7 +196,6 @@ export default function AnalyticsView() {
           </div>
         </div>
 
-        {/* 3. Répartition Dominante */}
         <div className="rounded-2xl bg-white p-5 sm:p-6 shadow-xs border border-ink/10 sm:col-span-2 lg:col-span-1">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-ink/60">
@@ -221,7 +214,6 @@ export default function AnalyticsView() {
         </div>
       </div>
 
-      {/* DÉTAIL DE LA RÉPARTITION PAR APPAREILS */}
       <div className="rounded-2xl bg-white p-5 sm:p-6 shadow-xs border border-ink/10">
         <h2 className="text-sm font-bold uppercase tracking-wider text-ink">
           Répartition par Type d'Appareil
@@ -230,7 +222,6 @@ export default function AnalyticsView() {
           Volume et proportion exacte selon le type d'équipement
         </p>
 
-        {/* Barre de progression proportionnelle */}
         <div className="mt-4 flex h-3.5 w-full overflow-hidden rounded-full bg-slate-100">
           <div
             style={{ width: `${data?.mobilePercentage || 0}%` }}
@@ -249,7 +240,6 @@ export default function AnalyticsView() {
           />
         </div>
 
-        {/* 3 Cartes fluides */}
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
           <div className="flex items-center gap-3 rounded-xl bg-slate-50 p-3.5 border border-ink/5">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-cyan-100 text-cyan-700">
@@ -289,7 +279,6 @@ export default function AnalyticsView() {
         </div>
       </div>
 
-      {/* TABLEAU DES CAMPAGNES & BOOSTS (ÉPURÉ) */}
       <div className="rounded-2xl bg-white shadow-xs border border-ink/10 overflow-hidden">
         <div className="flex flex-col gap-3 p-5 sm:p-6 sm:flex-row sm:items-center sm:justify-between border-b border-ink/10">
           <div>

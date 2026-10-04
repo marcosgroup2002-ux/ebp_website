@@ -1,4 +1,3 @@
-# Logs
 logs
 *.log
 npm-debug.log*
@@ -10,19 +9,36 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+
+.env
+.env.*
+!.env.example
 *.local
 
-# Editor directories and files
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+credentials*.json
+service-account*.json
+id_rsa*
+id_ed25519*
+secrets.json
+
 .vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
+Thumbs.db
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.bak
+*.backup
 
 .vercel
-
 ebp-photo/

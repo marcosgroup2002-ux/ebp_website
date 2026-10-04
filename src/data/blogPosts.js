@@ -1,8 +1,3 @@
-// ============================================================================
-// ARTICLES DE BLOG EBP : contenu original, écrit pour ce projet.
-// Remplace ou complète librement ces articles dans le back-office éditorial
-// à venir ; pour l'instant ils vivent ici en dur.
-// ============================================================================
 
 export const BLOG_POSTS = [
   {

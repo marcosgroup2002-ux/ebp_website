@@ -4,7 +4,6 @@ import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import { useAdminUser } from "./context/AdminUserContext";
 
-// Chargement différé (Lazy Loading) des routes secondaires
 const About = lazy(() => import("./pages/About"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
@@ -39,7 +38,7 @@ export default function App() {
     <Suspense fallback={<PageLoader />}>
       <AnalyticsTracker />
       <Routes>
-        {/* Site public */}
+
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/a-propos" element={<About />} />
@@ -48,7 +47,6 @@ export default function App() {
           <Route path="/contact" element={<Contact />} />
         </Route>
 
-        {/* Espace admin sécurisé avec gestion des rôles */}
         <Route path="/admin" element={<AdminGate />}>
           <Route element={<AdminLayout />}>
             <Route index element={<AdminIndexRedirect />} />

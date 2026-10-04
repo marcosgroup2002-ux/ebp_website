@@ -31,7 +31,6 @@ export default function PdgSupervisionView() {
   const [auditLogs, setAuditLogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Formulaire communiqué PDG
   const [communiqueTitle, setCommuniqueTitle] = useState("");
   const [communiqueContent, setCommuniqueContent] = useState("");
   const [communiquePriority, setCommuniquePriority] = useState("normale");
@@ -52,12 +51,11 @@ export default function PdgSupervisionView() {
 
   useEffect(() => {
     loadData();
-    // Rafraîchissement automatique toutes les 30 secondes pour la supervision temps réel
+
     const interval = setInterval(loadData, 30000);
     return () => clearInterval(interval);
   }, []);
 
-  // Approbation d'une requête OTP
   const handleApproveOtp = async (requestId) => {
     await approveOtpRequest(requestId);
     setOtpRequests((prev) =>
@@ -65,7 +63,6 @@ export default function PdgSupervisionView() {
     );
   };
 
-  // Suppression d'une notification OTP individuelle
   const handleDismissOtp = (requestId) => {
     setOtpRequests((prev) => prev.filter((r) => r.id !== requestId));
     try {
@@ -75,21 +72,19 @@ export default function PdgSupervisionView() {
         JSON.stringify(stored.filter((r) => r.id !== requestId))
       );
     } catch {
-      //
+
     }
   };
 
-  // Effacer toutes les notifications OTP
   const handleClearAllOtp = () => {
     setOtpRequests([]);
     try {
       localStorage.setItem("ebp_active_otp_requests", "[]");
     } catch {
-      //
+
     }
   };
 
-  // Envoi d'une consigne / communiqué aux coachs
   const handlePublishCommunique = async (e) => {
     e.preventDefault();
     if (!communiqueTitle.trim() || !communiqueContent.trim()) return;
@@ -107,7 +102,6 @@ export default function PdgSupervisionView() {
     setTimeout(() => setCommuniqueSuccess(false), 3000);
   };
 
-  // Calculs statistiques en temps réel depuis les données de production
   const metrics = useMemo(() => {
     const totalCount = learners.length;
     const paid = learners.reduce((sum, l) => sum + (l.paid || 0), 0);
@@ -115,22 +109,18 @@ export default function PdgSupervisionView() {
     const unpaid = Math.max(0, expected - paid);
     const recoveryRate = expected > 0 ? Math.round((paid / expected) * 100) : 100;
 
-    // Taux de réussite / régularité : pourcentage d'apprenants soldés ou à jour
     const regularCount = learners.filter((l) => l.status === "solde" || l.status === "a_jour").length;
     const successRate = totalCount > 0 ? Math.round((regularCount / totalCount) * 100) : 100;
 
-    // Retards
     const lateJ5 = getOverdueLearners(learners, "J5").length;
     const lateJ10 = getOverdueLearners(learners, "J10").length;
 
-    // Répartition par Centre
     const centerDistribution = { Calavi: 0, Cotonou: 0 };
     learners.forEach((l) => {
       const c = l.centre || (l.cohort && l.cohort.includes("Cotonou") ? "Cotonou" : "Calavi");
       if (centerDistribution[c] !== undefined) centerDistribution[c] += 1;
     });
 
-    // Répartition par Cohorte (dynamique — inclut toutes les cohortes existantes)
     const cohortDistribution = {};
     ACTIVE_COHORTS.forEach((co) => { cohortDistribution[co] = 0; });
     learners.forEach((l) => {
@@ -157,7 +147,7 @@ export default function PdgSupervisionView() {
 
   return (
     <div className="space-y-8">
-      {/* En-tête supervision PDG */}
+
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <div className="flex items-center gap-2">
@@ -180,7 +170,6 @@ export default function PdgSupervisionView() {
         </button>
       </div>
 
-      {/* MODULE 1 : VALIDATION DES REQUÊTES OTP SECRÉTAIRE */}
       <div className="rounded-2xl border border-amber-200 bg-amber-50/40 p-6 shadow-sm">
         <div className="flex items-center justify-between border-b border-amber-200/60 pb-3">
           <div className="flex items-center gap-2">
@@ -283,9 +272,8 @@ export default function PdgSupervisionView() {
         </div>
       </div>
 
-      {/* MODULE 2 : DASHBOARD ANALYTIQUE (KPIs GLOBAUX) */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {/* Taux de recouvrement */}
+
         <div className="rounded-2xl border border-ink/10 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <p className="text-xs font-semibold uppercase tracking-wide text-ink/40">Taux de Recouvrement</p>
@@ -300,7 +288,6 @@ export default function PdgSupervisionView() {
           </p>
         </div>
 
-        {/* Suivi des impayés */}
         <div className="rounded-2xl border border-ink/10 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <p className="text-xs font-semibold uppercase tracking-wide text-ink/40">Suivi des Impayés</p>
@@ -313,7 +300,6 @@ export default function PdgSupervisionView() {
           </p>
         </div>
 
-        {/* Taux de réussite / régularité */}
         <div className="rounded-2xl border border-ink/10 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <p className="text-xs font-semibold uppercase tracking-wide text-ink/40">Taux de Régularité</p>
@@ -323,7 +309,6 @@ export default function PdgSupervisionView() {
           <p className="mt-3 text-xs text-ink/50">Apprenants sans retard de paiement</p>
         </div>
 
-        {/* Effectif Global */}
         <div className="rounded-2xl border border-ink/10 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <p className="text-xs font-semibold uppercase tracking-wide text-ink/40">Effectif Global Actif</p>
@@ -334,9 +319,8 @@ export default function PdgSupervisionView() {
         </div>
       </div>
 
-      {/* MODULE 3 : GRAPHIQUES D'ÉVOLUTION DES INSCRIPTIONS */}
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Graphique 1 : Répartition par Centre (Calavi vs Cotonou) */}
+
         <div className="rounded-2xl border border-ink/10 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between border-b border-ink/10 pb-4">
             <div className="flex items-center gap-2">
@@ -377,8 +361,6 @@ export default function PdgSupervisionView() {
             flux d'apprenants, 2 coachs affectés à Cotonou.
           </div>
         </div>
-
-        {/* Graphique 2 : Répartition par Cohorte (18.6, 18.7, 18.8) */}
         <div className="rounded-2xl border border-ink/10 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between border-b border-ink/10 pb-4">
             <div className="flex items-center gap-2">
@@ -417,8 +399,6 @@ export default function PdgSupervisionView() {
           </div>
         </div>
       </div>
-
-      {/* MODULE 4 : ÉMISSION DE COMMUNIQUÉ AUX COACHS */}
       <div className="rounded-2xl border border-ink/10 bg-white p-6 shadow-sm">
         <div className="flex items-center gap-2 border-b border-ink/10 pb-3">
           <Send size={18} className="text-ebp-blue" />
@@ -498,8 +478,6 @@ export default function PdgSupervisionView() {
           )}
         </form>
       </div>
-
-      {/* MODULE 5 : APERÇU DES JOURNAUX D'AUDIT EN DIRECT */}
       <div className="rounded-2xl border border-ink/10 bg-white p-6 shadow-sm">
         <div className="flex items-center justify-between border-b border-ink/10 pb-4">
           <div className="flex items-center gap-2">

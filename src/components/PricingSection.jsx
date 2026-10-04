@@ -88,8 +88,6 @@ export default function PricingSection() {
             );
           })}
         </div>
-
-        {/* Frais annexes */}
         <div className="mx-auto mt-8 max-w-3xl rounded-2xl border border-dashed border-ink/15 bg-surface p-6">
           <p className="text-xs font-semibold uppercase tracking-wider text-ink/50">Frais Annexes</p>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">

@@ -36,7 +36,6 @@ export default function CoverageSection() {
           </div>
         </div>
 
-        {/* node network */}
         <div className="relative aspect-[4/3] w-full rounded-3xl border border-white/15 bg-white/5 backdrop-blur-sm">
           <svg viewBox="0 0 100 75" className="absolute inset-0 h-full w-full" preserveAspectRatio="none">
             {SECONDARY.map((hub) =>

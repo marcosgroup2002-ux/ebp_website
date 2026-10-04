@@ -1,30 +1,17 @@
-// ============================================================================
-// CONSTANTES ET CONFIGURATION : Espace Admin EBP (Production)
-// ============================================================================
-// Toutes les données fictives (MOCK DATA) ont été purgées.
-// Les données opérationnelles (Apprenants, Paiements, Audit Logs) proviennent
-// directement de la base Supabase ou de la saisie réelle de production.
 
-// Cohortes par défaut (extensible — les nouvelles cohortes sont ajoutées dynamiquement)
 const DEFAULT_COHORTS = ["18.6", "18.7", "18.8"];
 const COHORTS_STORAGE_KEY = "ebp_active_cohorts";
 
-/**
- * Récupère la liste des cohortes actives (extensible, persistée en localStorage).
- */
 export function getActiveCohorts() {
   try {
     const stored = JSON.parse(localStorage.getItem(COHORTS_STORAGE_KEY));
     if (Array.isArray(stored) && stored.length > 0) return stored;
   } catch {
-    //
+
   }
   return DEFAULT_COHORTS;
 }
 
-/**
- * Ajoute une nouvelle cohorte à la liste active si elle n'existe pas déjà.
- */
 export function addCohort(cohortNumber) {
   const current = getActiveCohorts();
   const trimmed = cohortNumber.trim();
@@ -34,13 +21,9 @@ export function addCohort(cohortNumber) {
   return updated;
 }
 
-// Export pour compatibilité (lecture dynamique)
 export const ACTIVE_COHORTS = getActiveCohorts();
 export const ACTIVE_CENTERS = ["Calavi", "Cotonou"];
 
-/**
- * Génère les options de cohorte combinées avec les centres (dynamique).
- */
 export function getCohortOptions() {
   const cohorts = getActiveCohorts();
   const options = [];
@@ -63,7 +46,6 @@ export const STATUS_LABELS = {
 
 export const PAYMENT_MODES = ["Mobile Money", "Espèces", "Virement"];
 
-// Checklist quotidienne secrétaire (Playbook 3.7)
 export const SECRETARY_CHECKLIST = [
   "Vérifier les paiements Mobile Money reçus depuis la veille",
   "Mettre à jour le tableau de suivi des paiements",
@@ -72,7 +54,6 @@ export const SECRETARY_CHECKLIST = [
   "Signaler au PDG tout retard critique dépassant le délai de grâce (J+10)",
 ];
 
-// Dates clés du mois (Playbook 3.3, 3.7)
 export const KEY_DATES = [
   { day: 1, label: "Annonce d'ouverture des tranches du mois" },
   { day: 5, label: "Première relance des impayés (J+5)" },
@@ -81,7 +62,6 @@ export const KEY_DATES = [
   { day: 28, label: "Audit de clôture du mois et vérification des cohortes" },
 ];
 
-// Modèles de relance (Playbook 3.3)
 export const REMINDER_TEMPLATES = {
   J5: ({ firstName, month, amount }) =>
     `Bonjour ${firstName}, nous n'avons pas encore reçu votre règlement pour le mois de ${month}. Merci de régulariser votre situation avant le 10 ${month} pour continuer à suivre vos cours sans interruption. Montant dû : ${amount} F. Pour toute question : 0196840296`,

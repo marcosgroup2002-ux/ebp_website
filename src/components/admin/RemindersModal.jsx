@@ -14,7 +14,7 @@ export default function RemindersModal({ open, onClose, stage, learners }) {
       setCopiedId(id);
       setTimeout(() => setCopiedId(null), 1500);
     } catch {
-      // Presse-papiers indisponible (contexte non sécurisé, permissions) : pas bloquant.
+
     }
   };
 

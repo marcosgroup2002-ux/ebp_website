@@ -1,12 +1,3 @@
-// ============================================================================
-// SERVICE D'AUDIT LOGS (Traçabilité en arrière-plan)
-// ============================================================================
-// Enregistre en arrière-plan chaque action effectuée sur le dashboard :
-// - Connexion & déclenchement d'OTP (Date, Heure, IP, Lieu)
-// - Création / Modification / Suppression d'apprenant par la secrétaire
-// - Enregistrement de versement financier
-// - Validation ou rejet d'OTP par le PDG
-// - Coche de checklist opérationnelle
 
 import { supabase } from "../lib/supabaseClient";
 
@@ -14,10 +5,6 @@ const LOCAL_AUDIT_KEY = "ebp_local_audit_logs";
 
 let cachedNetworkInfo = null;
 
-/**
- * Récupère l'IP et la localisation approximative du client.
- * Utilise des APIs publiques sécurisées avec fallback immédiat en cas d'indisponibilité.
- */
 export async function getClientNetworkDetails() {
   if (cachedNetworkInfo) return cachedNetworkInfo;
 
@@ -37,7 +24,7 @@ export async function getClientNetworkDetails() {
       return cachedNetworkInfo;
     }
   } catch {
-    // Fallback si l'API externe est indisponible ou bloquée par un adblocker
+
   }
 
   cachedNetworkInfo = {
@@ -47,16 +34,6 @@ export async function getClientNetworkDetails() {
   return cachedNetworkInfo;
 }
 
-/**
- * Enregistre un événement dans le journal d'audit.
- * @param {{
- *   action: string,
- *   details: string,
- *   user?: { name?: string, role?: string },
- *   ip?: string,
- *   location?: string
- * }} payload
- */
 export async function logAuditEvent({ action, details, user, ip, location }) {
   try {
     const net = (!ip || !location) ? await getClientNetworkDetails() : { ip, location };
@@ -72,16 +49,14 @@ export async function logAuditEvent({ action, details, user, ip, location }) {
       created_at: new Date().toISOString(),
     };
 
-    // 1. Sauvegarde locale persistante
     try {
       const existing = JSON.parse(localStorage.getItem(LOCAL_AUDIT_KEY) || "[]");
-      const updated = [entry, ...existing].slice(0, 300); // Garde les 300 derniers logs
+      const updated = [entry, ...existing].slice(0, 300); 
       localStorage.setItem(LOCAL_AUDIT_KEY, JSON.stringify(updated));
     } catch {
-      // Ignorer quotas localStorage
+
     }
 
-    // 2. Écriture Supabase si disponible
     if (supabase) {
       try {
         await supabase.from("audit_logs").insert({
@@ -104,9 +79,6 @@ export async function logAuditEvent({ action, details, user, ip, location }) {
   }
 }
 
-/**
- * Récupère l'ensemble des journaux d'audit (pour la supervision PDG).
- */
 export async function fetchAuditLogs() {
   const localLogs = (() => {
     try {
@@ -129,7 +101,6 @@ export async function fetchAuditLogs() {
       return localLogs;
     }
 
-    // Fusion sans doublons par ID ou horodatage
     const map = new Map();
     data.forEach((item) => map.set(item.id || item.created_at, item));
     localLogs.forEach((item) => {

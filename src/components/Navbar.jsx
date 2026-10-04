@@ -27,12 +27,10 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Ferme le drawer lors d'un changement de route
   useEffect(() => {
     setOpen(false);
   }, [location.pathname, location.hash]);
 
-  // Bloque le défilement de l'arrière-plan quand le drawer est ouvert
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -51,7 +49,7 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Header fixe */}
+
       <header
         className={`fixed inset-x-0 top-0 z-40 transition-all duration-300 ${
           scrolled
@@ -60,7 +58,7 @@ export default function Navbar() {
         }`}
       >
         <div className="mx-auto flex h-16 sm:h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          {/* Logo officiel EBP */}
+
           <Link to="/" className="flex items-center gap-2.5 shrink-0" aria-label="EBP Accueil">
             <img
               src="/brand/ebp-logo.jpg"
@@ -69,7 +67,6 @@ export default function Navbar() {
             />
           </Link>
 
-          {/* Navigation Desktop */}
           <nav className="hidden items-center gap-6 xl:gap-8 lg:flex">
             {NAV_ITEMS.map((item) => (
               <NavLink
@@ -87,7 +84,6 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* Bouton CTA Desktop */}
           <div className="hidden items-center gap-3 lg:flex">
             <a
               href={buildWhatsAppLink(WHATSAPP_MESSAGES.levelTest)}
@@ -100,7 +96,6 @@ export default function Navbar() {
             </a>
           </div>
 
-          {/* Bouton Hamburger Mobile (touch-friendly min 44x44px) */}
           <button
             type="button"
             className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-ebp-blue hover:bg-slate-200 active:scale-95 transition-all lg:hidden"
@@ -113,7 +108,6 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* OVERLAY SOMBRE AVEC BACKDROP-BLUR (MOBILE DRAWER) */}
       <div
         className={`fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
           open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
@@ -122,14 +116,13 @@ export default function Navbar() {
         aria-hidden={!open}
       />
 
-      {/* MENU LATÉRAL DROIT (DRAWER) SLIDE-IN */}
       <aside
         className={`fixed inset-y-0 right-0 z-50 flex w-[85%] max-w-sm flex-col bg-white shadow-2xl transition-transform duration-300 ease-out transform lg:hidden ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
         aria-label="Menu mobile"
       >
-        {/* Entête du drawer */}
+
         <div className="flex h-16 sm:h-20 items-center justify-between border-b border-ink/10 px-5">
           <div className="flex items-center gap-2.5">
             <img
@@ -142,7 +135,6 @@ export default function Navbar() {
             </span>
           </div>
 
-          {/* Bouton de fermeture "X" clair */}
           <button
             type="button"
             onClick={() => setOpen(false)}
@@ -153,7 +145,6 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* Liens de navigation bien espacés au toucher */}
         <div className="flex-1 overflow-y-auto px-4 py-6 space-y-1.5">
           {NAV_ITEMS.map((item) => (
             <NavLink
@@ -175,7 +166,6 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* Pied de drawer : Actions rapides et WhatsApp */}
         <div className="border-t border-ink/10 p-5 space-y-3 bg-slate-50/50">
           <a
             href={buildWhatsAppLink(WHATSAPP_MESSAGES.levelTest)}

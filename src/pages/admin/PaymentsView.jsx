@@ -105,7 +105,7 @@ export default function PaymentsView() {
 
   return (
     <div>
-      {/* En-tête de vue */}
+
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <div className="flex items-center gap-2">
@@ -129,7 +129,6 @@ export default function PaymentsView() {
         )}
       </div>
 
-      {/* Cartes KPI synthétiques */}
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-2xl border border-ink/10 bg-white p-5 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-wide text-ink/40">Total Encaissé</p>
@@ -153,7 +152,6 @@ export default function PaymentsView() {
         </div>
       </div>
 
-      {/* Barre d'actions & Relances */}
       <div className="mt-5 flex flex-wrap items-center gap-2">
         <button
           onClick={() => setReminderStage("J5")}
@@ -178,7 +176,6 @@ export default function PaymentsView() {
         </button>
       </div>
 
-      {/* Barre de filtres avancés */}
       <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="relative">
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/30" />
@@ -230,7 +227,6 @@ export default function PaymentsView() {
         </select>
       </div>
 
-      {/* Tableau des apprenants */}
       <div className="mt-4 overflow-x-auto rounded-2xl border border-ink/10 bg-white shadow-sm">
         <table className="w-full min-w-[720px] text-left text-sm">
           <thead>
@@ -332,7 +328,6 @@ export default function PaymentsView() {
         </table>
       </div>
 
-      {/* Modales */}
       <PaymentHistoryModal
         learner={historyLearner}
         open={Boolean(historyLearner)}

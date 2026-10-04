@@ -1,8 +1,3 @@
-// ============================================================================
-// SERVICE COACHS & ANNONCES (EBP Production)
-// ============================================================================
-// Gestion de l'emploi du temps des 6 coachs (4 Calavi, 2 Cotonou)
-// et des communiqués / consignes émis par le PDG.
 
 import { supabase } from "../lib/supabaseClient";
 import { logAuditEvent } from "./auditService";
@@ -17,7 +12,7 @@ export const COACH_PROFILES = [
 ];
 
 const DEFAULT_SCHEDULES = [
-  // Centre Calavi (4 coachs)
+
   {
     id: "sch-1",
     coach_name: "Coach Calavi 1 · Oral Fluency",
@@ -107,7 +102,6 @@ const DEFAULT_SCHEDULES = [
     salle: "Salle B (Calavi)",
   },
 
-  // Centre Cotonou (2 coachs)
   {
     id: "sch-9",
     coach_name: "Coach Cotonou 1 · Executive Speaking",
@@ -178,9 +172,6 @@ const DEFAULT_ANNOUNCEMENTS = [
 const SCHEDULES_KEY = "ebp_coach_schedules";
 const ANNOUNCEMENTS_KEY = "ebp_announcements";
 
-/**
- * Récupère l'emploi du temps des coachs (lecture seule).
- */
 export async function fetchCoachSchedules() {
   const local = (() => {
     try {
@@ -202,9 +193,6 @@ export async function fetchCoachSchedules() {
   }
 }
 
-/**
- * Récupère le fil d'actualité des annonces / consignes émises par le PDG.
- */
 export async function fetchAnnouncements() {
   const local = (() => {
     try {
@@ -226,9 +214,6 @@ export async function fetchAnnouncements() {
   }
 }
 
-/**
- * Publie une nouvelle annonce / consigne (réservé au PDG).
- */
 export async function createAnnouncement({ titre, contenu, priorite = "normale", user }) {
   const newAnn = {
     id: "ann-" + Date.now(),
@@ -239,15 +224,13 @@ export async function createAnnouncement({ titre, contenu, priorite = "normale",
     created_at: new Date().toISOString(),
   };
 
-  // Stockage local
   try {
     const current = await fetchAnnouncements();
     localStorage.setItem(ANNOUNCEMENTS_KEY, JSON.stringify([newAnn, ...current]));
   } catch {
-    //
+
   }
 
-  // Écriture Supabase
   if (supabase) {
     try {
       await supabase.from("annonces").insert({

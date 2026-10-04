@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Sparkles, MessageCircle } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import {
   FOUNDER_NAME,
   CREED_PRINCIPLES,
@@ -19,7 +19,7 @@ export default function About() {
         description="Découvrez la mission et la méthode d'EBP (English for Busy People) : des cohortes de 6 mois pensées pour que les professionnels de Cotonou et Calavi parlent anglais, pas seulement qu'ils l'apprennent."
         path="/a-propos"
       />
-      {/* Banner */}
+
       <section className="relative flex min-h-[55vh] items-end overflow-hidden bg-ink">
         <img
           src={img(MEDIA.about.team, { w: 1920, q: 65 })}
@@ -37,8 +37,6 @@ export default function About() {
           </h1>
         </div>
       </section>
-
-      {/* Founder / mission */}
       <section className="section-pad bg-white">
         <div className="container grid gap-14 lg:grid-cols-2 lg:items-center">
           <div>
@@ -73,8 +71,6 @@ export default function About() {
           </div>
         </div>
       </section>
-
-      {/* Culture values */}
       <section className="section-pad bg-surface">
         <div className="container">
           <div className="mx-auto max-w-2xl text-center">
@@ -98,13 +94,10 @@ export default function About() {
           </div>
         </div>
       </section>
-
-      {/* Creed */}
       <section className="section-pad bg-white">
         <div className="container">
           <div className="mx-auto max-w-2xl text-center">
             <span className="eyebrow justify-center">
-              <Sparkles size={13} className="text-ebp-green" />
               Le Creed EBP
             </span>
             <h2 className="mt-4 text-3xl font-bold text-ink sm:text-4xl">Les principes qui nous guident</h2>
@@ -129,8 +122,6 @@ export default function About() {
           </div>
         </div>
       </section>
-
-      {/* CTA */}
       <section className="bg-ebp-blue">
         <div className="container flex flex-col items-center gap-5 py-14 text-center">
           <h2 className="font-display text-2xl font-bold text-white sm:text-3xl">

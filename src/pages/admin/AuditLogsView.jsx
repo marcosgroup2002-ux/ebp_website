@@ -84,8 +84,6 @@ export default function AuditLogsView() {
           </button>
         </div>
       </div>
-
-      {/* Barre de recherche et filtres */}
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="relative">
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/30" />
@@ -110,8 +108,6 @@ export default function AuditLogsView() {
           ))}
         </select>
       </div>
-
-      {/* Tableau complet */}
       <div className="overflow-x-auto rounded-2xl border border-ink/10 bg-white shadow-sm">
         <table className="w-full min-w-[780px] text-left text-xs">
           <thead>

@@ -41,7 +41,7 @@ export default function CoachsView() {
 
   return (
     <div className="space-y-8">
-      {/* En-tête */}
+
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-display text-2xl font-bold text-ink">Espace Pédagogique Coachs</h1>
@@ -54,8 +54,6 @@ export default function CoachsView() {
           Accès pédagogique sécurisé (Lecture seule)
         </div>
       </div>
-
-      {/* FIL D'ACTUALITÉ / ANNONCES DU PDG */}
       <div className="rounded-2xl border border-ink/10 bg-white p-6 shadow-sm">
         <div className="flex items-center gap-2 border-b border-ink/10 pb-4">
           <Bell size={18} className="text-ebp-blue" />
@@ -103,7 +101,6 @@ export default function CoachsView() {
         </div>
       </div>
 
-      {/* EMPLOI DU TEMPS UNIFIÉ DES COACHS */}
       <div className="rounded-2xl border border-ink/10 bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-ink/10 pb-4">
           <div className="flex items-center gap-2">
@@ -114,14 +111,12 @@ export default function CoachsView() {
             </div>
           </div>
 
-          {/* Filtres interactifs */}
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-1 text-xs text-ink/40 mr-1">
               <Filter size={13} />
               Filtrer :
             </div>
 
-            {/* Filtre Centre */}
             <select
               value={centerFilter}
               onChange={(e) => setCenterFilter(e.target.value)}
@@ -135,7 +130,6 @@ export default function CoachsView() {
               ))}
             </select>
 
-            {/* Filtre Cohorte */}
             <select
               value={cohortFilter}
               onChange={(e) => setCohortFilter(e.target.value)}
@@ -149,7 +143,6 @@ export default function CoachsView() {
               ))}
             </select>
 
-            {/* Filtre Coach */}
             <select
               value={coachFilter}
               onChange={(e) => setCoachFilter(e.target.value)}
@@ -165,7 +158,6 @@ export default function CoachsView() {
           </div>
         </div>
 
-        {/* Grille des séances */}
         {loading ? (
           <div className="py-12 text-center text-sm text-ink/40">
             <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-ebp-green border-t-transparent" />

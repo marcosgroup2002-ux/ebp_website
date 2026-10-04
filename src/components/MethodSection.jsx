@@ -6,7 +6,7 @@ import Waveform from "./Waveform";
 export default function MethodSection() {
   return (
     <section className="bg-white">
-      {/* Bandeau photo + citation de philosophie pédagogique */}
+
       <div className="relative overflow-hidden">
         <img
           src={img(MEDIA.method.banner, { w: 1920, q: 65 })}
@@ -28,7 +28,6 @@ export default function MethodSection() {
         </div>
       </div>
 
-      {/* Déroulé standard d'une séance : vraie séquence, la numérotation a un sens ici */}
       <div className="section-pad">
         <div className="container">
           <div className="mx-auto max-w-2xl text-center">

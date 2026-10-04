@@ -13,7 +13,7 @@ export default function ProgramSection() {
     <section id="programme" className="section-pad bg-white">
       <div className="container">
         <div className="grid min-w-0 gap-12 lg:grid-cols-[0.9fr,1.1fr] lg:items-start">
-          {/* Left intro */}
+
           <div className="min-w-0 lg:sticky lg:top-28">
             <span className="eyebrow">
               <Waveform barClassName="w-[2.5px] h-3" />
@@ -33,7 +33,6 @@ export default function ProgramSection() {
               className="mt-6 hidden aspect-[4/3] w-full max-w-md rounded-2xl object-cover shadow-soft lg:block"
             />
 
-            {/* Month tabs */}
             <div className="mt-8 flex gap-2 overflow-x-auto pb-2 lg:grid lg:grid-cols-2 lg:overflow-visible">
               {PROGRAM_MONTHS.map((m, i) => (
                 <button
@@ -51,7 +50,6 @@ export default function ProgramSection() {
             </div>
           </div>
 
-          {/* Right panel */}
           <div className="relative min-w-0 min-h-[280px] rounded-3xl border border-ink/10 bg-surface p-8 sm:p-10">
             <AnimatePresence mode="wait">
               <motion.div
@@ -79,7 +77,6 @@ export default function ProgramSection() {
               </motion.div>
             </AnimatePresence>
 
-            {/* progress dots */}
             <div className="mt-8 flex gap-1.5">
               {PROGRAM_MONTHS.map((_, i) => (
                 <span

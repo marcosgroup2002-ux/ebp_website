@@ -14,20 +14,17 @@ const SESSION_KEY = "ebp_admin_authed";
 
 function GateForm({ onSuccess }) {
   const { setUser } = useAdminUser();
-  const [activeTab, setActiveTab] = useState("secretaire"); // 'secretaire' | 'coach' | 'pdg'
+  const [activeTab, setActiveTab] = useState("secretaire"); 
 
-  // États pour Secrétaire
   const [secEmail, setSecEmail] = useState(CREDENTIALS.secretaire.email);
   const [secPassword, setSecPassword] = useState("");
   const [showSecPassword, setShowSecPassword] = useState(false);
   const [otpStep, setOtpStep] = useState(false);
   const [otpCode, setOtpCode] = useState("");
 
-  // États pour Coach
   const [coachPassword, setCoachPassword] = useState("");
   const [showCoachPassword, setShowCoachPassword] = useState(false);
 
-  // États pour PDG
   const [pdgEmail, setPdgEmail] = useState(CREDENTIALS.pdg.email);
   const [pdgPassword, setPdgPassword] = useState("");
   const [showPdgPassword, setShowPdgPassword] = useState(false);
@@ -35,7 +32,6 @@ function GateForm({ onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // 1. Soumission Secrétaire (Étape 1 : Email + Mot de passe -> Génération OTP)
   const handleSecretarySubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -51,7 +47,6 @@ function GateForm({ onSuccess }) {
     }
   };
 
-  // 2. Soumission Secrétaire (Étape 2 : Validation OTP)
   const handleSecretaryOtpSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -69,7 +64,6 @@ function GateForm({ onSuccess }) {
     }
   };
 
-  // 3. Soumission Coach (Mot de passe unique partagé)
   const handleCoachSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -87,7 +81,6 @@ function GateForm({ onSuccess }) {
     }
   };
 
-  // 4. Soumission PDG (Mot de passe Maître)
   const handlePdgSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -107,7 +100,7 @@ function GateForm({ onSuccess }) {
 
   return (
     <div className="w-full">
-      {/* Onglets de sélection du rôle */}
+
       <div className="mt-5 grid grid-cols-3 gap-1 rounded-xl bg-surface p-1 border border-ink/10">
         <button
           type="button"
@@ -156,7 +149,6 @@ function GateForm({ onSuccess }) {
         </button>
       </div>
 
-      {/* FORMULAIRE 1 : ESPACE SECRÉTAIRE */}
       {activeTab === "secretaire" && (
         <div className="mt-5">
           {!otpStep ? (
@@ -257,7 +249,6 @@ function GateForm({ onSuccess }) {
         </div>
       )}
 
-      {/* FORMULAIRE 2 : ESPACE COACHS */}
       {activeTab === "coach" && (
         <form onSubmit={handleCoachSubmit} className="mt-5 space-y-3">
           <div>
@@ -300,7 +291,6 @@ function GateForm({ onSuccess }) {
         </form>
       )}
 
-      {/* FORMULAIRE 3 : ESPACE PDG */}
       {activeTab === "pdg" && (
         <form onSubmit={handlePdgSubmit} className="mt-5 space-y-3">
           <div>
