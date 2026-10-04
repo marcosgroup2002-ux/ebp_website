@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { ArrowRight, Download, Star } from "lucide-react";
 import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
@@ -14,6 +14,7 @@ const SLIDES = [
 
 export default function HeroSection() {
   const [slide, setSlide] = useState(0);
+  const videoRef = useRef(null);
   const {
     register,
     handleSubmit,
@@ -21,9 +22,29 @@ export default function HeroSection() {
   } = useForm();
 
   useEffect(() => {
-    const t = setInterval(() => setSlide((s) => (s + 1) % SLIDES.length), 6000);
-    return () => clearInterval(t);
+    MEDIA.hero.slides.forEach((path) => {
+      const im = new Image();
+      im.src = path;
+    });
   }, []);
+
+  useEffect(() => {
+    if (slide === 0) {
+      if (videoRef.current) {
+        videoRef.current.currentTime = 0;
+        videoRef.current.play().catch(() => {});
+      }
+      const fallback = setTimeout(() => {
+        setSlide(1);
+      }, 7000);
+      return () => clearTimeout(fallback);
+    } else {
+      const timer = setTimeout(() => {
+        setSlide((s) => (s + 1) % SLIDES.length);
+      }, 4200);
+      return () => clearTimeout(timer);
+    }
+  }, [slide]);
 
   const openWhatsApp = (message) => window.open(buildWhatsAppLink(message), "_blank", "noopener,noreferrer");
   const onEnroll = (data) => openWhatsApp(WHATSAPP_MESSAGES.enrollWithContact(data.contact));
@@ -36,40 +57,41 @@ export default function HeroSection() {
     <section id="top" className="relative flex min-h-screen min-h-[100vh] items-end overflow-hidden bg-ink sm:min-h-[92vh]">
 
       <div className="absolute inset-0">
-        <AnimatePresence mode="sync">
-          {SLIDES.map((s, i) =>
-            i === slide ? (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 1.2 }}
-                className="absolute inset-0"
+        {SLIDES.map((s, i) => (
+          <div
+            key={i}
+            className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+              i === slide ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
+            }`}
+          >
+            {s.type === "video" ? (
+              <video
+                ref={videoRef}
+                className="h-full w-full object-cover"
+                autoPlay
+                muted
+                playsInline
+                onEnded={() => setSlide(1)}
+                poster={MEDIA.hero.video.poster}
               >
-                {s.type === "video" ? (
-                  <video
-                    className="h-full w-full object-cover"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    poster={MEDIA.hero.video.poster}
-                  >
-                    <source src={MEDIA.hero.video.mp4} type="video/mp4" />
-                  </video>
-                ) : (
-                  <img src={img(s.id, { w: 1920, q: 70 })} alt="" className="h-full w-full object-cover" />
-                )}
-              </motion.div>
-            ) : null
-          )}
-        </AnimatePresence>
+                <source src={MEDIA.hero.video.mp4} type="video/mp4" />
+              </video>
+            ) : (
+              <img
+                src={img(s.id, { w: 1920, q: 70 })}
+                alt=""
+                loading="eager"
+                decoding="async"
+                className="h-full w-full object-cover"
+              />
+            )}
+          </div>
+        ))}
 
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/20" />
+        <div className="absolute inset-0 z-20 bg-gradient-to-t from-ink via-ink/60 to-ink/20" />
       </div>
 
-      <div className="absolute right-6 top-24 z-10 hidden flex-col gap-2 sm:flex">
+      <div className="absolute right-6 top-24 z-30 hidden flex-col gap-2 sm:flex">
         {SLIDES.map((_, i) => (
           <button
             key={i}
@@ -80,7 +102,7 @@ export default function HeroSection() {
         ))}
       </div>
 
-      <div className="container relative z-10 grid gap-8 pb-12 pt-28 sm:gap-10 sm:pb-16 sm:pt-36 lg:grid-cols-[1.1fr,0.9fr] lg:items-end lg:pt-40">
+      <div className="container relative z-30 grid gap-8 pb-12 pt-28 sm:gap-10 sm:pb-16 sm:pt-36 lg:grid-cols-[1.1fr,0.9fr] lg:items-end lg:pt-40">
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
