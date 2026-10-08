@@ -16,6 +16,7 @@ const CoachsView = lazy(() => import("./pages/admin/CoachsView"));
 const PdgSupervisionView = lazy(() => import("./pages/admin/PdgSupervisionView"));
 const AuditLogsView = lazy(() => import("./pages/admin/AuditLogsView"));
 const AnalyticsView = lazy(() => import("./pages/admin/AnalyticsView"));
+const TarifsView = lazy(() => import("./pages/admin/TarifsView"));
 import AnalyticsTracker from "./components/AnalyticsTracker";
 import OfflineBanner from "./components/OfflineBanner";
 
@@ -55,6 +56,7 @@ export default function App() {
             <Route index element={<AdminIndexRedirect />} />
             <Route path="paiements" element={<PaymentsView />} />
             <Route path="checklists" element={<ChecklistsView />} />
+            <Route path="tarifs" element={<TarifsView />} />
             <Route path="coachs" element={<CoachsView />} />
             <Route path="pdg" element={<PdgSupervisionView />} />
             <Route path="audit" element={<AuditLogsView />} />

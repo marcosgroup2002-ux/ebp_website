@@ -299,7 +299,7 @@ export default function PaymentsView() {
                 >
                   <td className="px-4 py-3.5">
                     <p className="font-semibold text-ink">{l.name}</p>
-                    <p className="text-xs text-ink/40">{l.option === "bloc" ? "Paiement Bloc (150k)" : "Échelonné (180k)"}</p>
+                    <p className="text-xs text-ink/40">{l.option === "bloc" ? "Paiement Bloc" : "Échelonné"} · {formatFcfa(l.total)}</p>
                   </td>
                   <td className="px-4 py-3.5">
                     <div className="flex items-center gap-1.5 text-ink/70">

@@ -1,13 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Modal from "./Modal";
-import { ACTIVE_CENTERS, PAYMENT_MODES, getActiveCohorts, addCohort } from "../../data/adminData";
+import { ACTIVE_CENTERS, PAYMENT_MODES, getActiveCohorts, addCohort, formatFcfa } from "../../data/adminData";
+import { fetchTarifs } from "../../services/tarifsService";
 
 export default function AddLearnerModal({ open, onClose, onSubmitLearner }) {
   const [cohortsList, setCohortsList] = useState(getActiveCohorts);
   const [showCustomCohort, setShowCustomCohort] = useState(false);
   const [customCohort, setCustomCohort] = useState("");
   const [submitError, setSubmitError] = useState("");
+  const [tarifs, setTarifs] = useState(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    let isMounted = true;
+    fetchTarifs()
+      .then((data) => {
+        if (isMounted) setTarifs(data);
+      })
+      .catch((err) => {
+        if (isMounted) setSubmitError(err.message);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [open]);
+
+  const priceOf = (formula) => tarifs?.[formula]?.amount;
+  const priceLabel = (formula) => (priceOf(formula) ? formatFcfa(priceOf(formula)) : "…");
 
   const {
     register,
@@ -164,7 +184,7 @@ export default function AddLearnerModal({ open, onClose, onSubmitLearner }) {
               }`}
             >
               <input type="radio" value="echelonne" className="sr-only" {...register("option")} />
-              Échelonné (180 000 F)
+              Échelonné ({priceLabel("echelonne")})
             </label>
             <label
               className={`cursor-pointer rounded-xl border px-3 py-2.5 text-center text-sm transition-all ${
@@ -174,7 +194,7 @@ export default function AddLearnerModal({ open, onClose, onSubmitLearner }) {
               }`}
             >
               <input type="radio" value="bloc" className="sr-only" {...register("option")} />
-              Bloc Cash (150 000 F)
+              Bloc Cash ({priceLabel("bloc")})
             </label>
           </div>
         </div>
@@ -190,7 +210,7 @@ export default function AddLearnerModal({ open, onClose, onSubmitLearner }) {
               {...register("initialPayment", {
                 min: { value: 0, message: "Le montant ne peut être négatif." },
                 max: {
-                  value: option === "bloc" ? 150000 : 180000,
+                  value: priceOf(option) ?? Number.MAX_SAFE_INTEGER,
                   message: "Le versement dépasse le total de la formule.",
                 },
               })}
@@ -220,7 +240,7 @@ export default function AddLearnerModal({ open, onClose, onSubmitLearner }) {
               {submitError}
             </p>
           )}
-          <button type="submit" disabled={isSubmitting} className="btn-primary w-full shadow-md disabled:opacity-60">
+          <button type="submit" disabled={isSubmitting || !tarifs} className="btn-primary w-full shadow-md disabled:opacity-60">
             {isSubmitting ? "Inscription en cours..." : "Valider l'inscription de l'apprenant"}
           </button>
         </div>

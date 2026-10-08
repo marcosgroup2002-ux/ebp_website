@@ -13,7 +13,7 @@
 
 | Rôle        | Lecture                                                       | Écriture (RPC)                                              |
 |-------------|---------------------------------------------------------------|-------------------------------------------------------------|
-| secretaire  | apprenants, paiements, checklists, plannings, annonces        | `create_learner`, `record_payment`, `delete_learner`, `set_checklist_item` |
+| secretaire  | apprenants, paiements, checklists, plannings, annonces, tarifs | `create_learner`, `record_payment`, `delete_learner`, `set_checklist_item`, `set_tarif` |
 | coach       | plannings, annonces                                           | —                                                           |
 | pdg         | tout, y compris `audit_logs` et `analytics_visitors`          | `create_announcement`                                       |
 | anon        | `blog_posts` publiés                                          | `track_visit` (mesure d'audience, données validées)         |

@@ -12,11 +12,12 @@ import {
   Menu,
   X,
   ChevronRight,
+  Tag,
 } from "lucide-react";
 import { useAdminUser } from "../../context/AdminUserContext";
 
 const ROLE_SECTIONS = {
-  secretaire: ["paiements", "checklists"],
+  secretaire: ["paiements", "checklists", "tarifs"],
   coach: ["coachs"],
   pdg: ["analytics", "pdg", "paiements", "audit", "coachs"],
 };
@@ -77,6 +78,7 @@ export default function AdminLayout() {
     return [
       { to: "/admin/paiements", label: "Paiements & Apprenants", icon: CreditCard },
       { to: "/admin/checklists", label: "Checklists Secrétariat", icon: ListChecks },
+      { to: "/admin/tarifs", label: "Tarifs des formules", icon: Tag },
     ];
   })();
 
