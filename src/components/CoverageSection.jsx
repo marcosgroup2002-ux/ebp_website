@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Globe2 } from "lucide-react";
 import { COVERAGE_HUBS } from "../data/siteContent";
-import { MEDIA, img } from "../data/media";
+import { MEDIA, img, imgSrcSet } from "../data/media";
 import Waveform from "./Waveform";
 
 const PRIMARY = COVERAGE_HUBS.filter((h) => h.primary);
@@ -12,6 +12,8 @@ export default function CoverageSection() {
     <section className="relative overflow-hidden">
       <img
         src={img(MEDIA.coverage.banner, { w: 1920, q: 60 })}
+        srcSet={imgSrcSet(MEDIA.coverage.banner)}
+        sizes="100vw"
         alt="Communauté et apprenants EBP"
         className="absolute inset-0 h-full w-full object-cover"
       />

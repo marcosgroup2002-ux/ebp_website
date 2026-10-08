@@ -7,7 +7,7 @@ import {
   mapsEmbedUrl,
   mapsLink,
 } from "../data/siteContent";
-import { MEDIA, img } from "../data/media";
+import { MEDIA, img, imgSrcSet } from "../data/media";
 import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
 import { isValidEmailOrPhone } from "../lib/validation";
 import Waveform from "../components/Waveform";
@@ -105,6 +105,8 @@ export default function Contact() {
       <section className="relative flex min-h-[42vh] items-end overflow-hidden bg-ink">
         <img
           src={img(MEDIA.contact.banner, { w: 1920, q: 60 })}
+          srcSet={imgSrcSet(MEDIA.contact.banner)}
+          sizes="100vw"
           alt="L'équipe EBP à votre écoute"
           className="absolute inset-0 h-full w-full object-cover object-center"
         />

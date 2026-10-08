@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Play, GraduationCap, Images, ChevronLeft, ChevronRight, X, ArrowRight, Sparkles } from "lucide-react";
 import { GRADUATION_ALBUM_URL, GRADUATION_PHOTOS, GRADUATION_VIDEOS } from "../data/siteContent";
 import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
+import { img } from "../data/media";
 import Waveform from "./Waveform";
 
 const CONFETTI = [
@@ -274,9 +275,10 @@ export default function GraduationSection() {
               aria-label={`Agrandir : ${photo.alt}`}
             >
               <img
-                src={photo.src}
+                src={img(photo.src, { w: 960 })}
                 alt={photo.alt}
                 loading="lazy"
+                decoding="async"
                 className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
               />
               <span className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent opacity-0 transition group-hover:opacity-100" />

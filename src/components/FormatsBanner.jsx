@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { MapPin, Monitor, Clock } from "lucide-react";
 import { CENTERS } from "../data/siteContent";
-import { MEDIA, img } from "../data/media";
+import { MEDIA, img, imgSrcSet } from "../data/media";
 
 const ICONS = { MapPin, Monitor, Clock };
 
@@ -10,6 +10,8 @@ export default function FormatsBanner() {
     <section id="formats" className="relative overflow-hidden">
       <img
         src={img(MEDIA.formats.banner, { w: 1600, q: 60 })}
+        srcSet={imgSrcSet(MEDIA.formats.banner)}
+        sizes="100vw"
         alt="Formations EBP"
         className="absolute inset-0 h-full w-full object-cover"
       />

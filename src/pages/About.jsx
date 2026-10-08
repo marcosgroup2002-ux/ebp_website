@@ -6,7 +6,7 @@ import {
   CULTURE_VALUES,
   PHILOSOPHY_QUOTE,
 } from "../data/siteContent";
-import { MEDIA, img } from "../data/media";
+import { MEDIA, img, imgSrcSet } from "../data/media";
 import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
 import Waveform from "../components/Waveform";
 import Seo from "../components/Seo";
@@ -22,6 +22,8 @@ export default function About() {
       <section className="relative flex min-h-[55vh] items-end overflow-hidden bg-ink">
         <img
           src={img(MEDIA.about.team, { w: 1920, q: 65 })}
+          srcSet={imgSrcSet(MEDIA.about.team)}
+          sizes="100vw"
           alt="L'équipe et la communauté EBP"
           className="absolute inset-0 h-full w-full object-cover object-center"
         />

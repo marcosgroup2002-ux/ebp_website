@@ -1,13 +1,37 @@
-
 const unsplashBase = (id) => `https://images.unsplash.com/${id}`;
+
+// Dossiers compressés par scripts/optimize-images.mjs : chaque photo existe aussi en « -960 ».
+const OPTIMIZED_FOLDERS = ["/photos/", "/graduation/"];
+const SMALL_WIDTH = 960;
+
+function isOptimizedLocal(path) {
+  return OPTIMIZED_FOLDERS.some((folder) => path.startsWith(folder));
+}
+
+function smallVariant(path) {
+  return path.replace(/(.jpe?g)$/i, `-${SMALL_WIDTH}$1`);
+}
 
 export function img(id, { w = 1200, q = 75 } = {}) {
   if (!id) return "";
 
-  if (id.startsWith("/") || id.startsWith("http://") || id.startsWith("https://")) {
+  if (id.startsWith("/")) {
+    return isOptimizedLocal(id) && w <= SMALL_WIDTH ? smallVariant(id) : id;
+  }
+  if (id.startsWith("http://") || id.startsWith("https://")) {
     return id;
   }
   return `${unsplashBase(id)}?auto=format&fit=crop&w=${w}&q=${q}`;
+}
+
+// Laisse le navigateur choisir la taille adaptée à l'écran (mobile : version légère).
+export function imgSrcSet(id, { q = 70 } = {}) {
+  if (!id) return undefined;
+  if (id.startsWith("/")) {
+    return isOptimizedLocal(id) ? `${smallVariant(id)} ${SMALL_WIDTH}w, ${id} 1920w` : undefined;
+  }
+  if (id.startsWith("http")) return undefined;
+  return [640, 1280, 1920].map((w) => `${img(id, { w, q })} ${w}w`).join(", ");
 }
 
 export const MEDIA = {
@@ -21,7 +45,9 @@ export const MEDIA = {
     ],
     video: {
 
-      mp4: "https://videos.pexels.com/video-files/8123989/8123989-hd_1080_1920_30fps.mp4",
+      // Rendus plus légers que le 1080p d'origine (5,9 Mo) : 1,7 Mo sur mobile, 2,9 Mo sur ordinateur.
+      mp4Mobile: "https://videos.pexels.com/video-files/8123989/8123989-sd_540_960_30fps.mp4",
+      mp4: "https://videos.pexels.com/video-files/8123989/8123989-hd_720_1280_30fps.mp4",
       poster:
         "https://images.pexels.com/videos/8123989/age-aging-aging-active-aging-positive-8123989.jpeg?auto=compress&cs=tinysrgb&w=1200",
     },

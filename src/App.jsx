@@ -2,7 +2,6 @@ import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
-import { useAdminUser } from "./context/AdminUserContext";
 
 const About = lazy(() => import("./pages/About"));
 const Blog = lazy(() => import("./pages/Blog"));
@@ -17,6 +16,7 @@ const PdgSupervisionView = lazy(() => import("./pages/admin/PdgSupervisionView")
 const AuditLogsView = lazy(() => import("./pages/admin/AuditLogsView"));
 const AnalyticsView = lazy(() => import("./pages/admin/AnalyticsView"));
 const TarifsView = lazy(() => import("./pages/admin/TarifsView"));
+const AdminIndexRedirect = lazy(() => import("./pages/admin/AdminIndexRedirect"));
 import AnalyticsTracker from "./components/AnalyticsTracker";
 import OfflineBanner from "./components/OfflineBanner";
 
@@ -26,14 +26,6 @@ function PageLoader() {
       <div className="h-8 w-8 animate-spin rounded-full border-2 border-ebp-blue border-t-transparent" />
     </div>
   );
-}
-
-function AdminIndexRedirect() {
-  const { user } = useAdminUser();
-  if (user?.role === "coach") return <Navigate to="/admin/coachs" replace />;
-  if (user?.role === "pdg") return <Navigate to="/admin/pdg" replace />;
-  if (user?.role === "secretaire") return <Navigate to="/admin/paiements" replace />;
-  return null;
 }
 
 export default function App() {

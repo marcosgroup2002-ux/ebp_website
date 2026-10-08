@@ -1,7 +1,7 @@
 import { Link, Navigate, useParams } from "react-router-dom";
 import { ArrowLeft, Clock, MessageCircle } from "lucide-react";
 import { getPostBySlug, BLOG_POSTS } from "../data/blogPosts";
-import { MEDIA, img } from "../data/media";
+import { MEDIA, img, imgSrcSet } from "../data/media";
 import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
 import Seo from "../components/Seo";
 
@@ -40,6 +40,8 @@ export default function BlogPost() {
 
         <img
           src={img(MEDIA.blog[post.slug], { w: 1400, q: 75 })}
+          srcSet={imgSrcSet(MEDIA.blog[post.slug])}
+          sizes="100vw"
           alt={post.title}
           className="mt-8 aspect-[16/9] w-full rounded-2xl object-cover"
         />

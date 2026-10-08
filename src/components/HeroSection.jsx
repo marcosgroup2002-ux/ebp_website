@@ -7,6 +7,11 @@ import { NEXT_COHORT_DATE, PROSPECTUS_URL } from "../data/siteContent";
 import { MEDIA, img } from "../data/media";
 import Waveform from "./Waveform";
 
+// Sur téléphone et tablette, vidéo et photos en version légère.
+const IS_SMALL_SCREEN = typeof window !== "undefined" && window.innerWidth < 1024;
+const SLIDE_WIDTH = IS_SMALL_SCREEN ? 960 : 1920;
+const VIDEO_SRC = IS_SMALL_SCREEN ? MEDIA.hero.video.mp4Mobile : MEDIA.hero.video.mp4;
+
 const SLIDES = [
   { type: "video" },
   ...MEDIA.hero.slides.map((id) => ({ type: "image", id })),
@@ -22,10 +27,14 @@ export default function HeroSection() {
   } = useForm();
 
   useEffect(() => {
-    MEDIA.hero.slides.forEach((path) => {
-      const im = new Image();
-      im.src = path;
-    });
+    // Précharge les photos après le démarrage de la vidéo, sans lui voler la bande passante.
+    const timer = setTimeout(() => {
+      MEDIA.hero.slides.forEach((path) => {
+        const im = new Image();
+        im.src = img(path, { w: SLIDE_WIDTH });
+      });
+    }, 2500);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -70,13 +79,13 @@ export default function HeroSection() {
                 onEnded={() => setSlide(1)}
                 poster={MEDIA.hero.video.poster}
               >
-                <source src={MEDIA.hero.video.mp4} type="video/mp4" />
+                <source src={VIDEO_SRC} type="video/mp4" />
               </video>
             ) : (
               <img
-                src={img(s.id, { w: 1920, q: 70 })}
+                src={img(s.id, { w: SLIDE_WIDTH, q: 70 })}
                 alt=""
-                loading="eager"
+                loading={i === 1 ? "eager" : "lazy"}
                 decoding="async"
                 className={`h-full w-full object-cover transition-transform ease-out ${
                   i === slide ? "scale-110" : "scale-100"

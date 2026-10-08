@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { PHILOSOPHY_QUOTE, PHILOSOPHY_TEXT, SESSION_STEPS } from "../data/siteContent";
-import { MEDIA, img } from "../data/media";
+import { MEDIA, img, imgSrcSet } from "../data/media";
 import Waveform from "./Waveform";
 
 export default function MethodSection() {
@@ -10,6 +10,8 @@ export default function MethodSection() {
       <div className="relative overflow-hidden">
         <img
           src={img(MEDIA.method.banner, { w: 1920, q: 65 })}
+          srcSet={imgSrcSet(MEDIA.method.banner)}
+          sizes="100vw"
           alt="Classe EBP en session interactive de pratique orale"
           className="h-[380px] w-full object-cover object-center sm:h-[420px]"
         />
