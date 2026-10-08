@@ -8,7 +8,7 @@ import { readdir, stat, rename, unlink } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 
-const FOLDERS = ["public/photos", "public/graduation"];
+const FOLDERS = ["public/photos", "public/graduation", "public/pillars"];
 const FULL_WIDTH = 1920;
 const SMALL_WIDTH = 960;
 const SMALL_SUFFIX = "-960";
@@ -36,6 +36,9 @@ for (const folder of FOLDERS) {
     const full = path.join(folder, file);
     const ext = path.extname(file);
     const small = path.join(folder, `${path.basename(file, ext)}${SMALL_SUFFIX}${ext}`);
+
+    // Déjà optimisée : on ne recompresse pas (évite de dégrader la qualité à chaque passage).
+    if (await stat(small).then(() => true, () => false)) continue;
 
     const originalSize = (await stat(full)).size;
     await encode(full, small, SMALL_WIDTH, 76);

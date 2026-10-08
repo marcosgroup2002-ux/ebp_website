@@ -1,7 +1,7 @@
 const unsplashBase = (id) => `https://images.unsplash.com/${id}`;
 
 // Dossiers compressés par scripts/optimize-images.mjs : chaque photo existe aussi en « -960 ».
-const OPTIMIZED_FOLDERS = ["/photos/", "/graduation/"];
+const OPTIMIZED_FOLDERS = ["/photos/", "/graduation/", "/pillars/"];
 const SMALL_WIDTH = 960;
 
 function isOptimizedLocal(path) {
@@ -73,10 +73,10 @@ export const MEDIA = {
     banner: "/photos/team-meeting.jpeg",
   },
   pillars: {
-    Zap: "photo-1551836022-d5d88e9218df",
-    ClipboardCheck: "photo-1450101499163-c8848c66ca85",
-    Users: "photo-1573164574572-cb89e39749b4",
-    Award: "photo-1627556704290-2b1f5853ff78",
+    Zap: "/pillars/closing-accueil.jpg",
+    ClipboardCheck: "/pillars/onboarding-evaluation.jpg",
+    Users: "/pillars/equipe-mentors.jpg",
+    Award: "/pillars/certification-attestation.jpg",
   },
   blog: {
     "parler-anglais-confiance": "/photos/classroom-group.jpeg",

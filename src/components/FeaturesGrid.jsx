@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { Zap, ClipboardCheck, Users, Award, ChevronLeft, ChevronRight } from "lucide-react";
 import { PILLARS } from "../data/siteContent";
-import { MEDIA, img } from "../data/media";
+import { MEDIA, img, imgSrcSet } from "../data/media";
 import Waveform from "./Waveform";
 
 const ICONS = { Zap, ClipboardCheck, Users, Award };
@@ -26,7 +26,9 @@ function PillarCard({ pillar, index }) {
     >
       <div className="relative h-44 shrink-0 overflow-hidden sm:h-56">
         <img
-          src={img(MEDIA.pillars[pillar.icon], { w: 900, q: 70 })}
+          src={img(MEDIA.pillars[pillar.icon], { w: 960 })}
+          srcSet={imgSrcSet(MEDIA.pillars[pillar.icon])}
+          sizes="(min-width: 1024px) 560px, 80vw"
           alt=""
           loading={index === 0 ? "eager" : "lazy"}
           draggable="false"
