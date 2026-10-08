@@ -6,7 +6,8 @@ export const SITE_URL = "https://ebp-benin.com";
 export const SITE_NAME = "EBP - English for Busy People";
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/brand/ebp-logo.jpg`;
 
-export const NEXT_COHORT_DATE = "6 Octobre 2026";
+export const NEXT_COHORT_DATE = "6 Novembre 2026";
+export const NEXT_COHORT_ISO = "2026-11-06";
 export const SEATS_LEFT = 7;
 
 export const NAV_LINKS = [

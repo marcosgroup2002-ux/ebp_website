@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu, X, MessageCircle, ChevronRight, Phone } from "lucide-react";
 import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
 import { WHATSAPP_DISPLAY } from "../data/siteContent";
+import AnnouncementBar from "./AnnouncementBar";
 
 const NAV_ITEMS = [
   { label: "Accueil", to: "/" },
@@ -106,6 +107,7 @@ export default function Navbar() {
             <Menu size={24} />
           </button>
         </div>
+        <AnnouncementBar />
       </header>
 
       <div
