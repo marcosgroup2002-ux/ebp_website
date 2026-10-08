@@ -4,8 +4,9 @@ import { X, ArrowRight, CalendarDays, Sparkles, MapPin, Monitor } from "lucide-r
 import { NEXT_COHORT_DATE, NEXT_COHORT_ISO } from "../data/siteContent";
 import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
 
-// La clé dépend de la date de rentrée : un bandeau fermé réapparaît à la rentrée suivante.
+// Un bandeau fermé réapparaît 2 jours plus tard, ou dès que la date de rentrée change.
 const DISMISS_KEY = `ebp_announcement_closed_${NEXT_COHORT_ISO}`;
+const HIDE_DURATION_MS = 2 * 24 * 60 * 60 * 1000;
 
 function daysUntil(isoDate) {
   const target = new Date(`${isoDate}T00:00:00+01:00`);
@@ -14,7 +15,8 @@ function daysUntil(isoDate) {
 
 function readDismissed() {
   try {
-    return localStorage.getItem(DISMISS_KEY) === "1";
+    const closedAt = Number(localStorage.getItem(DISMISS_KEY));
+    return Number.isFinite(closedAt) && Date.now() - closedAt < HIDE_DURATION_MS;
   } catch {
     return false;
   }
@@ -62,7 +64,7 @@ export default function AnnouncementBar() {
   const close = () => {
     setDismissed(true);
     try {
-      localStorage.setItem(DISMISS_KEY, "1");
+      localStorage.setItem(DISMISS_KEY, String(Date.now()));
     } catch {
       // Stockage indisponible : le bandeau restera simplement fermé pour cette visite.
     }
