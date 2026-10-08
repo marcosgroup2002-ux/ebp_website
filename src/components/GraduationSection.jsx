@@ -159,7 +159,7 @@ export default function GraduationSection() {
 
   return (
     <section
-      id="graduation"
+      id="temoignages"
       className="relative overflow-hidden bg-gradient-to-br from-ebp-blue via-[#0a2a8a] to-ink py-20 text-white sm:py-28"
     >
       {CONFETTI.map((c, i) => (

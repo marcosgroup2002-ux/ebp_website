@@ -292,26 +292,3 @@ export const GRADUATION_ALBUM_URL =
 
 export const PROSPECTUS_URL = "/prospectus/EBP-Prospectus.pdf";
 
-export const TESTIMONIALS = [
-  {
-    name: "Rachidatou A.",
-    role: "Chargée de clientèle, Cotonou",
-    quote:
-      "Je gère aujourd'hui des appels internationaux sans stress. La méthode 60% pratique change vraiment la donne.",
-    cohort: "Promotion Janvier 2026",
-  },
-  {
-    name: "Ulrich K.",
-    role: "Entrepreneur, Calavi",
-    quote:
-      "Le suivi hebdomadaire et le coach du mois m'ont poussé à ne jamais lâcher, même avec un emploi du temps chargé.",
-    cohort: "Promotion Mars 2026",
-  },
-  {
-    name: "Sandra D.",
-    role: "Étudiante en ligne, diaspora France",
-    quote:
-      "Les sessions du soir sur Google Meet m'ont permis de suivre le programme depuis Paris sans rien perdre de la pratique orale.",
-    cohort: "Promotion En Ligne 2026",
-  },
-];

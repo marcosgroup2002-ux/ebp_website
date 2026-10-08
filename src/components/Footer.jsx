@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { MessageCircle, MapPin, Mail, Navigation } from "lucide-react";
-import { WHATSAPP_DISPLAY, CONTACT_INFO, mapsDirectionsLink, mapsEmbedUrl } from "../data/siteContent";
+import { WHATSAPP_DISPLAY, CONTACT_INFO, mapsDirectionsLink } from "../data/siteContent";
 import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
 
 function InstagramGlyph(props) {
@@ -96,32 +96,27 @@ export default function Footer() {
 
       <div className="container pb-12">
         <p className="text-xs font-semibold uppercase tracking-wider text-white/40">Nos centres</p>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
           {CONTACT_INFO.centers.map((center) => (
-            <div key={center.id} className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-              <iframe
-                title={`Carte Google Maps du ${center.name}`}
-                src={mapsEmbedUrl(center.coordinates, 16)}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="h-40 w-full border-0"
-              />
-              <div className="flex items-center justify-between gap-3 px-4 py-3">
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-white">{center.name}</p>
-                  <p className="truncate text-xs text-white/50">{center.address}</p>
-                </div>
-                <a
-                  href={mapsDirectionsLink(center.coordinates)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-ebp-green px-3.5 py-2 text-xs font-semibold text-white hover:bg-ebp-green-light"
-                >
-                  <Navigation size={13} />
-                  Itinéraire
-                </a>
-              </div>
-            </div>
+            <a
+              key={center.id}
+              href={mapsDirectionsLink(center.coordinates)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:border-ebp-green-light/60 hover:bg-white/10"
+            >
+              <span className="flex min-w-0 items-center gap-3">
+                <MapPin size={18} className="shrink-0 text-ebp-green-light" />
+                <span className="min-w-0">
+                  <span className="block text-sm font-semibold text-white">{center.name}</span>
+                  <span className="block truncate text-xs text-white/50">{center.address}</span>
+                </span>
+              </span>
+              <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-ebp-green px-3.5 py-2 text-xs font-semibold text-white group-hover:bg-ebp-green-light">
+                <Navigation size={13} />
+                Itinéraire
+              </span>
+            </a>
           ))}
         </div>
       </div>

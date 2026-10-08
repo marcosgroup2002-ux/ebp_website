@@ -52,11 +52,6 @@ export const MEDIA = {
     Users: "photo-1573164574572-cb89e39749b4",
     Award: "photo-1627556704290-2b1f5853ff78",
   },
-  testimonials: {
-    rachidatou: "photo-1616901987621-9267100a6c5f",
-    ulrich: "photo-1508243529287-e21914733111",
-    sandra: "photo-1628551019295-99fc72f7fc66",
-  },
   blog: {
     "parler-anglais-confiance": "/photos/classroom-group.jpeg",
     "reussir-entretien-embauche-anglais": "/photos/team-meeting.jpeg",
