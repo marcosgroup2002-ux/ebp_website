@@ -46,6 +46,12 @@ export const MEDIA = {
   formats: {
     banner: "/photos/team-meeting.jpeg",
   },
+  pillars: {
+    Zap: "photo-1551836022-d5d88e9218df",
+    ClipboardCheck: "photo-1450101499163-c8848c66ca85",
+    Users: "photo-1573164574572-cb89e39749b4",
+    Award: "photo-1627556704290-2b1f5853ff78",
+  },
   testimonials: {
     rachidatou: "photo-1616901987621-9267100a6c5f",
     ulrich: "photo-1508243529287-e21914733111",
