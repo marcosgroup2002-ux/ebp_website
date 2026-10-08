@@ -1,15 +1,8 @@
+-- Schéma initial (historique). Les politiques ouvertes ci-dessous sont remplacées par 20261008000000_security_hardening.sql.
 create extension if not exists "uuid-ossp";
 
-drop table if exists annonces cascade;
-drop table if exists coach_schedules cascade;
-drop table if exists otp_requests cascade;
-drop table if exists audit_logs cascade;
-drop table if exists checklist_entries cascade;
-drop table if exists paiements cascade;
-drop table if exists apprenants cascade;
-drop table if exists profiles cascade;
 
-create table profiles (
+create table if not exists profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   nom text not null,
   role text not null check (role in ('secretaire', 'coach', 'pdg')),
@@ -43,7 +36,7 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
 
-create table apprenants (
+create table if not exists apprenants (
   id uuid primary key default uuid_generate_v4(),
   nom text not null,
   centre text not null check (centre in ('Calavi', 'Cotonou')),
@@ -55,11 +48,11 @@ create table apprenants (
   created_at timestamptz default now()
 );
 
-create index idx_apprenants_cohorte on apprenants(cohorte);
-create index idx_apprenants_centre on apprenants(centre);
-create index idx_apprenants_statut on apprenants(statut);
+create index if not exists idx_apprenants_cohorte on apprenants(cohorte);
+create index if not exists idx_apprenants_centre on apprenants(centre);
+create index if not exists idx_apprenants_statut on apprenants(statut);
 
-create table paiements (
+create table if not exists paiements (
   id uuid primary key default uuid_generate_v4(),
   apprenant_id uuid not null references apprenants(id) on delete cascade,
   montant numeric not null check (montant > 0),
@@ -69,10 +62,10 @@ create table paiements (
   created_at timestamptz default now()
 );
 
-create index idx_paiements_apprenant on paiements(apprenant_id);
-create index idx_paiements_date on paiements(date_paiement);
+create index if not exists idx_paiements_apprenant on paiements(apprenant_id);
+create index if not exists idx_paiements_date on paiements(date_paiement);
 
-create table checklist_entries (
+create table if not exists checklist_entries (
   id uuid primary key default uuid_generate_v4(),
   checklist text not null default 'secretaire',
   item_index integer not null,
@@ -81,9 +74,9 @@ create table checklist_entries (
   horodatage timestamptz not null default now()
 );
 
-create index idx_checklist_lookup on checklist_entries(checklist, item_index);
+create index if not exists idx_checklist_lookup on checklist_entries(checklist, item_index);
 
-create table audit_logs (
+create table if not exists audit_logs (
   id uuid primary key default uuid_generate_v4(),
   action text not null,
   details text not null,
@@ -94,10 +87,10 @@ create table audit_logs (
   created_at timestamptz default now()
 );
 
-create index idx_audit_logs_created on audit_logs(created_at desc);
-create index idx_audit_logs_role on audit_logs(user_role);
+create index if not exists idx_audit_logs_created on audit_logs(created_at desc);
+create index if not exists idx_audit_logs_role on audit_logs(user_role);
 
-create table otp_requests (
+create table if not exists otp_requests (
   id uuid primary key default uuid_generate_v4(),
   email text not null,
   telephone text,
@@ -109,9 +102,9 @@ create table otp_requests (
   expires_at timestamptz not null
 );
 
-create index idx_otp_requests_email on otp_requests(email, statut);
+create index if not exists idx_otp_requests_email on otp_requests(email, statut);
 
-create table coach_schedules (
+create table if not exists coach_schedules (
   id uuid primary key default uuid_generate_v4(),
   coach_name text not null,
   centre text not null check (centre in ('Calavi', 'Cotonou')),
@@ -124,9 +117,9 @@ create table coach_schedules (
   created_at timestamptz default now()
 );
 
-create index idx_schedules_centre_cohorte on coach_schedules(centre, cohorte);
+create index if not exists idx_schedules_centre_cohorte on coach_schedules(centre, cohorte);
 
-create table annonces (
+create table if not exists annonces (
   id uuid primary key default uuid_generate_v4(),
   titre text not null,
   contenu text not null,

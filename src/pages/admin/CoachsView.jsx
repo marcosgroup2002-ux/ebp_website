@@ -7,6 +7,7 @@ export default function CoachsView() {
   const [schedules, setSchedules] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const [centerFilter, setCenterFilter] = useState("all");
   const [cohortFilter, setCohortFilter] = useState("all");
@@ -14,13 +15,18 @@ export default function CoachsView() {
 
   useEffect(() => {
     let isMounted = true;
-    Promise.all([fetchCoachSchedules(), fetchAnnouncements()]).then(([sch, ann]) => {
-      if (isMounted) {
-        setSchedules(sch || []);
-        setAnnouncements(ann || []);
-        setLoading(false);
-      }
-    });
+    Promise.all([fetchCoachSchedules(), fetchAnnouncements()])
+      .then(([sch, ann]) => {
+        if (!isMounted) return;
+        setSchedules(sch);
+        setAnnouncements(ann);
+      })
+      .catch((err) => {
+        if (isMounted) setError(err.message);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
     return () => {
       isMounted = false;
     };
@@ -54,6 +60,11 @@ export default function CoachsView() {
           Accès pédagogique sécurisé (Lecture seule)
         </div>
       </div>
+      {error && (
+        <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-ebp-red-soft">
+          {error}
+        </p>
+      )}
       <div className="rounded-2xl border border-ink/10 bg-white p-6 shadow-sm">
         <div className="flex items-center gap-2 border-b border-ink/10 pb-4">
           <Bell size={18} className="text-ebp-blue" />

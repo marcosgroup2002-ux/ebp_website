@@ -1,24 +1,39 @@
 import { useEffect, useMemo, useState } from "react";
 import { Search, RefreshCw, Download, MapPin, Globe } from "lucide-react";
 import { fetchAuditLogs } from "../../services/auditService";
-import { downloadTextFile } from "../../services/paymentsService";
+import { downloadTextFile, toCSV } from "../../services/paymentsService";
 
 export default function AuditLogsView() {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [reloadKey, setReloadKey] = useState(0);
   const [query, setQuery] = useState("");
   const [actionFilter, setActionFilter] = useState("all");
 
-  const loadLogs = async () => {
+  const loadLogs = () => {
     setLoading(true);
-    const data = await fetchAuditLogs();
-    setLogs(data || []);
-    setLoading(false);
+    setReloadKey((k) => k + 1);
   };
 
   useEffect(() => {
-    loadLogs();
-  }, []);
+    let isMounted = true;
+    fetchAuditLogs(500)
+      .then((data) => {
+        if (!isMounted) return;
+        setLogs(data);
+        setError("");
+      })
+      .catch((err) => {
+        if (isMounted) setError(err.message);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [reloadKey]);
 
   const actionTypes = useMemo(() => {
     return Array.from(new Set(logs.map((l) => l.action)));
@@ -47,9 +62,7 @@ export default function AuditLogsView() {
       l.ip_address || "",
       l.location || "",
     ]);
-    const escape = (v) => `"${String(v).replace(/"/g, '""')}"`;
-    const csv = [headers, ...rows].map((r) => r.map(escape).join(",")).join("\n");
-    downloadTextFile(`ebp-audit-logs-${new Date().toISOString().slice(0, 10)}.csv`, csv);
+    downloadTextFile(`ebp-audit-logs-${new Date().toISOString().slice(0, 10)}.csv`, toCSV(headers, rows));
   };
 
   return (
@@ -84,6 +97,11 @@ export default function AuditLogsView() {
           </button>
         </div>
       </div>
+      {error && (
+        <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-ebp-red-soft">
+          {error}
+        </p>
+      )}
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="relative">
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/30" />

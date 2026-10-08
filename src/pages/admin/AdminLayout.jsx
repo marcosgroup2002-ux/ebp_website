@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { NavLink, Outlet, useLocation, Navigate, Link } from "react-router-dom";
+import { NavLink, Outlet, useLocation, Navigate } from "react-router-dom";
 import {
   CreditCard,
   ListChecks,
@@ -14,12 +14,18 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useAdminUser } from "../../context/AdminUserContext";
-import { supabase } from "../../lib/supabaseClient";
+
+const ROLE_SECTIONS = {
+  secretaire: ["paiements", "checklists"],
+  coach: ["coachs"],
+  pdg: ["analytics", "pdg", "paiements", "audit", "coachs"],
+};
 
 export default function AdminLayout() {
-  const { user, clearUser } = useAdminUser();
+  const { user, signOut } = useAdminUser();
   const location = useLocation();
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const [logoutError, setLogoutError] = useState("");
 
   useEffect(() => {
     setMobileDrawerOpen(false);
@@ -42,19 +48,15 @@ export default function AdminLayout() {
   }, [mobileDrawerOpen]);
 
   const logout = async () => {
-    if (supabase) {
-      try {
-        await supabase.auth.signOut();
-      } catch {
-
-      }
+    setLogoutError("");
+    try {
+      await signOut();
+    } catch (err) {
+      setLogoutError(err.message);
     }
-    sessionStorage.removeItem("ebp_admin_authed");
-    clearUser();
-    window.location.href = "/admin";
   };
 
-  const role = user?.role || "secretaire";
+  const role = user?.role;
 
   const navItems = (() => {
     if (role === "coach") {
@@ -78,12 +80,10 @@ export default function AdminLayout() {
     ];
   })();
 
-  const pathname = location.pathname;
-  if (role === "coach" && (pathname.includes("/admin/paiements") || pathname.includes("/admin/checklists") || pathname.includes("/admin/pdg") || pathname.includes("/admin/audit") || pathname.includes("/admin/analytics"))) {
-    return <Navigate to="/admin/coachs" replace />;
-  }
-  if (role === "secretaire" && (pathname.includes("/admin/pdg") || pathname.includes("/admin/audit") || pathname.includes("/admin/analytics"))) {
-    return <Navigate to="/admin/paiements" replace />;
+  const allowedSections = ROLE_SECTIONS[role] || [];
+  const section = location.pathname.split("/")[2];
+  if (section && !allowedSections.includes(section)) {
+    return <Navigate to={`/admin/${allowedSections[0] || ""}`} replace />;
   }
 
   const roleBadge = (() => {
@@ -271,6 +271,11 @@ export default function AdminLayout() {
           </div>
         </aside>
 
+        {logoutError && (
+          <p role="alert" className="mx-4 mt-3 rounded-xl bg-red-50 px-4 py-2 text-xs text-ebp-red-soft">
+            {logoutError}
+          </p>
+        )}
         <main className="p-3.5 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full flex-1">
           <Outlet />
         </main>

@@ -1,356 +1,106 @@
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import { ShieldCheck, GraduationCap, ArrowRight, ShieldAlert, CheckCircle2, Mail, Eye, EyeOff } from "lucide-react";
+import { ShieldCheck, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { AdminUserProvider, useAdminUser } from "../../context/AdminUserContext";
-import {
-  initiateSecretaryLogin,
-  verifySecretaryOtp,
-  loginCoach,
-  loginPdg,
-  CREDENTIALS,
-} from "../../services/authService";
+import { supabase } from "../../lib/supabaseClient";
 
-const SESSION_KEY = "ebp_admin_authed";
-
-function GateForm({ onSuccess }) {
-  const { setUser } = useAdminUser();
-  const [activeTab, setActiveTab] = useState("secretaire"); 
-
-  const [secEmail, setSecEmail] = useState(CREDENTIALS.secretaire.email);
-  const [secPassword, setSecPassword] = useState("");
-  const [showSecPassword, setShowSecPassword] = useState(false);
-  const [otpStep, setOtpStep] = useState(false);
-  const [otpCode, setOtpCode] = useState("");
-
-  const [coachPassword, setCoachPassword] = useState("");
-  const [showCoachPassword, setShowCoachPassword] = useState(false);
-
-  const [pdgEmail, setPdgEmail] = useState(CREDENTIALS.pdg.email);
-  const [pdgPassword, setPdgPassword] = useState("");
-  const [showPdgPassword, setShowPdgPassword] = useState(false);
-
+function GateForm() {
+  const { signIn, sessionError } = useAdminUser();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSecretarySubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
     setError("");
     setLoading(true);
-
     try {
-      await initiateSecretaryLogin(secEmail, secPassword);
-      setOtpStep(true);
-      setLoading(false);
+      await signIn(email, password);
     } catch (err) {
+      setError(err.message || "Connexion impossible.");
+      setPassword("");
+    } finally {
       setLoading(false);
-      setError(err.message || "Identifiants incorrects.");
     }
   };
 
-  const handleSecretaryOtpSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-
-    try {
-      const authUser = await verifySecretaryOtp(otpCode);
-      setUser(authUser);
-      sessionStorage.setItem(SESSION_KEY, "true");
-      setLoading(false);
-      onSuccess();
-    } catch (err) {
-      setLoading(false);
-      setError(err.message || "Code OTP invalide.");
-    }
-  };
-
-  const handleCoachSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-
-    try {
-      const authUser = await loginCoach(coachPassword);
-      setUser(authUser);
-      sessionStorage.setItem(SESSION_KEY, "true");
-      setLoading(false);
-      onSuccess();
-    } catch (err) {
-      setLoading(false);
-      setError(err.message || "Mot de passe incorrect.");
-    }
-  };
-
-  const handlePdgSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-
-    try {
-      const authUser = await loginPdg(pdgEmail, pdgPassword);
-      setUser(authUser);
-      sessionStorage.setItem(SESSION_KEY, "true");
-      setLoading(false);
-      onSuccess();
-    } catch (err) {
-      setLoading(false);
-      setError(err.message || "Identifiants PDG invalides.");
-    }
-  };
+  const displayedError = error || sessionError;
 
   return (
-    <div className="w-full">
-
-      <div className="mt-5 grid grid-cols-3 gap-1 rounded-xl bg-surface p-1 border border-ink/10">
-        <button
-          type="button"
-          onClick={() => {
-            setActiveTab("secretaire");
-            setError("");
-            setOtpStep(false);
-          }}
-          className={`rounded-lg py-2 text-xs font-bold transition-all ${
-            activeTab === "secretaire"
-              ? "bg-white text-ebp-blue shadow-xs"
-              : "text-ink/60 hover:text-ink"
-          }`}
-        >
-          Secrétaire
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setActiveTab("coach");
-            setError("");
-            setOtpStep(false);
-          }}
-          className={`rounded-lg py-2 text-xs font-bold transition-all ${
-            activeTab === "coach"
-              ? "bg-white text-ebp-green shadow-xs"
-              : "text-ink/60 hover:text-ink"
-          }`}
-        >
-          Coachs
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setActiveTab("pdg");
-            setError("");
-            setOtpStep(false);
-          }}
-          className={`rounded-lg py-2 text-xs font-bold transition-all ${
-            activeTab === "pdg"
-              ? "bg-white text-ink shadow-xs"
-              : "text-ink/60 hover:text-ink"
-          }`}
-        >
-          PDG
-        </button>
+    <form onSubmit={handleSubmit} className="mt-6 space-y-3">
+      <div>
+        <label htmlFor="admin-email" className="block text-xs font-semibold text-ink/60 mb-1">
+          Email professionnel
+        </label>
+        <input
+          id="admin-email"
+          type="email"
+          autoComplete="username"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full rounded-xl border border-ink/10 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
+          required
+        />
       </div>
 
-      {activeTab === "secretaire" && (
-        <div className="mt-5">
-          {!otpStep ? (
-            <form onSubmit={handleSecretarySubmit} className="space-y-3">
-              <div>
-                <label className="block text-xs font-semibold text-ink/60 mb-1">Email professionnel</label>
-                <input
-                  type="email"
-                  value={secEmail}
-                  onChange={(e) => setSecEmail(e.target.value)}
-                  placeholder="josiasdevweb@gmail.com"
-                  className="w-full rounded-xl border border-ink/10 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-ink/60 mb-1">Mot de passe</label>
-                <div className="relative">
-                  <input
-                    type={showSecPassword ? "text" : "password"}
-                    value={secPassword}
-                    onChange={(e) => setSecPassword(e.target.value)}
-                    placeholder="••••••••••••"
-                    className="w-full rounded-xl border border-ink/10 pl-3.5 pr-10 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowSecPassword(!showSecPassword)}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-ink/40 hover:text-ink transition-colors"
-                    aria-label={showSecPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
-                  >
-                    {showSecPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
-                </div>
-              </div>
-
-              {error && <p className="text-xs text-ebp-red-soft">{error}</p>}
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="btn-primary w-full shadow-md flex items-center justify-center gap-2"
-              >
-                {loading ? "Vérification..." : "Demander le code d'accès OTP"}
-                <ArrowRight size={14} />
-              </button>
-
-              <div className="rounded-lg bg-blue-50/60 p-2.5 text-[11px] text-blue-900 border border-blue-100">
-                🔒 <span className="font-semibold">Protocole OTP :</span> La connexion déclenche un code à usage unique
-                transmis à la direction (+ journalisation d'audit : Date, Heure, IP, Lieu).
-              </div>
-            </form>
-          ) : (
-            <form onSubmit={handleSecretaryOtpSubmit} className="space-y-4">
-              <div className="rounded-xl border border-blue-200 bg-blue-50/80 p-3.5 text-xs text-blue-900 flex items-center gap-2.5">
-                <Mail size={16} className="text-ebp-blue shrink-0" />
-                <p className="font-medium text-blue-950 leading-relaxed">
-                  Un code d'autorisation a été envoyé par email au PDG.
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-ink/60 mb-1">Code de validation OTP (6 chiffres)</label>
-                <input
-                  type="text"
-                  maxLength={6}
-                  value={otpCode}
-                  onChange={(e) => setOtpCode(e.target.value)}
-                  placeholder="Ex : 548912"
-                  autoFocus
-                  className="w-full rounded-xl border border-ink/10 px-3.5 py-2.5 text-center font-mono text-lg tracking-widest font-bold text-ink focus:outline-none focus:ring-2 focus:ring-ebp-green"
-                  required
-                />
-              </div>
-
-              {error && <p className="text-xs text-ebp-red-soft">{error}</p>}
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="btn-primary w-full bg-ebp-green hover:bg-ebp-green-light shadow-md flex items-center justify-center gap-2"
-              >
-                {loading ? "Vérification OTP..." : "Déverrouiller l'Espace Secrétaire"}
-                <CheckCircle2 size={15} />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setOtpStep(false)}
-                className="w-full text-center text-xs text-ink/50 hover:text-ink pt-1"
-              >
-                ← Revenir aux identifiants
-              </button>
-            </form>
-          )}
+      <div>
+        <label htmlFor="admin-password" className="block text-xs font-semibold text-ink/60 mb-1">
+          Mot de passe
+        </label>
+        <div className="relative">
+          <input
+            id="admin-password"
+            type={showPassword ? "text" : "password"}
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••••••"
+            className="w-full rounded-xl border border-ink/10 pl-3.5 pr-10 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
+            required
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-ink/40 hover:text-ink transition-colors"
+            aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+          >
+            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+          </button>
         </div>
+      </div>
+
+      {displayedError && (
+        <p role="alert" className="text-xs text-ebp-red-soft">
+          {displayedError}
+        </p>
       )}
 
-      {activeTab === "coach" && (
-        <form onSubmit={handleCoachSubmit} className="mt-5 space-y-3">
-          <div>
-            <label className="block text-xs font-semibold text-ink/60 mb-1">Mot de passe unique partagé</label>
-            <div className="relative">
-              <input
-                type={showCoachPassword ? "text" : "password"}
-                value={coachPassword}
-                onChange={(e) => setCoachPassword(e.target.value)}
-                placeholder="Mot de passe commun aux 6 coachs"
-                className="w-full rounded-xl border border-ink/10 pl-3.5 pr-10 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowCoachPassword(!showCoachPassword)}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-ink/40 hover:text-ink transition-colors"
-                aria-label={showCoachPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
-              >
-                {showCoachPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-          </div>
+      <button
+        type="submit"
+        disabled={loading || !supabase}
+        className="btn-primary w-full shadow-md flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+      >
+        {loading ? "Connexion..." : "Se connecter"}
+        <ArrowRight size={14} />
+      </button>
 
-          {error && <p className="text-xs text-ebp-red-soft">{error}</p>}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn-primary w-full bg-ebp-green hover:bg-ebp-green-light shadow-md flex items-center justify-center gap-2"
-          >
-            {loading ? "Connexion..." : "Accéder à l'Espace Coachs (Lecture Seule)"}
-            <GraduationCap size={15} />
-          </button>
-
-          <div className="rounded-lg bg-emerald-50/60 p-2.5 text-[11px] text-emerald-900 border border-emerald-100">
-            📚 <span className="font-semibold">Accès réservé :</span> Consultez votre emploi du temps et les communiqués
-            de la direction. Aucun accès aux données financières.
-          </div>
-        </form>
+      {!supabase && (
+        <p className="text-xs text-ebp-red-soft">Service d'authentification indisponible (configuration manquante).</p>
       )}
 
-      {activeTab === "pdg" && (
-        <form onSubmit={handlePdgSubmit} className="mt-5 space-y-3">
-          <div>
-            <label className="block text-xs font-semibold text-ink/60 mb-1">Email Direction</label>
-            <input
-              type="email"
-              value={pdgEmail}
-              onChange={(e) => setPdgEmail(e.target.value)}
-              placeholder="marcosgroup2002@gmail.com"
-              className="w-full rounded-xl border border-ink/10 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-ink/60 mb-1">Mot de passe Maître</label>
-            <div className="relative">
-              <input
-                type={showPdgPassword ? "text" : "password"}
-                value={pdgPassword}
-                onChange={(e) => setPdgPassword(e.target.value)}
-                placeholder="••••••••••••"
-                className="w-full rounded-xl border border-ink/10 pl-3.5 pr-10 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPdgPassword(!showPdgPassword)}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-ink/40 hover:text-ink transition-colors"
-                aria-label={showPdgPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
-              >
-                {showPdgPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-          </div>
-
-          {error && <p className="text-xs text-ebp-red-soft">{error}</p>}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn-primary w-full shadow-md flex items-center justify-center gap-2"
-          >
-            {loading ? "Vérification..." : "Accéder à la Supervision & Analytics"}
-            <ShieldAlert size={15} />
-          </button>
-
-          <div className="rounded-lg bg-slate-100 p-2.5 text-[11px] text-ink/70 border border-ink/10">
-            📊 <span className="font-semibold text-ink">Supervision PDG :</span> Validation des OTP, journaux d'audit et
-            courbes analytiques de production.
-          </div>
-        </form>
-      )}
-    </div>
+      <p className="rounded-lg bg-slate-100 p-2.5 text-[11px] text-ink/70 border border-ink/10">
+        Votre rôle (Secrétariat, Coach ou Direction) est déterminé automatiquement par votre compte. Chaque connexion
+        est journalisée.
+      </p>
+    </form>
   );
 }
 
 function GateContent({ children }) {
-  const [authed, setAuthed] = useState(() => sessionStorage.getItem(SESSION_KEY) === "true");
-  const { user } = useAdminUser();
+  const { user, loading } = useAdminUser();
 
   useEffect(() => {
     document.title = "Administration EBP · Accès Sécurisé";
@@ -363,7 +113,15 @@ function GateContent({ children }) {
     meta.content = "noindex, nofollow";
   }, []);
 
-  if (authed && user) return children;
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-ink">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-white border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (user) return children;
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-ink px-4 py-8">
@@ -376,11 +134,11 @@ function GateContent({ children }) {
           </div>
         </div>
 
-        <GateForm onSuccess={() => setAuthed(true)} />
+        <GateForm />
 
         <div className="mt-6 flex items-center justify-center gap-2 border-t border-ink/5 pt-4 text-[11px] text-ink/40">
           <ShieldCheck size={14} className="text-ebp-green" />
-          <span>Plateforme de production chiffrée · Calavi & Cotonou</span>
+          <span>Connexion chiffrée · Calavi & Cotonou</span>
         </div>
       </div>
     </div>

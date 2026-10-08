@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   TrendingUp,
   Smartphone,
@@ -14,6 +14,7 @@ import {
   Users,
 } from "lucide-react";
 import { fetchAnalyticsData } from "../../services/analyticsService";
+import { downloadTextFile, toCSV } from "../../services/paymentsService";
 import { useAdminUser } from "../../context/AdminUserContext";
 
 export default function AnalyticsView() {
@@ -23,42 +24,40 @@ export default function AnalyticsView() {
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [reloadKey, setReloadKey] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const loadAnalytics = async () => {
+  const loadAnalytics = () => {
     setLoading(true);
-    const res = await fetchAnalyticsData();
-    setData(res);
-    setLoading(false);
+    setReloadKey((k) => k + 1);
   };
 
   useEffect(() => {
-    if (isPdg) {
-      loadAnalytics();
-      const interval = setInterval(loadAnalytics, 60000);
-      return () => clearInterval(interval);
-    }
-  }, [isPdg]);
+    if (!isPdg) return undefined;
+    let isMounted = true;
+    fetchAnalyticsData()
+      .then((res) => {
+        if (!isMounted) return;
+        setData(res);
+        setError("");
+      })
+      .catch((err) => {
+        if (isMounted) setError(err.message);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [isPdg, reloadKey]);
 
-  if (!isPdg) {
-    return (
-      <div className="flex min-h-[50vh] flex-col items-center justify-center p-6 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-red-100 text-ebp-red-soft mb-4">
-          <ShieldAlert size={32} />
-        </div>
-        <h2 className="text-xl font-bold font-display text-ink">Accès Confidentiel Restreint</h2>
-        <p className="mt-2 max-w-md text-sm text-ink/60">
-          Cette section d'analyse d'audience et de mesure des campagnes est strictement réservée à la Direction Générale (PDG).
-        </p>
-        <Link
-          to="/admin/paiements"
-          className="mt-6 rounded-xl bg-ebp-blue px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-ebp-blue-light transition-all"
-        >
-          Retour aux Apprenants
-        </Link>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (!isPdg) return undefined;
+    const interval = setInterval(() => setReloadKey((k) => k + 1), 60000);
+    return () => clearInterval(interval);
+  }, [isPdg]);
 
   const filteredCampaigns = useMemo(() => {
     if (!data?.campaigns) return [];
@@ -71,6 +70,26 @@ export default function AnalyticsView() {
         c.medium.toLowerCase().includes(term)
     );
   }, [data, searchTerm]);
+
+  if (!isPdg) {
+    return (
+      <div className="flex min-h-[50vh] flex-col items-center justify-center p-6 text-center">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-red-100 text-ebp-red-soft mb-4">
+          <ShieldAlert size={32} />
+        </div>
+        <h2 className="text-xl font-bold font-display text-ink">Accès Confidentiel Restreint</h2>
+        <p className="mt-2 max-w-md text-sm text-ink/60">
+          Cette section d'analyse d'audience et de mesure des campagnes est strictement réservée à la Direction Générale (PDG).
+        </p>
+        <Link
+          to="/admin"
+          className="mt-6 rounded-xl bg-ebp-blue px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-ebp-blue-light transition-all"
+        >
+          Retour à mon espace
+        </Link>
+      </div>
+    );
+  }
 
   const exportCsv = () => {
     if (!data?.recentVisitors || data.recentVisitors.length === 0) return;
@@ -85,14 +104,7 @@ export default function AnalyticsView() {
       v.page_path,
       new Date(v.created_at).toLocaleString("fr-FR"),
     ]);
-    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map((e) => e.join(","))].join("\n");
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `ebp-audience-${new Date().toISOString().slice(0, 10)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    downloadTextFile(`ebp-audience-${new Date().toISOString().slice(0, 10)}.csv`, toCSV(headers, rows));
   };
 
   const getSourceBadge = (source) => {
@@ -145,17 +157,13 @@ export default function AnalyticsView() {
         </div>
       </div>
 
-      {data?.error && (
-        <div className="rounded-2xl border border-amber-200 bg-amber-50/90 p-4 text-xs text-amber-900 shadow-xs">
-          <div className="flex items-center gap-2 font-bold text-amber-950 mb-1">
-            <ShieldAlert size={16} className="text-amber-600 shrink-0" />
-            <span>Synchronisation Supabase en attente :</span>
+      {error && (
+        <div role="alert" className="rounded-2xl border border-red-200 bg-red-50 p-4 text-xs text-ebp-red-soft shadow-xs">
+          <div className="flex items-center gap-2 font-bold mb-1">
+            <ShieldAlert size={16} className="shrink-0" />
+            <span>Statistiques indisponibles</span>
           </div>
-          <p className="leading-relaxed">
-            {data.error.includes("API key") || data.error.includes("JWT")
-              ? "Pour activer le comptage multi-machines en temps réel, remplacez la clé dans Vercel par la clé 'anon public' de votre Dashboard Supabase (Project Settings > API > Project API keys > anon public)."
-              : data.error}
-          </p>
+          <p className="leading-relaxed">{error}</p>
         </div>
       )}
 

@@ -6,39 +6,41 @@ import { useAdminUser } from "../../context/AdminUserContext";
 
 export default function ChecklistsView() {
   const { user } = useAdminUser();
+  const canEdit = user?.role === "secretaire";
   const [entries, setEntries] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [pendingIndex, setPendingIndex] = useState(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     let isMounted = true;
-    fetchChecklistEntries("secretaire").then((data) => {
-      if (isMounted) {
-        setEntries(data || {});
-      }
-    });
+    fetchChecklistEntries("secretaire")
+      .then((data) => {
+        if (isMounted) setEntries(data);
+      })
+      .catch((err) => {
+        if (isMounted) setError(err.message);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
     return () => {
       isMounted = false;
     };
   }, []);
 
-  const toggleItem = (index) => {
-    const isChecking = !entries[index]?.checked;
-    const itemLabel = SECRETARY_CHECKLIST[index];
-    saveChecklistEntry("secretaire", index, isChecking, itemLabel, user);
-
-    setEntries((prev) => {
-      const next = { ...prev };
-      if (isChecking) {
-        next[index] = {
-          checked: true,
-          by: user?.name || "Miss Amirath (Secrétaire)",
-          role: "secretaire",
-          at: new Date().toISOString(),
-        };
-      } else {
-        delete next[index];
-      }
-      return next;
-    });
+  const toggleItem = async (index) => {
+    if (!canEdit || pendingIndex !== null) return;
+    setError("");
+    setPendingIndex(index);
+    try {
+      const updated = await saveChecklistEntry("secretaire", index, !entries[index]?.checked, SECRETARY_CHECKLIST[index]);
+      setEntries(updated);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setPendingIndex(null);
+    }
   };
 
   const doneCount = Object.values(entries).filter((v) => v?.checked).length;
@@ -51,7 +53,7 @@ export default function ChecklistsView() {
         <div>
           <h1 className="font-display text-2xl font-bold text-ink">Checklist Opérationnelle · Secrétariat</h1>
           <p className="mt-1 text-sm text-ink/50">
-            Responsable : Miss Amirath (Secrétaire) · Contrôles quotidiens et procédures d'exploitation (Playbook 3.7).
+            Responsable : Secrétariat · Contrôles quotidiens et procédures d'exploitation (Playbook 3.7).
           </p>
         </div>
         <div className="flex items-center gap-2 rounded-xl bg-ebp-blue/10 px-3.5 py-2 text-xs font-semibold text-ebp-blue">
@@ -59,6 +61,12 @@ export default function ChecklistsView() {
           Traçabilité d'audit active
         </div>
       </div>
+
+      {error && (
+        <p role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-ebp-red-soft">
+          {error}
+        </p>
+      )}
 
       <div className="mt-6 rounded-2xl border border-ink/10 bg-white p-5 shadow-sm">
         <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-ebp-blue">
@@ -103,6 +111,7 @@ export default function ChecklistsView() {
           />
         </div>
 
+        {loading && <p className="mt-6 text-xs text-ink/40">Chargement de la checklist...</p>}
         <ul className="mt-6 divide-y divide-ink/5">
           {SECRETARY_CHECKLIST.map((item, index) => {
             const entry = entries[index];
@@ -111,12 +120,16 @@ export default function ChecklistsView() {
               <li
                 key={index}
                 onClick={() => toggleItem(index)}
-                className="flex cursor-pointer items-start gap-3.5 py-4 transition-colors hover:bg-surface/50 rounded-xl px-2"
+                className={`flex items-start gap-3.5 py-4 transition-colors rounded-xl px-2 ${
+                  canEdit ? "cursor-pointer hover:bg-surface/50" : ""
+                } ${pendingIndex === index ? "opacity-50" : ""}`}
               >
                 <input
                   type="checkbox"
                   checked={isChecked}
+                  disabled={!canEdit || pendingIndex !== null}
                   onChange={() => toggleItem(index)}
+                  onClick={(e) => e.stopPropagation()}
                   className="mt-1 h-5 w-5 shrink-0 rounded accent-ebp-green cursor-pointer"
                 />
                 <div className="min-w-0 flex-1">

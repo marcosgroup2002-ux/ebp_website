@@ -28,19 +28,28 @@ export default function PaymentsView() {
 
   const [learners, setLearners] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
+  const [actionError, setActionError] = useState("");
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let isMounted = true;
-    fetchLearners().then((data) => {
-      if (isMounted) {
-        setLearners(data || []);
-        setLoading(false);
-      }
-    });
+    fetchLearners()
+      .then((data) => {
+        if (!isMounted) return;
+        setLearners(data);
+        setLoadError("");
+      })
+      .catch((err) => {
+        if (isMounted) setLoadError(err.message);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [reloadKey]);
 
   const [query, setQuery] = useState("");
   const [centerFilter, setCenterFilter] = useState("all");
@@ -80,22 +89,26 @@ export default function PaymentsView() {
   );
 
   const handleAddLearner = async (payload) => {
-    const updated = await createLearner(learners, payload, user);
+    const updated = await createLearner(payload);
     setLearners(updated);
   };
 
   const handleAddPayment = async (learnerId, payment) => {
-    const updated = await recordPayment(learners, learnerId, payment, user);
+    const updated = await recordPayment(learnerId, payment);
     setLearners(updated);
     setHistoryLearner((prev) => (prev && prev.id === learnerId ? updated.find((l) => l.id === learnerId) : prev));
   };
 
   const handleDeleteLearner = async (e, learnerId) => {
     e.stopPropagation();
-    if (window.confirm("Confirmez-vous la suppression définitive de cet apprenant et de ses paiements ?")) {
-      const updated = await deleteLearner(learners, learnerId, user);
+    if (!window.confirm("Confirmez-vous la suppression définitive de cet apprenant et de ses paiements ?")) return;
+    setActionError("");
+    try {
+      const updated = await deleteLearner(learnerId);
       setLearners(updated);
       if (historyLearner?.id === learnerId) setHistoryLearner(null);
+    } catch (err) {
+      setActionError(err.message);
     }
   };
 
@@ -117,7 +130,7 @@ export default function PaymentsView() {
             )}
           </div>
           <p className="mt-1 text-sm text-ink/50">
-            Centres de Calavi & Cotonou · Cohortes actives 18.6, 18.7 et 18.8 · Base de production réelle.
+            Centres de Calavi & Cotonou · Données synchronisées en temps réel avec la base de production.
           </p>
         </div>
 
@@ -128,6 +141,23 @@ export default function PaymentsView() {
           </button>
         )}
       </div>
+
+      {(loadError || actionError) && (
+        <div role="alert" className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-ebp-red-soft">
+          <span>{loadError || actionError}</span>
+          {loadError && (
+            <button
+              onClick={() => {
+                setLoading(true);
+                setReloadKey((k) => k + 1);
+              }}
+              className="rounded-lg bg-white px-3 py-1 text-xs font-semibold text-ink shadow-sm"
+            >
+              Réessayer
+            </button>
+          )}
+        </div>
+      )}
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-2xl border border-ink/10 bg-white p-5 shadow-sm">

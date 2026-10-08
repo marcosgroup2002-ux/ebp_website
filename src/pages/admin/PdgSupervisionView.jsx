@@ -2,8 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   TrendingUp,
   ShieldAlert,
-  KeyRound,
-  CheckCircle,
+  LogIn,
   Users,
   CreditCard,
   Building,
@@ -11,95 +10,83 @@ import {
   Activity,
   Calendar,
   RefreshCw,
-  Mail,
-  MessageSquare,
-  Trash2,
-  XCircle,
 } from "lucide-react";
 import { fetchLearners, getOverdueLearners } from "../../services/paymentsService";
-import { fetchOtpRequests, approveOtpRequest } from "../../services/authService";
 import { fetchAuditLogs } from "../../services/auditService";
 import { createAnnouncement } from "../../services/coachService";
-import { useAdminUser } from "../../context/AdminUserContext";
 import { formatFcfa, ACTIVE_CENTERS, ACTIVE_COHORTS } from "../../data/adminData";
 
-export default function PdgSupervisionView() {
-  const { user } = useAdminUser();
+const LOGIN_ACTIONS = ["CONNEXION", "DECONNEXION"];
 
+export default function PdgSupervisionView() {
   const [learners, setLearners] = useState([]);
-  const [otpRequests, setOtpRequests] = useState([]);
   const [auditLogs, setAuditLogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
+  const [reloadKey, setReloadKey] = useState(0);
 
   const [communiqueTitle, setCommuniqueTitle] = useState("");
   const [communiqueContent, setCommuniqueContent] = useState("");
   const [communiquePriority, setCommuniquePriority] = useState("normale");
   const [communiqueSuccess, setCommuniqueSuccess] = useState(false);
+  const [communiqueError, setCommuniqueError] = useState("");
+  const [publishing, setPublishing] = useState(false);
 
-  const loadData = async () => {
+  const loadData = () => {
     setLoading(true);
-    const [lData, otpData, auditData] = await Promise.all([
-      fetchLearners(),
-      fetchOtpRequests(),
-      fetchAuditLogs(),
-    ]);
-    setLearners(lData || []);
-    setOtpRequests(otpData || []);
-    setAuditLogs(auditData || []);
-    setLoading(false);
+    setReloadKey((k) => k + 1);
   };
 
   useEffect(() => {
-    loadData();
+    let isMounted = true;
+    Promise.all([fetchLearners(), fetchAuditLogs(200)])
+      .then(([lData, auditData]) => {
+        if (!isMounted) return;
+        setLearners(lData);
+        setAuditLogs(auditData);
+        setLoadError("");
+      })
+      .catch((err) => {
+        if (isMounted) setLoadError(err.message);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [reloadKey]);
 
-    const interval = setInterval(loadData, 30000);
+  useEffect(() => {
+    const interval = setInterval(() => setReloadKey((k) => k + 1), 60000);
     return () => clearInterval(interval);
   }, []);
 
-  const handleApproveOtp = async (requestId) => {
-    await approveOtpRequest(requestId);
-    setOtpRequests((prev) =>
-      prev.map((r) => (r.id === requestId ? { ...r, statut: "approved" } : r))
-    );
-  };
-
-  const handleDismissOtp = (requestId) => {
-    setOtpRequests((prev) => prev.filter((r) => r.id !== requestId));
-    try {
-      const stored = JSON.parse(localStorage.getItem("ebp_active_otp_requests") || "[]");
-      localStorage.setItem(
-        "ebp_active_otp_requests",
-        JSON.stringify(stored.filter((r) => r.id !== requestId))
-      );
-    } catch {
-
-    }
-  };
-
-  const handleClearAllOtp = () => {
-    setOtpRequests([]);
-    try {
-      localStorage.setItem("ebp_active_otp_requests", "[]");
-    } catch {
-
-    }
-  };
+  const loginEvents = useMemo(
+    () => auditLogs.filter((log) => LOGIN_ACTIONS.includes(log.action)).slice(0, 5),
+    [auditLogs]
+  );
 
   const handlePublishCommunique = async (e) => {
     e.preventDefault();
-    if (!communiqueTitle.trim() || !communiqueContent.trim()) return;
-
-    await createAnnouncement({
-      titre: communiqueTitle.trim(),
-      contenu: communiqueContent.trim(),
-      priorite: communiquePriority,
-      user,
-    });
-
-    setCommuniqueTitle("");
-    setCommuniqueContent("");
-    setCommuniqueSuccess(true);
-    setTimeout(() => setCommuniqueSuccess(false), 3000);
+    if (publishing || !communiqueTitle.trim() || !communiqueContent.trim()) return;
+    setCommuniqueError("");
+    setPublishing(true);
+    try {
+      await createAnnouncement({
+        titre: communiqueTitle.trim(),
+        contenu: communiqueContent.trim(),
+        priorite: communiquePriority,
+      });
+      setCommuniqueTitle("");
+      setCommuniqueContent("");
+      setCommuniqueSuccess(true);
+      setTimeout(() => setCommuniqueSuccess(false), 3000);
+    } catch (err) {
+      setCommuniqueError(err.message);
+    } finally {
+      setPublishing(false);
+    }
   };
 
   const metrics = useMemo(() => {
@@ -157,7 +144,7 @@ export default function PdgSupervisionView() {
             </span>
           </div>
           <p className="mt-1 text-sm text-ink/50">
-            Superviseur : Mr Sessou Fernando (PDG) · Posture 100% contrôle & lecture analytique de production.
+            Direction Générale · Contrôle et lecture analytique des données de production.
           </p>
         </div>
 
@@ -170,102 +157,42 @@ export default function PdgSupervisionView() {
         </button>
       </div>
 
-      <div className="rounded-2xl border border-amber-200 bg-amber-50/40 p-6 shadow-sm">
-        <div className="flex items-center justify-between border-b border-amber-200/60 pb-3">
-          <div className="flex items-center gap-2">
-            <KeyRound size={20} className="text-amber-700" />
-            <div>
-              <h2 className="font-display text-base font-bold text-amber-900">
-                Validation des Requêtes OTP (Connexions Secrétaire)
-              </h2>
-              <p className="text-xs text-amber-800/80">
-                Chaque tentative de connexion de Miss Amirath déclenche un code de sécurité soumis à votre validation.
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="rounded-full bg-amber-200/80 px-2.5 py-0.5 text-xs font-bold text-amber-900">
-              {otpRequests.filter((r) => r.statut === "pending").length} en attente
-            </span>
-            {otpRequests.length > 0 && (
-              <button
-                onClick={handleClearAllOtp}
-                className="inline-flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2.5 py-1 text-[11px] font-semibold text-red-700 hover:bg-red-100 transition-colors"
-              >
-                <Trash2 size={12} />
-                Effacer tout
-              </button>
-            )}
+      {loadError && (
+        <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-ebp-red-soft">
+          {loadError}
+        </p>
+      )}
+
+      <div className="rounded-2xl border border-ink/10 bg-white p-6 shadow-sm">
+        <div className="flex items-center gap-2 border-b border-ink/10 pb-3">
+          <LogIn size={20} className="text-ebp-blue" />
+          <div>
+            <h2 className="font-display text-base font-bold text-ink">Dernières connexions à l'espace admin</h2>
+            <p className="text-xs text-ink/50">
+              Chaque connexion est authentifiée par Supabase et journalisée côté serveur (adresse IP réelle).
+            </p>
           </div>
         </div>
-
-        <div className="mt-4 space-y-3">
-          {otpRequests.length === 0 ? (
-            <p className="py-2 text-sm text-amber-900/60">Aucune demande de connexion récente.</p>
+        <div className="mt-4 space-y-2">
+          {loginEvents.length === 0 ? (
+            <p className="py-2 text-sm text-ink/50">Aucune connexion récente.</p>
           ) : (
-            otpRequests.slice(0, 3).map((req) => (
+            loginEvents.map((log) => (
               <div
-                key={req.id}
-                className="flex flex-col gap-3 rounded-xl border border-amber-200/80 bg-white p-4 sm:flex-row sm:items-center sm:justify-between shadow-xs"
+                key={log.id}
+                className="flex flex-col gap-1 rounded-xl border border-ink/10 bg-surface/50 px-4 py-3 text-xs sm:flex-row sm:items-center sm:justify-between"
               >
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-ink text-sm">Miss Amirath (Secrétaire)</span>
-                    <span
-                      className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${
-                        req.statut === "pending"
-                          ? "bg-amber-100 text-amber-800 animate-pulse"
-                          : req.statut === "approved"
-                          ? "bg-emerald-100 text-emerald-800"
-                          : "bg-slate-100 text-slate-600"
-                      }`}
-                    >
-                      {req.statut === "pending"
-                        ? "En attente de validation"
-                        : req.statut === "approved"
-                        ? "Approuvé par PDG"
-                        : "Session validée"}
-                    </span>
-                  </div>
-                  <p className="mt-1 text-xs text-ink/60">
-                    Déclenché le : {new Date(req.created_at).toLocaleString("fr-FR")} · IP :{" "}
-                    <span className="font-mono font-medium text-ink">{req.ip_address || "Inconnue"}</span> · Lieu :{" "}
-                    <span className="font-medium text-ink">{req.location || "Cotonou, Bénin"}</span>
-                  </p>
-                  <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[11px]">
-                    <span className="inline-flex items-center gap-1 rounded bg-blue-50 px-2 py-0.5 font-medium text-ebp-blue border border-blue-100">
-                      <Mail size={12} />
-                      Email : marcosgroup2002@gmail.com
-                    </span>
-                    <span className="inline-flex items-center gap-1 rounded bg-emerald-50 px-2 py-0.5 font-medium text-emerald-800 border border-emerald-100">
-                      <MessageSquare size={12} />
-                      SMS : +229 0159123494
-                    </span>
-                  </div>
-                  <p className="mt-2 text-xs font-mono font-bold text-ebp-blue">
-                    Code OTP généré : <span className="bg-blue-50 px-2.5 py-1 rounded tracking-widest text-sm text-ink">{req.code}</span>
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-2 self-start sm:self-auto">
-                  {req.statut === "pending" && (
-                    <button
-                      onClick={() => handleApproveOtp(req.id)}
-                      className="inline-flex items-center gap-1.5 rounded-xl bg-ebp-green px-4 py-2 text-xs font-bold text-white hover:bg-ebp-green/90 transition-colors shadow-sm"
-                    >
-                      <CheckCircle size={14} />
-                      Valider
-                    </button>
-                  )}
-                  <button
-                    onClick={() => handleDismissOtp(req.id)}
-                    title="Supprimer cette notification"
-                    className="inline-flex items-center gap-1 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-100 transition-colors"
-                  >
-                    <XCircle size={14} />
-                    Effacer
-                  </button>
-                </div>
+                <span>
+                  <span className="font-semibold text-ink">{log.user_name}</span>
+                  <span className="ml-1 uppercase text-ink/40">({log.user_role})</span>
+                  <span className="ml-2 rounded bg-ebp-blue/10 px-1.5 py-0.5 font-mono font-bold text-ebp-blue">
+                    {log.action}
+                  </span>
+                </span>
+                <span className="text-ink/50">
+                  {new Date(log.created_at).toLocaleString("fr-FR")} · IP{" "}
+                  <span className="font-mono text-ink">{log.ip_address || "—"}</span>
+                </span>
               </div>
             ))
           )}
@@ -418,6 +345,7 @@ export default function PdgSupervisionView() {
               value={communiqueTitle}
               onChange={(e) => setCommuniqueTitle(e.target.value)}
               placeholder="Ex : Consignes pour l'évaluation de mi-parcours Cohorte 18.7"
+              maxLength={150}
               className="w-full rounded-xl border border-ink/10 bg-surface px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
               required
             />
@@ -429,6 +357,7 @@ export default function PdgSupervisionView() {
               rows={3}
               value={communiqueContent}
               onChange={(e) => setCommuniqueContent(e.target.value)}
+              maxLength={3000}
               placeholder="Rédigez la consigne pédagogique ou administrative destinée à l'équipe des coachs..."
               className="w-full rounded-xl border border-ink/10 bg-surface px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
               required
@@ -464,13 +393,19 @@ export default function PdgSupervisionView() {
 
             <button
               type="submit"
-              className="btn-primary inline-flex items-center gap-2 shadow-md"
+              disabled={publishing}
+              className="btn-primary inline-flex items-center gap-2 shadow-md disabled:opacity-60"
             >
               <Send size={14} />
-              Diffuser le communiqué
+              {publishing ? "Diffusion..." : "Diffuser le communiqué"}
             </button>
           </div>
 
+          {communiqueError && (
+            <p role="alert" className="text-xs font-semibold text-ebp-red-soft">
+              {communiqueError}
+            </p>
+          )}
           {communiqueSuccess && (
             <p className="text-xs font-semibold text-ebp-green animate-fadeIn">
               ✓ Communiqué diffusé avec succès sur le fil d'actualité des coachs !
@@ -484,9 +419,9 @@ export default function PdgSupervisionView() {
             <ShieldAlert size={18} className="text-ebp-blue" />
             <div>
               <h3 className="font-display text-base font-bold text-ink">
-                Traçabilité & Journaux d'Audit (Activité Secrétaire)
+                Traçabilité & Journaux d'Audit
               </h3>
-              <p className="text-xs text-ink/40">Historique des actions avec horodatage, adresse IP et géolocalisation</p>
+              <p className="text-xs text-ink/40">Dernières actions enregistrées côté serveur</p>
             </div>
           </div>
           <span className="text-xs font-semibold text-ink/50">{auditLogs.length} événements enregistrés</span>

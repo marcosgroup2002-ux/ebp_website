@@ -17,6 +17,7 @@ const PdgSupervisionView = lazy(() => import("./pages/admin/PdgSupervisionView")
 const AuditLogsView = lazy(() => import("./pages/admin/AuditLogsView"));
 const AnalyticsView = lazy(() => import("./pages/admin/AnalyticsView"));
 import AnalyticsTracker from "./components/AnalyticsTracker";
+import OfflineBanner from "./components/OfflineBanner";
 
 function PageLoader() {
   return (
@@ -30,12 +31,14 @@ function AdminIndexRedirect() {
   const { user } = useAdminUser();
   if (user?.role === "coach") return <Navigate to="/admin/coachs" replace />;
   if (user?.role === "pdg") return <Navigate to="/admin/pdg" replace />;
-  return <Navigate to="/admin/paiements" replace />;
+  if (user?.role === "secretaire") return <Navigate to="/admin/paiements" replace />;
+  return null;
 }
 
 export default function App() {
   return (
     <Suspense fallback={<PageLoader />}>
+      <OfflineBanner />
       <AnalyticsTracker />
       <Routes>
 

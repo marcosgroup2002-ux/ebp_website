@@ -7,6 +7,7 @@ export default function AddLearnerModal({ open, onClose, onSubmitLearner }) {
   const [cohortsList, setCohortsList] = useState(getActiveCohorts);
   const [showCustomCohort, setShowCustomCohort] = useState(false);
   const [customCohort, setCustomCohort] = useState("");
+  const [submitError, setSubmitError] = useState("");
 
   const {
     register,
@@ -14,7 +15,7 @@ export default function AddLearnerModal({ open, onClose, onSubmitLearner }) {
     watch,
     reset,
     setValue,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
       name: "",
@@ -30,7 +31,11 @@ export default function AddLearnerModal({ open, onClose, onSubmitLearner }) {
 
   const handleAddCustomCohort = () => {
     const trimmed = customCohort.trim();
-    if (!trimmed) return;
+    if (!/^[0-9]{1,3}.[0-9]{1,3}$/.test(trimmed)) {
+      setSubmitError("Format de cohorte attendu : 18.9, 19.0…");
+      return;
+    }
+    setSubmitError("");
     const updated = addCohort(trimmed);
     setCohortsList(updated);
     setValue("cohortNumber", trimmed);
@@ -38,25 +43,33 @@ export default function AddLearnerModal({ open, onClose, onSubmitLearner }) {
     setShowCustomCohort(false);
   };
 
-  const submit = (data) => {
-    const cohortLabel = `Cohorte ${data.cohortNumber} · ${data.center}`;
-    onSubmitLearner({
-      name: data.name.trim(),
-      center: data.center,
-      cohort: cohortLabel,
-      cohortNumber: data.cohortNumber,
-      option: data.option,
-      initialPayment: Number(data.initialPayment) || 0,
-      paymentMode: data.paymentMode,
-    });
-    reset();
-    setShowCustomCohort(false);
-    setCustomCohort("");
+  const close = () => {
+    setSubmitError("");
     onClose();
   };
 
+  const submit = async (data) => {
+    setSubmitError("");
+    try {
+      await onSubmitLearner({
+        name: data.name.trim(),
+        center: data.center,
+        cohortNumber: data.cohortNumber,
+        option: data.option,
+        initialPayment: Number(data.initialPayment) || 0,
+        paymentMode: data.paymentMode,
+      });
+      reset();
+      setShowCustomCohort(false);
+      setCustomCohort("");
+      onClose();
+    } catch (err) {
+      setSubmitError(err.message);
+    }
+  };
+
   return (
-    <Modal open={open} onClose={onClose} title="Inscrire un nouvel apprenant">
+    <Modal open={open} onClose={close} title="Inscrire un nouvel apprenant">
       <form onSubmit={handleSubmit(submit)} className="space-y-4">
         <div>
           <label className="mb-1.5 block text-xs font-medium text-ink/70">Nom complet de l'apprenant</label>
@@ -176,6 +189,10 @@ export default function AddLearnerModal({ open, onClose, onSubmitLearner }) {
               className="w-full rounded-xl border border-ink/10 bg-surface px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
               {...register("initialPayment", {
                 min: { value: 0, message: "Le montant ne peut être négatif." },
+                max: {
+                  value: option === "bloc" ? 150000 : 180000,
+                  message: "Le versement dépasse le total de la formule.",
+                },
               })}
             />
             {errors.initialPayment && (
@@ -198,8 +215,13 @@ export default function AddLearnerModal({ open, onClose, onSubmitLearner }) {
         </div>
 
         <div className="pt-2">
-          <button type="submit" className="btn-primary w-full shadow-md">
-            Valider l'inscription de l'apprenant
+          {submitError && (
+            <p role="alert" className="mb-2 text-xs text-ebp-red-soft">
+              {submitError}
+            </p>
+          )}
+          <button type="submit" disabled={isSubmitting} className="btn-primary w-full shadow-md disabled:opacity-60">
+            {isSubmitting ? "Inscription en cours..." : "Valider l'inscription de l'apprenant"}
           </button>
         </div>
       </form>

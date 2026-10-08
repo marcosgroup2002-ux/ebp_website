@@ -7,7 +7,7 @@ export function getActiveCohorts() {
     const stored = JSON.parse(localStorage.getItem(COHORTS_STORAGE_KEY));
     if (Array.isArray(stored) && stored.length > 0) return stored;
   } catch {
-
+    // Préférence d'affichage illisible : on revient à la liste par défaut.
   }
   return DEFAULT_COHORTS;
 }

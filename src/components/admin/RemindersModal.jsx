@@ -7,14 +7,16 @@ import { buildWhatsAppLink } from "../../lib/whatsapp";
 
 export default function RemindersModal({ open, onClose, stage, learners }) {
   const [copiedId, setCopiedId] = useState(null);
+  const [failedId, setFailedId] = useState(null);
 
   const copy = async (id, text) => {
     try {
       await navigator.clipboard.writeText(text);
+      setFailedId(null);
       setCopiedId(id);
       setTimeout(() => setCopiedId(null), 1500);
     } catch {
-
+      setFailedId(id);
     }
   };
 
@@ -51,7 +53,7 @@ export default function RemindersModal({ open, onClose, stage, learners }) {
                   className="inline-flex items-center gap-1.5 rounded-full border border-ink/10 px-3 py-1.5 text-xs font-medium text-ink/60 hover:bg-surface"
                 >
                   {copiedId === l.id ? <Check size={12} className="text-ebp-green" /> : <Copy size={12} />}
-                  {copiedId === l.id ? "Copié" : "Copier"}
+                  {copiedId === l.id ? "Copié" : failedId === l.id ? "Copie impossible" : "Copier"}
                 </button>
                 <a
                   href={buildWhatsAppLink(message)}
