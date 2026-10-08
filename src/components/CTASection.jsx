@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { AlarmClock, Download, ArrowRight } from "lucide-react";
-import { NEXT_COHORT_DATE, SEATS_LEFT } from "../data/siteContent";
+import { NEXT_COHORT_DATE, SEATS_LEFT, PROSPECTUS_URL } from "../data/siteContent";
 import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
 import Waveform from "./Waveform";
 
@@ -40,9 +40,8 @@ export default function CTASection() {
               <ArrowRight size={16} />
             </a>
             <a
-              href={buildWhatsAppLink(WHATSAPP_MESSAGES.prospectus)}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={PROSPECTUS_URL}
+              download="EBP-Prospectus.pdf"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-white/30 bg-white/10 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20 active:scale-[0.98]"
             >
               <Download size={16} />

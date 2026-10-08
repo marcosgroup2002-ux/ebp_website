@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Quote, PlayCircle } from "lucide-react";
 import { TESTIMONIALS } from "../data/siteContent";
 import { MEDIA, img } from "../data/media";
-import { buildWhatsAppLink } from "../lib/whatsapp";
 import Waveform from "./Waveform";
 
 const PHOTO_KEYS = ["rachidatou", "ulrich", "sandra"];
@@ -116,11 +115,7 @@ export default function TestimonialsSection() {
         </div>
 
         <a
-          href={buildWhatsAppLink(
-            "Bonjour EBP ! J'aimerais voir les vidéos des cérémonies de Graduation et des projets Capstone."
-          )}
-          target="_blank"
-          rel="noopener noreferrer"
+          href="#graduation"
           className="mt-8 flex items-center justify-center gap-2 text-sm font-medium text-ink/60 hover:text-ebp-blue"
         >
           <PlayCircle size={18} className="text-ebp-green" />

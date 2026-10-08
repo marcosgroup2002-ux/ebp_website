@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { ArrowRight, Download, Star } from "lucide-react";
 import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
-import { NEXT_COHORT_DATE } from "../data/siteContent";
+import { NEXT_COHORT_DATE, PROSPECTUS_URL } from "../data/siteContent";
 import { MEDIA, img } from "../data/media";
 import Waveform from "./Waveform";
 
@@ -48,10 +48,6 @@ export default function HeroSection() {
 
   const openWhatsApp = (message) => window.open(buildWhatsAppLink(message), "_blank", "noopener,noreferrer");
   const onEnroll = (data) => openWhatsApp(WHATSAPP_MESSAGES.enrollWithContact(data.contact));
-  const onProspectus = (data) => {
-    const base = WHATSAPP_MESSAGES.prospectus;
-    openWhatsApp(data?.contact ? `${base} Mon contact : ${data.contact}` : base);
-  };
 
   return (
     <section id="top" className="relative flex min-h-screen min-h-[100vh] items-end overflow-hidden bg-ink sm:min-h-[92vh]">
@@ -177,14 +173,14 @@ export default function HeroSection() {
             Démarrer l'inscription (20 000 F)
             <ArrowRight size={16} />
           </button>
-          <button
-            type="button"
-            onClick={handleSubmit(onProspectus, () => onProspectus({}))}
+          <a
+            href={PROSPECTUS_URL}
+            download="EBP-Prospectus.pdf"
             className="mt-3 inline-flex w-full items-center justify-center gap-1.5 text-sm font-medium text-ink/60 hover:text-ebp-blue"
           >
             <Download size={14} />
             Télécharger le prospectus PDF
-          </button>
+          </a>
         </motion.form>
       </div>
     </section>

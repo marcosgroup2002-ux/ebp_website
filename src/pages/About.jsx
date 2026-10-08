@@ -56,8 +56,8 @@ export default function About() {
               Donner à chaque professionnel les moyens de parler anglais sans hésitation
             </h2>
             <p className="mt-5 text-ink/65">
-              English for Busy People (EBP) est un centre d'apprentissage de l'anglais accéléré, fondé
-              par <strong className="text-ink">{FOUNDER_NAME}</strong>, dédié aux professionnels, cadres,
+              English for Busy People (EBP) est un centre d'apprentissage de l'anglais accéléré,{" "}
+              <strong className="text-ink">fondé en 2020 par Mr Sessou Fernando</strong>, dédié aux professionnels, cadres,
               entrepreneurs et étudiants de Cotonou, Calavi et de la diaspora francophone.
             </p>
             <p className="mt-4 text-ink/65">
@@ -84,7 +84,7 @@ export default function About() {
             />
             <div className="absolute -bottom-5 left-5 right-5 rounded-2xl border border-ink/5 bg-white p-4 shadow-card sm:left-6 sm:right-auto sm:w-64">
               <p className="font-display text-sm font-bold text-ink">{FOUNDER_NAME}</p>
-              <p className="text-xs text-ink/60">Fondateur & Directeur Général</p>
+              <p className="text-xs text-ink/60">Fondateur (2020) & Directeur Général</p>
             </div>
           </motion.div>
         </div>
