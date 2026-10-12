@@ -102,24 +102,28 @@ export default function Contact() {
         description="Contactez EBP (English for Busy People) : centres à Cotonou (Vedoko) et Calavi (Zogbadjè), WhatsApp, email. Réponse sous 5 minutes."
         path="/contact"
       />
-      <section className="relative flex min-h-[46vh] items-end overflow-hidden bg-ink lg:min-h-[62vh]">
-        <img
-          src={img(MEDIA.contact.banner, { w: 1920, q: 60 })}
-          srcSet={imgSrcSet(MEDIA.contact.banner)}
-          sizes="100vw"
-          alt="L'équipe EBP à votre écoute"
-          className="absolute inset-0 h-full w-full object-cover object-[50%_24%]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/10" />
-        <div className="container relative pb-14 pt-32">
-          <span className="eyebrow rounded-full bg-ink/70 px-3 py-1.5 text-ebp-green-light backdrop-blur-sm">
-            <Waveform color="bg-ebp-green-light" barClassName="w-[2.5px] h-3" />
-            Contact
-          </span>
-          <h1 className="mt-4 font-display text-4xl font-bold text-white sm:text-5xl">Parlons-en</h1>
-          <p className="mt-3 max-w-xl text-white/70">
-            Passez nous voir à Cotonou ou à Calavi, écrivez-nous sur WhatsApp ou rejoignez-nous en ligne.
-          </p>
+      <section className="bg-ink pt-[104px] sm:pt-[120px]">
+        <div className="relative">
+          <img
+            src={img(MEDIA.contact.banner, { w: 1920, q: 60 })}
+            srcSet={imgSrcSet(MEDIA.contact.banner)}
+            sizes="100vw"
+            alt="L'équipe EBP à votre écoute"
+            className="block aspect-[3/2] w-full object-cover object-[50%_32%] sm:aspect-[2/1] lg:aspect-[21/9] lg:max-h-[78vh] lg:object-[50%_22%]"
+          />
+          <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-t from-ink via-ink/50 via-25% to-transparent to-55% lg:block" />
+          <div className="lg:absolute lg:inset-x-0 lg:bottom-0">
+            <div className="container py-8 sm:py-10 lg:pb-10 lg:pt-0">
+              <span className="eyebrow rounded-full bg-white/10 px-3 py-1.5 text-ebp-green-light lg:bg-ink/70 lg:backdrop-blur-sm">
+                <Waveform color="bg-ebp-green-light" barClassName="w-[2.5px] h-3" />
+                Contact
+              </span>
+              <h1 className="mt-4 font-display text-3xl font-bold text-white sm:text-4xl xl:text-5xl">Parlons-en</h1>
+              <p className="mt-3 max-w-xl text-white/70">
+                Passez nous voir à Cotonou ou à Calavi, écrivez-nous sur WhatsApp ou rejoignez-nous en ligne.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 

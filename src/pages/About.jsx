@@ -19,29 +19,32 @@ export default function About() {
         description="Découvrez la mission et la méthode d'EBP (English for Busy People) : des cohortes de 6 mois pensées pour que les professionnels de Cotonou et Calavi parlent anglais, pas seulement qu'ils l'apprennent."
         path="/a-propos"
       />
-      <section className="relative flex min-h-[55vh] items-end overflow-hidden bg-ink lg:min-h-[70vh]">
-        <img
-          src={img(MEDIA.about.team, { w: 1920, q: 65 })}
-          srcSet={imgSrcSet(MEDIA.about.team)}
-          sizes="100vw"
-          alt="L'équipe et la communauté EBP"
-          className="absolute inset-0 h-full w-full object-cover object-[50%_26%]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/10" />
-        <div className="container relative pb-16 pt-40">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <span className="eyebrow rounded-full bg-ink/70 px-3 py-1.5 text-ebp-green-light backdrop-blur-sm">
-              <Waveform color="bg-ebp-green-light" barClassName="w-[2.5px] h-3" />
-              À propos d'EBP
-            </span>
-            <h1 className="mt-4 max-w-2xl font-display text-4xl font-bold text-white sm:text-5xl">
-              Une méthode pensée pour que vous parliez, pas seulement pour que vous appreniez.
-            </h1>
-          </motion.div>
+      <section className="bg-ink pt-[104px] sm:pt-[120px]">
+        <div className="relative">
+          <img
+            src={img(MEDIA.about.team, { w: 1920, q: 65 })}
+            srcSet={imgSrcSet(MEDIA.about.team)}
+            sizes="100vw"
+            alt="L'équipe et la communauté EBP"
+            className="block aspect-[3/2] w-full object-cover object-[50%_40%] sm:aspect-[2/1] lg:aspect-[21/9] lg:max-h-[78vh] lg:object-[50%_33%]"
+          />
+          <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-t from-ink via-ink/50 via-25% to-transparent to-55% lg:block" />
+          <div className="lg:absolute lg:inset-x-0 lg:bottom-0">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="container py-8 sm:py-10 lg:pb-10 lg:pt-0"
+            >
+              <span className="eyebrow rounded-full bg-white/10 px-3 py-1.5 text-ebp-green-light lg:bg-ink/70 lg:backdrop-blur-sm">
+                <Waveform color="bg-ebp-green-light" barClassName="w-[2.5px] h-3" />
+                À propos d'EBP
+              </span>
+              <h1 className="mt-4 max-w-2xl font-display text-3xl font-bold text-white sm:text-4xl lg:max-w-4xl xl:text-5xl">
+                Une méthode pensée pour que vous parliez, pas seulement pour que vous appreniez.
+              </h1>
+            </motion.div>
+          </div>
         </div>
       </section>
 
