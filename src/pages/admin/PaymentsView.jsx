@@ -257,8 +257,87 @@ export default function PaymentsView() {
         </select>
       </div>
 
-      <div className="mt-4 overflow-x-auto rounded-2xl border border-ink/10 bg-white shadow-sm">
-        <table className="w-full min-w-[720px] text-left text-sm">
+      <div className="mt-4 space-y-3 md:hidden">
+        {loading ? (
+          <p className="py-10 text-center text-xs text-ink/40">Chargement des données de production...</p>
+        ) : filtered.length === 0 ? (
+          <p className="rounded-2xl border border-ink/10 bg-white px-4 py-10 text-center text-sm text-ink/50">
+            Aucun apprenant trouvé.
+          </p>
+        ) : (
+          filtered.map((l) => (
+            <article
+              key={l.id}
+              onClick={() => setHistoryLearner(l)}
+              className="cursor-pointer rounded-2xl border border-ink/10 bg-white p-4 shadow-sm active:bg-surface"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="truncate font-semibold text-ink">{l.name}</p>
+                  <p className="mt-0.5 flex items-center gap-1 text-xs text-ink/50">
+                    <MapPin size={12} className="shrink-0 text-ebp-blue" />
+                    {l.cohort}
+                  </p>
+                </div>
+                <span
+                  className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                    TONE_CLASSES[STATUS_LABELS[l.status]?.tone || "blue"]
+                  }`}
+                >
+                  {STATUS_LABELS[l.status]?.label || l.status}
+                </span>
+              </div>
+
+              <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                <div className="rounded-xl bg-surface p-2.5">
+                  <p className="text-ink/40">Payé / Total</p>
+                  <p className="mt-0.5 font-semibold text-ink">
+                    {formatFcfa(l.paid)} / {formatFcfa(l.total)}
+                  </p>
+                </div>
+                <div className="rounded-xl bg-surface p-2.5">
+                  <p className="text-ink/40">{l.total - l.paid > 0 ? "Reste à payer" : "Échéance"}</p>
+                  <p className={`mt-0.5 font-semibold ${l.total - l.paid > 0 ? "text-ebp-red-soft" : "text-ebp-green"}`}>
+                    {l.total - l.paid > 0 ? formatFcfa(l.total - l.paid) : "Soldé"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-3 flex items-center justify-between gap-2 text-xs text-ink/50">
+                <span>
+                  {l.option === "bloc" ? "Bloc" : "Échelonné"}
+                  {l.nextDueDate ? ` · échéance ${l.nextDueDate}` : ""}
+                </span>
+                {!isReadOnly && (
+                  <span className="flex items-center gap-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPaymentLearner(l);
+                      }}
+                      aria-label="Enregistrer un versement"
+                      className="flex h-10 items-center gap-1.5 rounded-full bg-ebp-green px-4 text-xs font-semibold text-white"
+                    >
+                      <Plus size={14} />
+                      Versement
+                    </button>
+                    <button
+                      onClick={(e) => handleDeleteLearner(e, l.id)}
+                      aria-label="Supprimer le dossier"
+                      className="flex h-10 w-10 items-center justify-center rounded-full bg-red-50 text-ebp-red-soft"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </span>
+                )}
+              </div>
+            </article>
+          ))
+        )}
+      </div>
+
+      <div className="mt-4 hidden overflow-x-auto rounded-2xl border border-ink/10 bg-white shadow-sm md:block">
+        <table className="w-full min-w-[680px] text-left text-sm">
           <thead>
             <tr className="border-b border-ink/10 bg-surface/50 text-xs uppercase tracking-wide text-ink/40">
               <th className="px-4 py-3.5">Apprenant</th>

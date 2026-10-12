@@ -126,8 +126,38 @@ export default function AuditLogsView() {
           ))}
         </select>
       </div>
-      <div className="overflow-x-auto rounded-2xl border border-ink/10 bg-white shadow-sm">
-        <table className="w-full min-w-[780px] text-left text-xs">
+      <div className="space-y-3 md:hidden">
+        {loading ? (
+          <p className="py-10 text-center text-xs text-ink/40">Chargement du journal d'audit...</p>
+        ) : filteredLogs.length === 0 ? (
+          <p className="py-10 text-center text-sm text-ink/40">Aucun enregistrement ne correspond aux critères.</p>
+        ) : (
+          filteredLogs.map((log) => (
+            <article key={log.id} className="rounded-2xl border border-ink/10 bg-white p-4 shadow-sm">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="rounded-md bg-ebp-blue/10 px-2 py-0.5 font-mono text-[11px] font-bold text-ebp-blue">
+                  {log.action}
+                </span>
+                <span className="text-[11px] text-ink/50">{new Date(log.created_at).toLocaleString("fr-FR")}</span>
+              </div>
+              <p className="mt-2 text-sm leading-relaxed text-ink/80">{log.details}</p>
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-ink/5 pt-2 text-xs">
+                <span>
+                  <span className="font-semibold text-ink">{log.user_name}</span>
+                  <span className="ml-1 text-[10px] uppercase text-ink/40">({log.user_role})</span>
+                </span>
+                <span className="flex items-center gap-1.5 font-mono text-ink/60">
+                  <Globe size={12} className="shrink-0 text-ink/30" />
+                  {log.ip_address || "—"}
+                </span>
+              </div>
+            </article>
+          ))
+        )}
+      </div>
+
+      <div className="hidden overflow-x-auto rounded-2xl border border-ink/10 bg-white shadow-sm md:block">
+        <table className="w-full min-w-[720px] text-left text-xs">
           <thead>
             <tr className="border-b border-ink/10 bg-surface/50 text-ink/40 uppercase tracking-wider">
               <th className="py-3 px-4">Date & Heure</th>

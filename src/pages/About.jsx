@@ -19,13 +19,13 @@ export default function About() {
         description="Découvrez la mission et la méthode d'EBP (English for Busy People) : des cohortes de 6 mois pensées pour que les professionnels de Cotonou et Calavi parlent anglais, pas seulement qu'ils l'apprennent."
         path="/a-propos"
       />
-      <section className="relative flex min-h-[55vh] items-end overflow-hidden bg-ink">
+      <section className="relative flex min-h-[55vh] items-end overflow-hidden bg-ink lg:min-h-[70vh]">
         <img
           src={img(MEDIA.about.team, { w: 1920, q: 65 })}
           srcSet={imgSrcSet(MEDIA.about.team)}
           sizes="100vw"
           alt="L'équipe et la communauté EBP"
-          className="absolute inset-0 h-full w-full object-cover object-center"
+          className="absolute inset-0 h-full w-full object-cover object-[50%_26%]"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/10" />
         <div className="container relative pb-16 pt-40">
@@ -34,7 +34,7 @@ export default function About() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
-            <span className="eyebrow text-ebp-green-light">
+            <span className="eyebrow rounded-full bg-ink/70 px-3 py-1.5 text-ebp-green-light backdrop-blur-sm">
               <Waveform color="bg-ebp-green-light" barClassName="w-[2.5px] h-3" />
               À propos d'EBP
             </span>
@@ -46,7 +46,7 @@ export default function About() {
       </section>
 
       <section className="section-pad bg-white">
-        <div className="container grid gap-14 lg:grid-cols-2 lg:items-center">
+        <div className="container grid gap-14 md:grid-cols-2 md:items-center md:gap-10 lg:gap-14">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}

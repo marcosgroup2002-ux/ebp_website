@@ -13,7 +13,7 @@ export default function MethodSection() {
           srcSet={imgSrcSet(MEDIA.method.banner)}
           sizes="100vw"
           alt="Classe EBP en session interactive de pratique orale"
-          className="h-[380px] w-full object-cover object-center sm:h-[420px]"
+          className="h-[380px] w-full object-cover object-[50%_18%] sm:h-[440px] lg:h-[560px] 2xl:h-[680px]"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/50 to-ink/20" />
         <div className="absolute inset-0 flex items-end">
@@ -24,7 +24,7 @@ export default function MethodSection() {
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             className="container pb-12"
           >
-            <span className="eyebrow text-ebp-green-light">
+            <span className="eyebrow rounded-full bg-ink/70 px-3 py-1.5 text-ebp-green-light backdrop-blur-sm">
               <Waveform color="bg-ebp-green-light" barClassName="w-[2.5px] h-3" />
               Notre philosophie
             </span>
@@ -52,7 +52,7 @@ export default function MethodSection() {
             </p>
           </motion.div>
 
-          <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-14 flex flex-wrap justify-center gap-4">
             {SESSION_STEPS.map((step, i) => (
               <motion.div
                 key={step.title}
@@ -60,7 +60,7 @@ export default function MethodSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.5, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }}
-                className="rounded-2xl border border-ink/10 bg-surface p-5"
+                className="w-full rounded-2xl border border-ink/10 bg-surface p-5 sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)]"
               >
                 <div className="flex items-center gap-2">
                   <span className="flex h-7 w-7 items-center justify-center rounded-full bg-ebp-blue text-xs font-bold text-white">

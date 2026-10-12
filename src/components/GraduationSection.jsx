@@ -195,7 +195,7 @@ export default function GraduationSection() {
           </p>
         </motion.div>
 
-        <div className="mt-12 grid gap-6 lg:grid-cols-[1.6fr,1fr]">
+        <div className="mt-12 grid gap-6 md:grid-cols-[1.4fr,1fr] lg:grid-cols-[1.6fr,1fr]">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}

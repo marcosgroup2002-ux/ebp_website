@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { ArrowRight, Download, Star } from "lucide-react";
@@ -7,17 +7,31 @@ import { NEXT_COHORT_DATE, PROSPECTUS_URL } from "../data/siteContent";
 import { MEDIA, img } from "../data/media";
 import Waveform from "./Waveform";
 
-// Sur téléphone et tablette, vidéo et photos en version légère.
-const IS_SMALL_SCREEN = typeof window !== "undefined" && window.innerWidth < 1024;
-const SLIDE_WIDTH = IS_SMALL_SCREEN ? 960 : 1920;
-const VIDEO_SRC = IS_SMALL_SCREEN ? MEDIA.hero.video.mp4Mobile : MEDIA.hero.video.mp4;
+const DESKTOP_QUERY = "(min-width: 1024px)";
 
-const SLIDES = [
-  { type: "video" },
-  ...MEDIA.hero.slides.map((id) => ({ type: "image", id })),
-];
+function subscribeDesktop(callback) {
+  const mq = window.matchMedia(DESKTOP_QUERY);
+  mq.addEventListener("change", callback);
+  return () => mq.removeEventListener("change", callback);
+}
+
+// Vrai sur ordinateur et tablette en paysage : la vidéo verticale y est affichée en entier
+// dans un cadre, au lieu d'être étirée en fond d'écran et rognée.
+function useIsDesktop() {
+  return useSyncExternalStore(
+    subscribeDesktop,
+    () => window.matchMedia(DESKTOP_QUERY).matches,
+    () => false
+  );
+}
+
+const IMAGE_SLIDES = MEDIA.hero.slides.map((id) => ({ type: "image", id }));
 
 export default function HeroSection() {
+  const isDesktop = useIsDesktop();
+  const slides = useMemo(() => (isDesktop ? IMAGE_SLIDES : [{ type: "video" }, ...IMAGE_SLIDES]), [isDesktop]);
+  const slideWidth = isDesktop ? 1920 : 960;
+
   const [slide, setSlide] = useState(0);
   const videoRef = useRef(null);
   const {
@@ -26,47 +40,45 @@ export default function HeroSection() {
     formState: { errors },
   } = useForm();
 
+  const current = Math.min(slide, slides.length - 1);
+  const currentIsVideo = slides[current].type === "video";
+
   useEffect(() => {
-    // Précharge les photos après le démarrage de la vidéo, sans lui voler la bande passante.
+    // Précharge les photos après le premier affichage, sans voler la bande passante à la vidéo.
     const timer = setTimeout(() => {
       MEDIA.hero.slides.forEach((path) => {
         const im = new Image();
-        im.src = img(path, { w: SLIDE_WIDTH });
+        im.src = img(path, { w: slideWidth });
       });
     }, 2500);
     return () => clearTimeout(timer);
-  }, []);
+  }, [slideWidth]);
 
   useEffect(() => {
-    if (slide === 0) {
+    if (currentIsVideo) {
       if (videoRef.current) {
         videoRef.current.currentTime = 0;
         videoRef.current.play().catch(() => {});
       }
-      const fallback = setTimeout(() => {
-        setSlide(1);
-      }, 7000);
+      const fallback = setTimeout(() => setSlide(1), 7000);
       return () => clearTimeout(fallback);
-    } else {
-      const timer = setTimeout(() => {
-        setSlide((s) => (s + 1) % SLIDES.length);
-      }, 4200);
-      return () => clearTimeout(timer);
     }
-  }, [slide]);
+    const timer = setTimeout(() => setSlide((s) => (s + 1) % slides.length), 4200);
+    return () => clearTimeout(timer);
+  }, [current, currentIsVideo, slides.length]);
 
   const openWhatsApp = (message) => window.open(buildWhatsAppLink(message), "_blank", "noopener,noreferrer");
   const onEnroll = (data) => openWhatsApp(WHATSAPP_MESSAGES.enrollWithContact(data.contact));
 
   return (
-    <section id="top" className="relative flex min-h-screen min-h-[100vh] items-end overflow-hidden bg-ink sm:min-h-[92vh]">
+    <section id="top" className="relative flex min-h-screen min-h-[100vh] items-end overflow-hidden bg-ink sm:min-h-[92vh] lg:items-center">
 
       <div className="absolute inset-0">
-        {SLIDES.map((s, i) => (
+        {slides.map((s, i) => (
           <div
-            key={i}
+            key={s.id || "video"}
             className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-              i === slide ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
+              i === current ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
             }`}
           >
             {s.type === "video" ? (
@@ -79,40 +91,43 @@ export default function HeroSection() {
                 onEnded={() => setSlide(1)}
                 poster={MEDIA.hero.video.poster}
               >
-                <source src={VIDEO_SRC} type="video/mp4" />
+                <source src={MEDIA.hero.video.mp4Mobile} type="video/mp4" />
               </video>
             ) : (
               <img
-                src={img(s.id, { w: SLIDE_WIDTH, q: 70 })}
+                src={img(s.id, { w: slideWidth, q: 70 })}
                 alt=""
-                loading={i === 1 ? "eager" : "lazy"}
+                loading={i <= 1 ? "eager" : "lazy"}
                 decoding="async"
                 className={`h-full w-full object-cover transition-transform ease-out ${
-                  i === slide ? "scale-110" : "scale-100"
+                  i === current ? "scale-105" : "scale-100"
                 }`}
                 style={{
-                  transitionDuration: i === slide ? "5500ms" : "0ms",
+                  transitionDuration: i === current ? "5500ms" : "0ms",
+                  objectPosition: MEDIA.hero.focus[s.id] || "50% 25%",
+                  transformOrigin: MEDIA.hero.focus[s.id] || "50% 25%",
                 }}
               />
             )}
           </div>
         ))}
 
-        <div className="absolute inset-0 z-20 bg-gradient-to-t from-ink via-ink/60 to-ink/20" />
+        <div className="absolute inset-0 z-20 bg-gradient-to-t from-ink via-ink/75 to-ink/45 lg:bg-gradient-to-r lg:from-ink/90 lg:via-ink/65 lg:to-ink/40" />
       </div>
 
-      <div className="absolute right-6 top-24 z-30 hidden flex-col gap-2 sm:flex">
-        {SLIDES.map((_, i) => (
+      <div className="absolute right-6 top-36 z-30 hidden flex-col gap-2 sm:flex lg:hidden">
+        {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => setSlide(i)}
             aria-label={`Visuel ${i + 1}`}
-            className={`h-1.5 w-6 rounded-full transition-all ${i === slide ? "bg-ebp-green-light" : "bg-white/30"}`}
+            className={`h-1.5 w-6 rounded-full transition-all ${i === current ? "bg-ebp-green-light" : "bg-white/30"}`}
           />
         ))}
       </div>
 
-      <div className="container relative z-30 grid gap-8 pb-12 pt-28 sm:gap-10 sm:pb-16 sm:pt-36 lg:grid-cols-[1.1fr,0.9fr] lg:items-end lg:pt-40">
+      <div className="container relative z-30 grid gap-8 pb-12 pt-32 sm:gap-10 sm:pb-16 sm:pt-40 lg:grid-cols-[minmax(0,1fr),auto] lg:items-center lg:gap-14 lg:pb-16 lg:pt-40 xl:gap-20">
+        <div className="flex min-w-0 flex-col gap-8">
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
@@ -162,7 +177,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.75, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full rounded-2xl bg-white p-5 shadow-card sm:p-6"
+          className="w-full rounded-2xl bg-white p-5 shadow-card sm:p-6 lg:max-w-xl"
         >
           <p className="font-display text-sm font-semibold text-ink">Démarrez votre inscription</p>
           <label htmlFor="contact" className="mb-2 mt-3 block text-xs font-medium text-ink/50">
@@ -191,6 +206,33 @@ export default function HeroSection() {
             Télécharger le prospectus PDF
           </a>
         </motion.form>
+        </div>
+
+        {isDesktop && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="relative justify-self-end"
+          >
+            <div className="relative aspect-[9/16] h-[min(66vh,640px)] overflow-hidden rounded-[2rem] border border-white/25 bg-ink shadow-2xl ring-8 ring-white/10">
+              <video
+                className="h-full w-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+                poster={MEDIA.hero.video.poster}
+              >
+                <source src={MEDIA.hero.video.mp4} type="video/mp4" />
+              </video>
+              <span className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-ink/70 px-3 py-1.5 text-[11px] font-semibold text-white backdrop-blur-sm">
+                <Waveform color="bg-ebp-green-light" barClassName="w-[2px] h-2.5" />
+                EBP en action
+              </span>
+            </div>
+          </motion.div>
+        )}
       </div>
     </section>
   );

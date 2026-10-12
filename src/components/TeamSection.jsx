@@ -7,7 +7,7 @@ import Waveform from "./Waveform";
 export default function TeamSection() {
   return (
     <section className="section-pad bg-surface">
-      <div className="container grid gap-14 lg:grid-cols-2 lg:items-center">
+      <div className="container grid gap-14 md:grid-cols-2 md:items-center md:gap-10 lg:gap-14">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -44,12 +44,12 @@ export default function TeamSection() {
           className="relative"
         >
           <img
-            src={img(MEDIA.team.coaching1, { w: 900, q: 72 })}
+            src={img(MEDIA.team.coaching1, { w: 960 })}
             alt="Équipe des formateurs et coachs certifiés EBP"
-            className="aspect-[4/3] w-full rounded-3xl object-cover object-top shadow-card sm:aspect-[4/5]"
+            className="aspect-[3/2] w-full rounded-3xl object-cover object-[50%_30%] shadow-card"
           />
 
-          <div className="absolute -bottom-6 left-6 right-6 rounded-2xl bg-white p-5 shadow-card sm:left-8 sm:right-auto sm:w-72">
+          <div className="relative mx-4 -mt-8 rounded-2xl bg-white p-5 shadow-card sm:mx-6 lg:absolute lg:-bottom-8 lg:left-8 lg:mx-0 lg:mt-0 lg:w-72">
             <div className="flex items-center gap-2.5">
               <span className="flex h-9 w-9 items-center justify-center rounded-full bg-ebp-blue/10 text-ebp-blue">
                 <MessagesSquare size={16} />

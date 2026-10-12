@@ -43,6 +43,14 @@ export const MEDIA = {
       "/photos/classroom-whiteboard.jpeg",
       "/photos/team-meeting.jpeg",
     ],
+    // Point de cadrage de chaque photo (x y) : garde les visages visibles quel que soit l'écran.
+    focus: {
+      "/photos/classroom-session.jpeg": "40% 22%",
+      "/photos/team-all.jpeg": "50% 28%",
+      "/photos/classroom-group.jpeg": "58% 25%",
+      "/photos/classroom-whiteboard.jpeg": "50% 20%",
+      "/photos/team-meeting.jpeg": "50% 35%",
+    },
     video: {
 
       // Rendus plus légers que le 1080p d'origine (5,9 Mo) : 1,7 Mo sur mobile, 2,9 Mo sur ordinateur.

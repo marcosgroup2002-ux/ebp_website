@@ -2,7 +2,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
 import { PROGRAM_MONTHS } from "../data/siteContent";
-import { MEDIA, img } from "../data/media";
+import { MEDIA, img, imgSrcSet } from "../data/media";
 import Waveform from "./Waveform";
 
 export default function ProgramSection() {
@@ -19,7 +19,7 @@ export default function ProgramSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="min-w-0 lg:sticky lg:top-28"
+            className="min-w-0"
           >
             <span className="eyebrow">
               <Waveform barClassName="w-[2.5px] h-3" />
@@ -34,17 +34,23 @@ export default function ProgramSection() {
             </p>
 
             <img
-              src={img(MEDIA.method.group, { w: 900, q: 70 })}
+              src={img(MEDIA.method.group, { w: 960 })}
+              srcSet={imgSrcSet(MEDIA.method.group)}
+              sizes="(min-width: 1024px) 42vw, 100vw"
               alt="Séance de pratique orale en groupe"
-              className="mt-6 hidden aspect-[4/3] w-full max-w-md rounded-2xl object-cover shadow-soft lg:block"
+              loading="lazy"
+              className="mt-8 hidden aspect-[3/2] w-full rounded-3xl object-cover object-[50%_30%] shadow-soft lg:block"
             />
 
-            <div className="mt-8 flex gap-2 overflow-x-auto pb-2 lg:grid lg:grid-cols-2 lg:overflow-visible">
+          </motion.div>
+
+          <div className="min-w-0 space-y-6">
+            <div className="flex gap-2 overflow-x-auto pb-2 sm:grid sm:grid-cols-3 sm:overflow-visible sm:pb-0 lg:grid-cols-6">
               {PROGRAM_MONTHS.map((m, i) => (
                 <button
                   key={m.month}
                   onClick={() => setActive(i)}
-                  className={`shrink-0 rounded-xl border px-4 py-3 text-left text-sm font-semibold transition-all ${
+                  className={`shrink-0 rounded-xl border px-4 py-3 text-center text-sm font-semibold transition-all ${
                     active === i
                       ? "border-ebp-blue bg-ebp-blue text-white shadow-soft"
                       : "border-ink/10 bg-surface text-ink/70 hover:border-ebp-blue/40"
@@ -54,14 +60,12 @@ export default function ProgramSection() {
                 </button>
               ))}
             </div>
-          </motion.div>
-
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-            className="relative min-w-0 min-h-[280px] rounded-3xl border border-ink/10 bg-surface p-8 sm:p-10"
+            className="relative min-w-0 min-h-[280px] rounded-3xl border border-ink/10 bg-surface p-6 sm:p-10 lg:min-h-[360px]"
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -100,6 +104,8 @@ export default function ProgramSection() {
               ))}
             </div>
           </motion.div>
+
+          </div>
         </div>
       </div>
     </section>

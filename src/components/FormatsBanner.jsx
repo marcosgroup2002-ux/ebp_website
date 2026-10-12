@@ -13,7 +13,7 @@ export default function FormatsBanner() {
         srcSet={imgSrcSet(MEDIA.formats.banner)}
         sizes="100vw"
         alt="Formations EBP"
-        className="absolute inset-0 h-full w-full object-cover"
+        className="absolute inset-0 h-full w-full object-cover object-[50%_30%]"
       />
       <div className="absolute inset-0 bg-gradient-to-r from-ebp-green/95 to-ebp-green-light/90" />
       <div className="container relative grid grid-cols-2 gap-6 py-8 sm:grid-cols-4 sm:gap-4">

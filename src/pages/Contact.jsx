@@ -102,17 +102,17 @@ export default function Contact() {
         description="Contactez EBP (English for Busy People) : centres à Cotonou (Vedoko) et Calavi (Zogbadjè), WhatsApp, email. Réponse sous 5 minutes."
         path="/contact"
       />
-      <section className="relative flex min-h-[42vh] items-end overflow-hidden bg-ink">
+      <section className="relative flex min-h-[46vh] items-end overflow-hidden bg-ink lg:min-h-[62vh]">
         <img
           src={img(MEDIA.contact.banner, { w: 1920, q: 60 })}
           srcSet={imgSrcSet(MEDIA.contact.banner)}
           sizes="100vw"
           alt="L'équipe EBP à votre écoute"
-          className="absolute inset-0 h-full w-full object-cover object-center"
+          className="absolute inset-0 h-full w-full object-cover object-[50%_24%]"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/10" />
         <div className="container relative pb-14 pt-32">
-          <span className="eyebrow text-ebp-green-light">
+          <span className="eyebrow rounded-full bg-ink/70 px-3 py-1.5 text-ebp-green-light backdrop-blur-sm">
             <Waveform color="bg-ebp-green-light" barClassName="w-[2.5px] h-3" />
             Contact
           </span>
@@ -136,7 +136,7 @@ export default function Contact() {
             </p>
           </div>
 
-          <div className="mt-12 grid gap-6 lg:grid-cols-2">
+          <div className="mt-12 grid gap-6 md:grid-cols-2">
             {CONTACT_INFO.centers.map((center) => (
               <CenterCard key={center.id} center={center} />
             ))}
@@ -145,7 +145,7 @@ export default function Contact() {
       </section>
 
       <section className="section-pad bg-white">
-        <div className="container grid gap-12 lg:grid-cols-[1fr,1.1fr]">
+        <div className="container grid gap-12 md:grid-cols-2 md:gap-8 lg:grid-cols-[1fr,1.1fr] lg:gap-12">
           <div className="space-y-4">
             <h2 className="font-display text-2xl font-bold text-ink">Une question ? Écrivez-nous</h2>
             <p className="text-sm text-ink/60">Notre équipe vous répond rapidement, du lundi au samedi.</p>

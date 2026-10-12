@@ -24,7 +24,7 @@ function PillarCard({ pillar, index }) {
         highlighted ? "border-transparent bg-ebp-blue text-white" : "border-ink/10 bg-white text-ink"
       }`}
     >
-      <div className="relative h-44 shrink-0 overflow-hidden sm:h-56">
+      <div className="relative aspect-[16/10] shrink-0 overflow-hidden lg:aspect-[16/9]">
         <img
           src={img(MEDIA.pillars[pillar.icon], { w: 960 })}
           srcSet={imgSrcSet(MEDIA.pillars[pillar.icon])}
@@ -32,7 +32,7 @@ function PillarCard({ pillar, index }) {
           alt=""
           loading={index === 0 ? "eager" : "lazy"}
           draggable="false"
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover object-[50%_28%]"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ebp-blue/80 via-ebp-blue/25 to-transparent" />
         <span className="absolute left-4 top-4 rounded-full bg-white/90 px-2.5 py-1 font-display text-xs font-bold text-ebp-blue">

@@ -15,11 +15,11 @@ export default function CoverageSection() {
         srcSet={imgSrcSet(MEDIA.coverage.banner)}
         sizes="100vw"
         alt="Communauté et apprenants EBP"
-        className="absolute inset-0 h-full w-full object-cover"
+        className="absolute inset-0 h-full w-full object-cover object-[50%_25%]"
       />
       <div className="absolute inset-0 bg-ebp-blue-dark/85" />
 
-      <div className="container relative section-pad grid gap-12 lg:grid-cols-2 lg:items-center">
+      <div className="container relative section-pad grid gap-10 md:grid-cols-2 md:items-center lg:gap-12">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
