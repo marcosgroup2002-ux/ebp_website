@@ -21,22 +21,27 @@
   }
 
   ::selection {
-    @apply bg-ebp-green/20 text-ebp-blue;
+    @apply bg-ebp-blue/15 text-ebp-blue;
   }
 
   :focus-visible {
-    outline: 2px solid #00873D;
+    outline: 2px solid #002B9A;
     outline-offset: 3px;
   }
 }
 
 @layer components {
   .eyebrow {
-    @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-ebp-green;
+    @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-ebp-blue;
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-ebp-green px-6 py-3.5 text-sm font-semibold text-white shadow-[0_10px_25px_-8px_rgba(0,135,61,0.6)] transition-all duration-200 hover:bg-ebp-green-light hover:shadow-[0_14px_30px_-8px_rgba(0,135,61,0.7)] active:scale-[0.98];
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-ebp-blue px-6 py-3.5 text-sm font-semibold text-white shadow-[0_10px_25px_-10px_rgba(0,43,154,0.55)] transition-all duration-200 hover:bg-ebp-blue-dark hover:shadow-[0_14px_30px_-10px_rgba(0,43,154,0.6)] active:scale-[0.98];
+  }
+
+  /* Vert réservé aux actions WhatsApp. */
+  .btn-whatsapp {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-ebp-green px-6 py-3.5 text-sm font-semibold text-white shadow-[0_10px_25px_-10px_rgba(0,135,61,0.5)] transition-all duration-200 hover:bg-ebp-green-light active:scale-[0.98];
   }
 
   .btn-secondary {

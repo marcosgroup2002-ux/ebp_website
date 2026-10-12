@@ -45,14 +45,14 @@ export default function Footer() {
             cadres, entrepreneurs et étudiants.
           </p>
           <div className="mt-5 flex items-center gap-2 text-sm text-white/60">
-            <MapPin size={15} className="text-ebp-green-light" />
+            <MapPin size={15} className="text-ebp-sky" />
             Cotonou (Vedoko) · Calavi (Zogbadjè) · En Ligne
           </div>
           <a
             href={`mailto:${CONTACT_INFO.email}`}
             className="mt-2 flex items-center gap-2 break-all text-sm text-white/60 hover:text-white"
           >
-            <Mail size={15} className="shrink-0 text-ebp-green-light" />
+            <Mail size={15} className="shrink-0 text-ebp-sky" />
             {CONTACT_INFO.email}
           </a>
           <a
@@ -103,16 +103,16 @@ export default function Footer() {
               href={mapsDirectionsLink(center.coordinates)}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:border-ebp-green-light/60 hover:bg-white/10"
+              className="group flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:border-ebp-sky/60 hover:bg-white/10"
             >
               <span className="flex min-w-0 items-center gap-3">
-                <MapPin size={18} className="shrink-0 text-ebp-green-light" />
+                <MapPin size={18} className="shrink-0 text-ebp-sky" />
                 <span className="min-w-0">
                   <span className="block text-sm font-semibold text-white">{center.name}</span>
                   <span className="block truncate text-xs text-white/50">{center.address}</span>
                 </span>
               </span>
-              <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-ebp-green px-3.5 py-2 text-xs font-semibold text-white group-hover:bg-ebp-green-light">
+              <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-2 text-xs font-semibold text-white ring-1 ring-white/20 group-hover:bg-white group-hover:text-ink">
                 <Navigation size={13} />
                 Itinéraire
               </span>

@@ -28,7 +28,7 @@ export default function BlogPost() {
         </Link>
 
         <div className="mt-6 flex items-center gap-3 text-xs text-ink/50">
-          <span className="rounded-full bg-ebp-green/10 px-2.5 py-1 font-semibold text-ebp-green">{post.category}</span>
+          <span className="rounded-full bg-ebp-blue/10 px-2.5 py-1 font-semibold text-ebp-blue">{post.category}</span>
           <span className="flex items-center gap-1">
             <Clock size={12} />
             {post.readTime}
@@ -61,7 +61,7 @@ export default function BlogPost() {
                 <ul className="ml-1 space-y-2">
                   {section.list.map((item) => (
                     <li key={item} className="flex items-start gap-2 text-ink/70">
-                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-ebp-green" />
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-ebp-blue" />
                       {item}
                     </li>
                   ))}

@@ -76,10 +76,10 @@ export default function ProgramSection() {
                 transition={{ duration: 0.3 }}
               >
                 <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-ebp-green text-sm font-bold text-white">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-ebp-blue text-sm font-bold text-white">
                     {active + 1}
                   </span>
-                  <span className="text-xs font-semibold uppercase tracking-wider text-ebp-green">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-ebp-blue">
                     {current.month} / 6
                   </span>
                 </div>
@@ -98,7 +98,7 @@ export default function ProgramSection() {
                 <span
                   key={i}
                   className={`h-1.5 flex-1 rounded-full transition-colors ${
-                    i <= active ? "bg-ebp-green" : "bg-ink/10"
+                    i <= active ? "bg-ebp-blue" : "bg-ink/10"
                   }`}
                 />
               ))}

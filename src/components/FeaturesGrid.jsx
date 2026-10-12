@@ -45,7 +45,7 @@ function PillarCard({ pillar, index }) {
       <div className="flex flex-1 flex-col p-6">
         <p
           className={`text-[11px] font-semibold uppercase tracking-wider ${
-            highlighted ? "text-ebp-green-light" : "text-ebp-green"
+            highlighted ? "text-ebp-sky" : "text-ebp-blue"
           }`}
         >
           {pillar.tag}

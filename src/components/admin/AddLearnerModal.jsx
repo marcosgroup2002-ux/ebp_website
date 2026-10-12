@@ -95,7 +95,7 @@ export default function AddLearnerModal({ open, onClose, onSubmitLearner }) {
           <label className="mb-1.5 block text-xs font-medium text-ink/70">Nom complet de l'apprenant</label>
           <input
             placeholder="Ex : Koffi Mensah"
-            className="w-full rounded-xl border border-ink/10 bg-surface px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
+            className="w-full rounded-xl border border-ink/10 bg-surface px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
             {...register("name", {
               required: "Le nom complet est obligatoire.",
               minLength: { value: 2, message: "Le nom doit comporter au moins 2 caractères." },
@@ -109,7 +109,7 @@ export default function AddLearnerModal({ open, onClose, onSubmitLearner }) {
           <div>
             <label className="mb-1.5 block text-xs font-medium text-ink/70">Centre de formation</label>
             <select
-              className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
+              className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
               {...register("center", { required: true })}
             >
               {ACTIVE_CENTERS.map((c) => (
@@ -125,7 +125,7 @@ export default function AddLearnerModal({ open, onClose, onSubmitLearner }) {
             {!showCustomCohort ? (
               <>
                 <select
-                  className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
+                  className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
                   {...register("cohortNumber", { required: true })}
                 >
                   {cohortsList.map((co) => (
@@ -150,13 +150,13 @@ export default function AddLearnerModal({ open, onClose, onSubmitLearner }) {
                     value={customCohort}
                     onChange={(e) => setCustomCohort(e.target.value)}
                     placeholder="Ex : 18.9, 19.0..."
-                    className="flex-1 rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
+                    className="flex-1 rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
                     autoFocus
                   />
                   <button
                     type="button"
                     onClick={handleAddCustomCohort}
-                    className="rounded-xl bg-ebp-green px-3 py-2 text-xs font-bold text-white hover:bg-ebp-green/90 transition-colors"
+                    className="rounded-xl bg-ebp-blue px-3 py-2 text-xs font-bold text-white hover:bg-ebp-blue-dark transition-colors"
                   >
                     OK
                   </button>
@@ -206,7 +206,7 @@ export default function AddLearnerModal({ open, onClose, onSubmitLearner }) {
               type="number"
               min="0"
               step="5000"
-              className="w-full rounded-xl border border-ink/10 bg-surface px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
+              className="w-full rounded-xl border border-ink/10 bg-surface px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
               {...register("initialPayment", {
                 min: { value: 0, message: "Le montant ne peut être négatif." },
                 max: {
@@ -222,7 +222,7 @@ export default function AddLearnerModal({ open, onClose, onSubmitLearner }) {
           <div>
             <label className="mb-1.5 block text-xs font-medium text-ink/70">Mode de paiement</label>
             <select
-              className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
+              className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
               {...register("paymentMode")}
             >
               {PAYMENT_MODES.map((mode) => (

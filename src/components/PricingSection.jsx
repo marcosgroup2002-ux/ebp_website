@@ -44,7 +44,7 @@ export default function PricingSection() {
                   option.highlight
                     ? "border-transparent bg-ebp-blue text-white shadow-card"
                     : "border-ink/10 bg-surface text-ink hover:border-ebp-blue/40"
-                } ${isSelected ? "ring-2 ring-ebp-green ring-offset-2 ring-offset-white" : ""}`}
+                } ${isSelected ? "ring-2 ring-ebp-blue ring-offset-2 ring-offset-white" : ""}`}
               >
                 {option.badge && (
                   <span className="absolute -top-3 right-6 inline-flex items-center rounded-full bg-ebp-red px-3 py-1 text-[11px] font-semibold text-white shadow-xs">
@@ -54,7 +54,7 @@ export default function PricingSection() {
 
                 <p
                   className={`text-xs font-semibold uppercase tracking-wider ${
-                    option.highlight ? "text-ebp-green-light" : "text-ebp-green"
+                    option.highlight ? "text-ebp-sky" : "text-ebp-blue"
                   }`}
                 >
                   {option.label}
@@ -71,7 +71,7 @@ export default function PricingSection() {
                 </p>
 
                 <div className={`mt-4 flex items-start gap-2 text-sm ${option.highlight ? "text-white/85" : "text-ink/70"}`}>
-                  <Check size={16} className={`mt-0.5 shrink-0 ${option.highlight ? "text-ebp-green-light" : "text-ebp-green"}`} />
+                  <Check size={16} className={`mt-0.5 shrink-0 ${option.highlight ? "text-ebp-sky" : "text-ebp-green"}`} />
                   {option.advantage}
                 </div>
 
@@ -84,7 +84,7 @@ export default function PricingSection() {
                   onClick={(e) => e.stopPropagation()}
                   className={`mt-6 block w-full rounded-full py-3 text-center text-sm font-semibold transition-all active:scale-[0.98] ${
                     option.highlight
-                      ? "bg-ebp-green text-white hover:bg-ebp-green-light"
+                      ? "bg-white text-ebp-blue hover:bg-ebp-sky"
                       : "bg-ebp-blue text-white hover:bg-ebp-blue-dark"
                   }`}
                 >

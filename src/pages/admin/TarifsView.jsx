@@ -66,7 +66,7 @@ function TarifCard({ option, tarif, onSaved }) {
         step="1000"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        className="mt-1.5 w-full rounded-xl border border-ink/10 bg-surface px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
+        className="mt-1.5 w-full rounded-xl border border-ink/10 bg-surface px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
       />
       {!valid && <p className="mt-1 text-xs text-ebp-red-soft">Le tarif doit être compris entre 1 000 et 2 000 000 F.</p>}
       {error && (

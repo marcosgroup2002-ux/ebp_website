@@ -115,7 +115,7 @@ export default function CoachsView() {
       <div className="rounded-2xl border border-ink/10 bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-ink/10 pb-4">
           <div className="flex items-center gap-2">
-            <Calendar size={18} className="text-ebp-green" />
+            <Calendar size={18} className="text-ebp-blue" />
             <div>
               <h2 className="font-display text-base font-bold text-ink">Emploi du Temps Hebdomadaire</h2>
               <p className="text-xs text-ink/40">Planning des séances pour les cohortes 18.6, 18.7 et 18.8</p>
@@ -171,7 +171,7 @@ export default function CoachsView() {
 
         {loading ? (
           <div className="py-12 text-center text-sm text-ink/40">
-            <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-ebp-green border-t-transparent" />
+            <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-ebp-blue border-t-transparent" />
             <p className="mt-2 text-xs">Chargement du planning pédagogique...</p>
           </div>
         ) : filteredSchedules.length === 0 ? (

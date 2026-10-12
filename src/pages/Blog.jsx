@@ -48,7 +48,7 @@ export default function Blog() {
                 </div>
                 <div className="mt-4">
                   <div className="flex items-center gap-3 text-xs text-ink/50">
-                    <span className="rounded-full bg-ebp-green/10 px-2.5 py-1 font-semibold text-ebp-green">
+                    <span className="rounded-full bg-ebp-blue/10 px-2.5 py-1 font-semibold text-ebp-blue">
                       {post.category}
                     </span>
                     <span className="flex items-center gap-1">

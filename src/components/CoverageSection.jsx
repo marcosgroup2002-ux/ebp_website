@@ -38,7 +38,7 @@ export default function CoverageSection() {
             Meet pour les apprenants de la sous-région et de la diaspora.
           </p>
           <div className="mt-8 flex items-center gap-2 rounded-xl bg-white/10 px-4 py-3 text-sm text-white/80 backdrop-blur-sm">
-            <Globe2 size={16} className="text-ebp-green-light" />
+            <Globe2 size={16} className="text-ebp-sky" />
             Cours en direct, mêmes standards de pratique orale, où que vous soyez.
           </div>
         </motion.div>
@@ -76,16 +76,16 @@ export default function CoverageSection() {
               <motion.span
                 animate={{ scale: [1, 1.6, 1], opacity: [0.6, 0, 0.6] }}
                 transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-                className={`absolute h-3 w-3 rounded-full ${hub.primary ? "bg-ebp-green" : "bg-white/40"}`}
+                className={`absolute h-3 w-3 rounded-full ${hub.primary ? "bg-white" : "bg-white/40"}`}
               />
               <span
                 className={`relative rounded-full ${
-                  hub.primary ? "h-2.5 w-2.5 bg-ebp-green-light" : "h-1.5 w-1.5 bg-white/70"
+                  hub.primary ? "h-2.5 w-2.5 bg-ebp-sky" : "h-1.5 w-1.5 bg-white/70"
                 }`}
               />
               <span
                 className={`mt-1.5 whitespace-nowrap rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                  hub.primary ? "bg-ebp-green text-white" : "bg-white/10 text-white/70"
+                  hub.primary ? "bg-white text-ebp-blue" : "bg-white/10 text-white/70"
                 }`}
               >
                 {hub.name}

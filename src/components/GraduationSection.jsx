@@ -8,9 +8,9 @@ import Waveform from "./Waveform";
 
 const CONFETTI = [
   { left: "6%", top: "12%", color: "bg-ebp-red-soft", size: "h-2 w-2", delay: 0 },
-  { left: "18%", top: "70%", color: "bg-ebp-green-light", size: "h-3 w-3", delay: 0.6 },
+  { left: "18%", top: "70%", color: "bg-ebp-sky", size: "h-3 w-3", delay: 0.6 },
   { left: "32%", top: "8%", color: "bg-white", size: "h-1.5 w-1.5", delay: 1.2 },
-  { left: "54%", top: "18%", color: "bg-ebp-green-light", size: "h-2 w-2", delay: 0.3 },
+  { left: "54%", top: "18%", color: "bg-ebp-sky", size: "h-2 w-2", delay: 0.3 },
   { left: "72%", top: "6%", color: "bg-ebp-red-soft", size: "h-2.5 w-2.5", delay: 0.9 },
   { left: "88%", top: "26%", color: "bg-white", size: "h-2 w-2", delay: 1.5 },
   { left: "94%", top: "64%", color: "bg-ebp-red-soft", size: "h-1.5 w-1.5", delay: 0.4 },
@@ -57,7 +57,7 @@ function VideoPlayer({ video, playing, onPlay }) {
             </span>
           </span>
           <span className="absolute bottom-0 left-0 right-0 p-5 text-left sm:p-7">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-ebp-green px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-ebp-blue">
               <GraduationCap size={13} />
               {video.label}
             </span>
@@ -182,12 +182,12 @@ export default function GraduationSection() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="mx-auto max-w-2xl text-center"
         >
-          <span className="eyebrow justify-center text-ebp-green-light">
-            <Waveform color="bg-ebp-green-light" barClassName="w-[2.5px] h-3" />
+          <span className="eyebrow justify-center text-ebp-sky">
+            <Waveform color="bg-ebp-sky" barClassName="w-[2.5px] h-3" />
             Graduation & Projets Capstone
           </span>
           <h2 className="mt-4 text-3xl font-bold sm:text-5xl">
-            Ils l'ont fait. <span className="text-ebp-green-light">Votre tour arrive.</span>
+            Ils l'ont fait. <span className="text-ebp-sky">Votre tour arrive.</span>
           </h2>
           <p className="mt-4 text-white/70">
             6 mois plus tard, ils prennent la parole en anglais devant un jury, leurs familles et leurs pairs.
@@ -211,7 +211,7 @@ export default function GraduationSection() {
 
           <div className="flex flex-col gap-3">
             <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/50">
-              <Sparkles size={14} className="text-ebp-green-light" />
+              <Sparkles size={14} className="text-ebp-sky" />
               {GRADUATION_VIDEOS.length} vidéos complètes
             </p>
             {GRADUATION_VIDEOS.map((video, i) => (
@@ -233,7 +233,7 @@ export default function GraduationSection() {
                 <span className="min-w-0">
                   <span
                     className={`block text-[10px] font-bold uppercase tracking-wider ${
-                      activeVideo === i ? "text-ebp-green" : "text-ebp-green-light"
+                      activeVideo === i ? "text-ebp-blue" : "text-ebp-sky"
                     }`}
                   >
                     {video.label}
@@ -296,7 +296,7 @@ export default function GraduationSection() {
           transition={{ duration: 0.6 }}
           className="mt-14 flex flex-col items-center gap-5 rounded-3xl bg-white/10 p-8 text-center ring-1 ring-white/15 backdrop-blur-sm sm:p-10"
         >
-          <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-ebp-green text-white shadow-card">
+          <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-ebp-blue shadow-card">
             <GraduationCap size={28} />
           </span>
           <p className="max-w-xl font-display text-2xl font-bold sm:text-3xl">
@@ -310,7 +310,7 @@ export default function GraduationSection() {
               href={buildWhatsAppLink(WHATSAPP_MESSAGES.enroll)}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-ebp-green px-7 py-3.5 text-sm font-semibold text-white shadow-lg transition hover:bg-ebp-green-light active:scale-[0.98]"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-ebp-blue shadow-lg transition hover:bg-ebp-sky active:scale-[0.98]"
             >
               Je réserve ma place
               <ArrowRight size={16} />

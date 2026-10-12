@@ -24,8 +24,8 @@ export default function MethodSection() {
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             className="container pb-12"
           >
-            <span className="eyebrow rounded-full bg-ink/70 px-3 py-1.5 text-ebp-green-light backdrop-blur-sm">
-              <Waveform color="bg-ebp-green-light" barClassName="w-[2.5px] h-3" />
+            <span className="eyebrow rounded-full bg-ink/70 px-3 py-1.5 text-ebp-sky backdrop-blur-sm">
+              <Waveform color="bg-ebp-sky" barClassName="w-[2.5px] h-3" />
               Notre philosophie
             </span>
             <p className="mt-3 max-w-2xl font-display text-2xl font-semibold italic text-white sm:text-3xl">
@@ -66,7 +66,7 @@ export default function MethodSection() {
                   <span className="flex h-7 w-7 items-center justify-center rounded-full bg-ebp-blue text-xs font-bold text-white">
                     {i + 1}
                   </span>
-                  <span className="text-[11px] font-semibold uppercase tracking-wide text-ebp-green">
+                  <span className="text-[11px] font-semibold uppercase tracking-wide text-ebp-blue">
                     {step.duration}
                   </span>
                 </div>

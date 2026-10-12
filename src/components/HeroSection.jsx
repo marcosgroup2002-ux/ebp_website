@@ -121,7 +121,7 @@ export default function HeroSection() {
             key={i}
             onClick={() => setSlide(i)}
             aria-label={`Visuel ${i + 1}`}
-            className={`h-1.5 w-6 rounded-full transition-all ${i === current ? "bg-ebp-green-light" : "bg-white/30"}`}
+            className={`h-1.5 w-6 rounded-full transition-all ${i === current ? "bg-ebp-sky" : "bg-white/30"}`}
           />
         ))}
       </div>
@@ -134,14 +134,14 @@ export default function HeroSection() {
           transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
         >
           <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 backdrop-blur-sm">
-            <Waveform color="bg-ebp-green-light" barClassName="w-[2.5px] h-3" />
+            <Waveform color="bg-ebp-sky" barClassName="w-[2.5px] h-3" />
             <span className="text-xs font-semibold uppercase tracking-wider text-white/90">
               60% Pratique Orale · Cohortes de 6 Mois
             </span>
           </div>
 
           <h1 className="font-display text-4xl font-bold leading-[1.08] text-white sm:text-5xl lg:text-[3.6rem]">
-            Parlez anglais avec <span className="text-ebp-green-light">confiance</span> en 6 mois.
+            Parlez anglais avec <span className="text-ebp-sky">confiance</span> en 6 mois.
           </h1>
 
           <p className="mt-5 max-w-xl text-lg text-white/80">
@@ -154,7 +154,7 @@ export default function HeroSection() {
               {["RA", "UK", "SD", "MT"].map((initials, i) => (
                 <span
                   key={initials}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-ink bg-ebp-green-light text-[11px] font-semibold text-white"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-ink bg-ebp-blue-light text-[11px] font-semibold text-white"
                   style={{ zIndex: 4 - i }}
                 >
                   {initials}
@@ -162,7 +162,7 @@ export default function HeroSection() {
               ))}
             </div>
             <div className="text-sm text-white/80">
-              <div className="flex items-center gap-1 text-ebp-green-light">
+              <div className="flex items-center gap-1 text-amber-400">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star key={i} size={12} fill="currentColor" strokeWidth={0} />
                 ))}
@@ -187,7 +187,7 @@ export default function HeroSection() {
             id="contact"
             type="text"
             placeholder="Ex : 01 90 00 00 00 ou vous@email.com"
-            className="w-full rounded-xl border border-ink/10 bg-surface px-4 py-3.5 text-sm text-ink placeholder:text-ink/40 focus:outline-none focus:ring-2 focus:ring-ebp-green"
+            className="w-full rounded-xl border border-ink/10 bg-surface px-4 py-3.5 text-sm text-ink placeholder:text-ink/40 focus:outline-none focus:ring-2 focus:ring-ebp-blue"
             {...register("contact", { required: true, minLength: 6 })}
           />
           {errors.contact && (
@@ -227,7 +227,7 @@ export default function HeroSection() {
                 <source src={MEDIA.hero.video.mp4} type="video/mp4" />
               </video>
               <span className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-ink/70 px-3 py-1.5 text-[11px] font-semibold text-white backdrop-blur-sm">
-                <Waveform color="bg-ebp-green-light" barClassName="w-[2px] h-2.5" />
+                <Waveform color="bg-ebp-sky" barClassName="w-[2px] h-2.5" />
                 EBP en action
               </span>
             </div>

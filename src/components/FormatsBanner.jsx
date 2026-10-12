@@ -1,22 +1,13 @@
 import { motion } from "framer-motion";
 import { MapPin, Monitor, Clock } from "lucide-react";
 import { CENTERS } from "../data/siteContent";
-import { MEDIA, img, imgSrcSet } from "../data/media";
 
 const ICONS = { MapPin, Monitor, Clock };
 
 export default function FormatsBanner() {
   return (
-    <section id="formats" className="relative overflow-hidden">
-      <img
-        src={img(MEDIA.formats.banner, { w: 1600, q: 60 })}
-        srcSet={imgSrcSet(MEDIA.formats.banner)}
-        sizes="100vw"
-        alt="Formations EBP"
-        className="absolute inset-0 h-full w-full object-cover object-[50%_30%]"
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-ebp-green/95 to-ebp-green-light/90" />
-      <div className="container relative grid grid-cols-2 gap-6 py-8 sm:grid-cols-4 sm:gap-4">
+    <section id="formats" className="border-y border-ink/10 bg-white">
+      <div className="container grid grid-cols-2 gap-x-4 gap-y-6 py-8 sm:grid-cols-4 sm:gap-4 lg:py-10">
         {CENTERS.map((center, i) => {
           const Icon = ICONS[center.icon];
           return (
@@ -26,14 +17,14 @@ export default function FormatsBanner() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-              className="flex items-start gap-3 text-white"
+              className="flex items-start gap-3 text-ink"
             >
-              <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/15">
+              <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ebp-blue/10 text-ebp-blue">
                 <Icon size={16} />
               </span>
               <div>
                 <p className="text-sm font-semibold">{center.title}</p>
-                <p className="text-xs text-white/80">{center.detail}</p>
+                <p className="mt-0.5 text-xs text-ink/60">{center.detail}</p>
               </div>
             </motion.div>
           );

@@ -291,7 +291,7 @@ export default function PdgSupervisionView() {
         <div className="rounded-2xl border border-ink/10 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between border-b border-ink/10 pb-4">
             <div className="flex items-center gap-2">
-              <Calendar size={18} className="text-ebp-green" />
+              <Calendar size={18} className="text-ebp-blue" />
               <h3 className="font-display text-base font-bold text-ink">Inscriptions par Cohorte Active</h3>
             </div>
             <span className="text-xs text-ink/40">{Object.keys(metrics.cohortDistribution).join(" · ") || "—"}</span>

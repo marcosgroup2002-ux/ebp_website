@@ -36,8 +36,8 @@ export default function About() {
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
               className="container py-8 sm:py-10 lg:pb-10 lg:pt-0"
             >
-              <span className="eyebrow rounded-full bg-white/10 px-3 py-1.5 text-ebp-green-light lg:bg-ink/70 lg:backdrop-blur-sm">
-                <Waveform color="bg-ebp-green-light" barClassName="w-[2.5px] h-3" />
+              <span className="eyebrow rounded-full bg-white/10 px-3 py-1.5 text-ebp-sky lg:bg-ink/70 lg:backdrop-blur-sm">
+                <Waveform color="bg-ebp-sky" barClassName="w-[2.5px] h-3" />
                 À propos d'EBP
               </span>
               <h1 className="mt-4 max-w-2xl font-display text-3xl font-bold text-white sm:text-4xl lg:max-w-4xl xl:text-5xl">
@@ -70,7 +70,7 @@ export default function About() {
               (présentiel et en ligne) et surtout sur une conviction simple : on n'apprend pas à parler
               une langue en la regardant, mais en la pratiquant.
             </p>
-            <blockquote className="mt-6 border-l-4 border-ebp-green pl-4 font-display text-lg italic text-ink">
+            <blockquote className="mt-6 border-l-4 border-ebp-blue pl-4 font-display text-lg italic text-ink">
               "{PHILOSOPHY_QUOTE}"
             </blockquote>
           </motion.div>

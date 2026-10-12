@@ -44,7 +44,7 @@ export default function PaymentFormModal({ learner, open, onClose, onSubmitPayme
             type="number"
             min="1"
             max={remaining}
-            className="w-full rounded-xl border border-ink/10 bg-surface px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
+            className="w-full rounded-xl border border-ink/10 bg-surface px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
             {...register("amount", { required: true, min: 1, max: remaining })}
           />
           {errors.amount && <p className="mt-1 text-xs text-ebp-red-soft">Indiquez un montant entre 1 et {remaining.toLocaleString("fr-FR")} F (reste à payer).</p>}
@@ -53,7 +53,7 @@ export default function PaymentFormModal({ learner, open, onClose, onSubmitPayme
         <div>
           <label className="mb-1.5 block text-xs font-medium text-ink/50">Mode de paiement</label>
           <select
-            className="w-full rounded-xl border border-ink/10 bg-surface px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
+            className="w-full rounded-xl border border-ink/10 bg-surface px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
             {...register("mode", { required: true })}
           >
             {PAYMENT_MODES.map((mode) => (
@@ -68,7 +68,7 @@ export default function PaymentFormModal({ learner, open, onClose, onSubmitPayme
           <label className="mb-1.5 block text-xs font-medium text-ink/50">Date</label>
           <input
             type="date"
-            className="w-full rounded-xl border border-ink/10 bg-surface px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
+            className="w-full rounded-xl border border-ink/10 bg-surface px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
             {...register("date", { required: true })}
           />
         </div>

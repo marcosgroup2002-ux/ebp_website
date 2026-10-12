@@ -39,8 +39,8 @@ function CenterCard({ center }) {
           {center.hours}
         </p>
 
-        <div className="mt-4 flex items-start gap-2.5 rounded-2xl bg-ebp-green/10 px-4 py-3 text-sm text-ink">
-          <Landmark size={16} className="mt-0.5 shrink-0 text-ebp-green" />
+        <div className="mt-4 flex items-start gap-2.5 rounded-2xl bg-ebp-blue/10 px-4 py-3 text-sm text-ink">
+          <Landmark size={16} className="mt-0.5 shrink-0 text-ebp-blue" />
           <span>{center.landmark}</span>
         </div>
 
@@ -114,8 +114,8 @@ export default function Contact() {
           <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-t from-ink via-ink/50 via-25% to-transparent to-55% lg:block" />
           <div className="lg:absolute lg:inset-x-0 lg:bottom-0">
             <div className="container py-8 sm:py-10 lg:pb-10 lg:pt-0">
-              <span className="eyebrow rounded-full bg-white/10 px-3 py-1.5 text-ebp-green-light lg:bg-ink/70 lg:backdrop-blur-sm">
-                <Waveform color="bg-ebp-green-light" barClassName="w-[2.5px] h-3" />
+              <span className="eyebrow rounded-full bg-white/10 px-3 py-1.5 text-ebp-sky lg:bg-ink/70 lg:backdrop-blur-sm">
+                <Waveform color="bg-ebp-sky" barClassName="w-[2.5px] h-3" />
                 Contact
               </span>
               <h1 className="mt-4 font-display text-3xl font-bold text-white sm:text-4xl xl:text-5xl">Parlons-en</h1>
@@ -205,7 +205,7 @@ export default function Contact() {
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-ink/50">Nom complet</label>
                 <input
-                  className="w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
+                  className="w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
                   placeholder="Votre nom"
                   {...register("name", {
                     required: "Ce champ est requis.",
@@ -218,7 +218,7 @@ export default function Contact() {
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-ink/50">WhatsApp ou email</label>
                 <input
-                  className="w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
+                  className="w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
                   placeholder="01 96 84 02 96 ou vous@exemple.com"
                   {...register("contact", {
                     required: "Ce champ est requis.",
@@ -232,7 +232,7 @@ export default function Contact() {
                 <label className="mb-1.5 block text-xs font-medium text-ink/50">Message</label>
                 <textarea
                   rows={4}
-                  className="w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
+                  className="w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
                   placeholder="Votre question ou votre objectif avec l'anglais..."
                   {...register("message", {
                     required: "Ce champ est requis.",
@@ -244,7 +244,7 @@ export default function Contact() {
               </div>
             </div>
 
-            <button type="submit" className="btn-primary mt-6 w-full">
+            <button type="submit" className="btn-whatsapp mt-6 w-full">
               <MessageCircle size={16} />
               Envoyer via WhatsApp
             </button>

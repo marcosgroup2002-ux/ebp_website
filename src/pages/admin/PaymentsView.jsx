@@ -213,14 +213,14 @@ export default function PaymentsView() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Rechercher par nom..."
-            className="w-full rounded-xl border border-ink/10 bg-white py-2.5 pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
+            className="w-full rounded-xl border border-ink/10 bg-white py-2.5 pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
           />
         </div>
 
         <select
           value={centerFilter}
           onChange={(e) => setCenterFilter(e.target.value)}
-          className="rounded-xl border border-ink/10 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
+          className="rounded-xl border border-ink/10 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
         >
           <option value="all">Tous les centres</option>
           {ACTIVE_CENTERS.map((c) => (
@@ -233,7 +233,7 @@ export default function PaymentsView() {
         <select
           value={cohortFilter}
           onChange={(e) => setCohortFilter(e.target.value)}
-          className="rounded-xl border border-ink/10 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
+          className="rounded-xl border border-ink/10 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
         >
           <option value="all">Toutes les cohortes</option>
           {ACTIVE_COHORTS.map((co) => (
@@ -246,7 +246,7 @@ export default function PaymentsView() {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="rounded-xl border border-ink/10 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-green"
+          className="rounded-xl border border-ink/10 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
         >
           <option value="all">Tous les statuts</option>
           {Object.entries(STATUS_LABELS).map(([key, val]) => (

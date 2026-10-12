@@ -90,7 +90,7 @@ export default function Navbar() {
               href={buildWhatsAppLink(WHATSAPP_MESSAGES.levelTest)}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-ebp-green px-5 py-2.5 text-xs lg:text-sm font-semibold text-white shadow-sm transition-all hover:bg-ebp-green-light active:scale-95"
+              className="inline-flex items-center gap-2 rounded-full bg-ebp-blue px-5 py-2.5 text-xs lg:text-sm font-semibold text-white shadow-sm transition-all hover:bg-ebp-blue-dark active:scale-95"
             >
               <MessageCircle size={16} />
               Test de Niveau
@@ -174,7 +174,7 @@ export default function Navbar() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setOpen(false)}
-            className="flex w-full items-center justify-center gap-2.5 rounded-full bg-ebp-green px-5 py-3.5 text-sm font-bold text-white shadow-md active:scale-95 transition-all hover:bg-ebp-green-light"
+            className="flex w-full items-center justify-center gap-2.5 rounded-full bg-ebp-blue px-5 py-3.5 text-sm font-bold text-white shadow-md active:scale-95 transition-all hover:bg-ebp-blue-dark"
           >
             <MessageCircle size={18} />
             Passer le Test de Niveau

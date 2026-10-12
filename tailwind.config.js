@@ -6,6 +6,8 @@ export default {
         ebp: {
           blue: "#002B9A",
           "blue-dark": "#001B6B",
+          "blue-light": "#1D4FD7",
+          sky: "#9DBBFF",
           red: "#E50914",
           "red-soft": "#DC2626",
           green: "#00873D",
