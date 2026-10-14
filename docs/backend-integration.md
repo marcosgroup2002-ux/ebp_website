@@ -90,3 +90,8 @@ Apprenant ──(site : questions sans réponses)──▶ level_test_start / le
   (3 000/heure), validation stricte des réponses, texte de rédaction toujours affiché comme du texte.
 - **Droits** : secrétaire = lecture/écriture via RPC ; PDG = lecture des résultats `transmis` ; coach = aucun accès.
 - **Ancienne chaîne Google Form** : abandonnée. La fonction Edge `receive-test-result` ne renvoie plus que 410.
+
+
+### Partie écoute
+
+Les deux enregistrements (`public/audio/*.mp3`) sont lus par le composant `VoicePlayer`. Les questions q44 à q50 sont actives ; leurs bonnes réponses sont dans `level_test_key` (jamais dans le dépôt).
