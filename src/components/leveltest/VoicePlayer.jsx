@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Headphones, Pause, Play, RotateCcw, Rewind } from "lucide-react";
-import { AUDIOS, AUDIO_CREDIT } from "../../data/levelTest";
+import { AUDIOS } from "../../data/levelTest";
 
 const BARS = 36;
 const SPEEDS = [1, 0.85, 0.7];
@@ -226,7 +226,7 @@ export default function VoicePlayer({ audioId }) {
         </button>
       </div>
 
-      <p className="relative mt-4 text-center text-[11px] text-white/60">Réécoute illimitée · {AUDIO_CREDIT}</p>
+      <p className="relative mt-4 text-center text-[11px] text-white/60">Réécoute illimitée</p>
 
       <audio
         ref={mediaRef}
