@@ -202,14 +202,65 @@ export const CULTURE_VALUES = [
   },
 ];
 
+// `video` : { id } pour une vidéo YouTube, { id, vertical: true } pour un Short, { playlist } pour une playlist. null = pas encore de vidéo.
 export const SESSION_STEPS = [
-  { title: "Notion du jour", duration: "20 min", description: "Objectifs clairs, exemples concrets, contexte réel." },
-  { title: "Pretest", duration: "10 min", description: "Mesure du niveau de départ, sans correction immédiate." },
-  { title: "Cours principal", duration: "40–50 min", description: "Approfondissement de la notion, maximum 40% de temps de parole formateur." },
-  { title: "Pratique guidée", duration: "30 min", description: "Exercices en duo, trio ou groupe, corrections à chaud." },
-  { title: "Audio de la semaine", duration: "15 min", description: "Écoute authentique : identification, transcription, reformulation." },
-  { title: "English Corner", duration: "20–25 min", description: "Mise en situation libre : jeu de rôle, débat, storytelling." },
-  { title: "Posttest & Wrap-up", duration: "10 min", description: "Mesure de la progression et annonce du prochain cours." },
+  {
+    title: "Notion du jour",
+    duration: "20 min",
+    minutes: 20,
+    description: "Objectifs clairs, exemples concrets, contexte réel.",
+    benefit: "Vous savez exactement ce que vous allez maîtriser aujourd'hui, et à quoi cela sert dans la vraie vie.",
+    video: { id: "gMqzqVnbcHQ" },
+  },
+  {
+    title: "Pretest",
+    duration: "10 min",
+    minutes: 10,
+    description: "Mesure du niveau de départ, sans correction immédiate.",
+    benefit: "Un point de départ honnête : à la fin de la séance, vous voyez votre progression en chiffres.",
+    video: null,
+  },
+  {
+    title: "Cours principal",
+    duration: "40–50 min",
+    minutes: 45,
+    description: "Approfondissement de la notion, maximum 40% de temps de parole formateur.",
+    benefit: "Le formateur explique, mais c'est vous qui parlez le plus : 60% du temps est pour vous.",
+    video: { id: "Uqqdqv4BmUU" },
+  },
+  {
+    title: "Pratique guidée",
+    duration: "30 min",
+    minutes: 30,
+    description: "Exercices en duo, trio ou groupe, corrections à chaud.",
+    benefit: "Vous pratiquez tout de suite avec les autres et vous êtes corrigé sur le moment, sans gêne.",
+    video: { id: "smdn2wxtqBQ" },
+  },
+  {
+    title: "Audio de la semaine",
+    duration: "15 min",
+    minutes: 15,
+    description: "Écoute authentique : identification, transcription, reformulation.",
+    benefit: "Votre oreille s'habitue à l'anglais réel, parlé à vitesse naturelle, pas à celui des manuels.",
+    video: null,
+    audio: true,
+  },
+  {
+    title: "English Corner",
+    duration: "20–25 min",
+    minutes: 22,
+    description: "Mise en situation libre : jeu de rôle, débat, storytelling.",
+    benefit: "Le moment où tout s'assemble : vous parlez librement, en situation, comme au travail.",
+    video: { id: "QcmMUNj0oV8" },
+  },
+  {
+    title: "Posttest & Wrap-up",
+    duration: "10 min",
+    minutes: 10,
+    description: "Mesure de la progression et annonce du prochain cours.",
+    benefit: "Vous repartez avec la preuve de ce que vous avez appris et l'envie de revenir.",
+    video: { id: "62O68coVrzw", vertical: true },
+  },
 ];
 
 export const EVALUATION_LEVELS = [

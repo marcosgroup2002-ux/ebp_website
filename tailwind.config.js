@@ -76,6 +76,7 @@ export default {
         pulseRing: "pulseRing 2s cubic-bezier(0,0,0.2,1) infinite",
         floatSoft: "floatSoft 3s ease-in-out infinite",
         dotFill: "dotFill 3s linear forwards",
+        dotFillSlow: "dotFill 8s linear forwards",
         orbBreath: "orbBreath 3.4s ease-in-out infinite",
         orbRipple: "orbRipple 2.6s ease-out infinite",
         marquee: "marquee 35s linear infinite",

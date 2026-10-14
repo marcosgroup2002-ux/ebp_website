@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
-import { PHILOSOPHY_QUOTE, PHILOSOPHY_TEXT, SESSION_STEPS } from "../data/siteContent";
+import { PHILOSOPHY_QUOTE, PHILOSOPHY_TEXT } from "../data/siteContent";
 import { MEDIA, img, imgSrcSet } from "../data/media";
 import Waveform from "./Waveform";
+import SessionFlow from "./SessionFlow";
 
 export default function MethodSection() {
   return (
@@ -36,47 +37,7 @@ export default function MethodSection() {
         </div>
       </div>
 
-      <div className="section-pad">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="mx-auto max-w-2xl text-center"
-          >
-            <h2 className="text-3xl font-bold text-ink sm:text-4xl">Le déroulé d'une séance EBP</h2>
-            <p className="mt-4 text-ink/60">
-              7 étapes non négociables, dans cet ordre, à chaque séance, pour garantir que la pratique
-              orale reste au centre.
-            </p>
-          </motion.div>
-
-          <div className="mt-14 flex flex-wrap justify-center gap-4">
-            {SESSION_STEPS.map((step, i) => (
-              <motion.div
-                key={step.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.5, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }}
-                className="w-full rounded-2xl border border-ink/10 bg-surface p-5 sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)]"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-ebp-blue text-xs font-bold text-white">
-                    {i + 1}
-                  </span>
-                  <span className="text-[11px] font-semibold uppercase tracking-wide text-ebp-blue">
-                    {step.duration}
-                  </span>
-                </div>
-                <h3 className="mt-3 font-display text-sm font-semibold text-ink">{step.title}</h3>
-                <p className="mt-1.5 text-xs leading-relaxed text-ink/60">{step.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <SessionFlow />
     </section>
   );
 }
