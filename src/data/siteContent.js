@@ -293,7 +293,7 @@ export const GRADUATION_ALBUM_URL =
 
 export const PROSPECTUS_URL = "/prospectus/EBP-Prospectus.pdf";
 
-// Test de niveau (Google Form). Les résultats arrivent dans l'espace secrétariat (page « Tests de niveau »).
-export const TEST_LEVEL_URL = "https://forms.gle/z2WneWusQTXLPA1u6";
+// Test de niveau passé directement sur le site. Les résultats arrivent dans l'espace secrétariat (page « Tests de niveau »).
+export const TEST_LEVEL_URL = "/test-de-niveau";
 export const TEST_LEVEL_LABEL = "Passer le Test de Niveau";
 

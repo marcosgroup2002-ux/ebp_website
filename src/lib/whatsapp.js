@@ -13,5 +13,8 @@ export const WHATSAPP_MESSAGES = {
   prospectus: "Bonjour EBP ! Pourriez-vous m'envoyer le prospectus du programme ?",
   bloc: "Bonjour EBP ! Je suis intéressé(e) par l'offre Paiement en Bloc à 150 000 F.",
   echelonne: "Bonjour EBP ! Je suis intéressé(e) par le Paiement Échelonné (60 000 F à l'inscription).",
+  levelResult: (nom, niveau) =>
+    `Bonjour EBP ! Je suis ${nom}. J'ai passé le test de niveau en ligne (niveau estimé : ${niveau}) et je souhaite réserver ma place.`,
+  levelRetake: "Bonjour EBP ! J'ai besoin de repasser le test de niveau en ligne. Pouvez-vous m'y autoriser ?",
   general: "Bonjour EBP ! J'aimerais avoir plus d'informations sur le programme.",
 };

@@ -17,6 +17,7 @@ const AuditLogsView = lazy(() => import("./pages/admin/AuditLogsView"));
 const AnalyticsView = lazy(() => import("./pages/admin/AnalyticsView"));
 const TarifsView = lazy(() => import("./pages/admin/TarifsView"));
 const TestsView = lazy(() => import("./pages/admin/TestsView"));
+const LevelTest = lazy(() => import("./pages/LevelTest"));
 const AdminIndexRedirect = lazy(() => import("./pages/admin/AdminIndexRedirect"));
 import AnalyticsTracker from "./components/AnalyticsTracker";
 import OfflineBanner from "./components/OfflineBanner";
@@ -43,6 +44,8 @@ export default function App() {
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/contact" element={<Contact />} />
         </Route>
+
+        <Route path="/test-de-niveau" element={<LevelTest />} />
 
         <Route path="/admin" element={<AdminGate />}>
           <Route element={<AdminLayout />}>

@@ -15,6 +15,8 @@ import {
   Mail,
   Inbox,
   FileText,
+  RotateCcw,
+  Unlock,
 } from "lucide-react";
 import { useAdminUser } from "../../context/AdminUserContext";
 import Modal from "../../components/admin/Modal";
@@ -22,8 +24,11 @@ import {
   ALL_LEVELS,
   LEVELS,
   LEVEL_INFO,
+  SKILL_LABELS,
+  SOURCE_LABELS,
   STATUS_INFO,
   addTestResult,
+  allowRetake,
   contactLink,
   deleteTestResult,
   fetchTestResults,
@@ -61,8 +66,8 @@ function StatusBadge({ status }) {
   return <span className={`inline-flex whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-semibold ${info.classes}`}>{info.label}</span>;
 }
 
-function LevelBars({ detail }) {
-  const rows = LEVELS.filter((level) => detail?.[level]);
+function LevelBars({ detail, keys = LEVELS, labels = {}, labelWidth = "w-7" }) {
+  const rows = keys.filter((key) => detail?.[key]);
   if (rows.length === 0) return null;
   return (
     <div className="space-y-2">
@@ -71,7 +76,7 @@ function LevelBars({ detail }) {
         const pct = Math.round((ok / total) * 100);
         return (
           <div key={level} className="flex items-center gap-3 text-xs">
-            <span className="w-7 font-display font-bold text-ink">{level}</span>
+            <span className={`${labelWidth} shrink-0 font-display font-bold text-ink`}>{labels[level] || level}</span>
             <div className="h-2 flex-1 overflow-hidden rounded-full bg-ink/10">
               <div className="h-full rounded-full bg-ebp-blue" style={{ width: `${pct}%` }} />
             </div>
@@ -90,6 +95,7 @@ function DetailModal({ result, canEdit, onClose, onChanged }) {
   const [note, setNote] = useState(result.note || "");
   const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
 
   const locked = result.statut === "transmis";
   const contact = contactLink(result.contact);
@@ -118,6 +124,15 @@ function DetailModal({ result, canEdit, onClose, onChanged }) {
       await setTestStatus(result.id, "transmis");
     });
   };
+  const retake = () => {
+    if (!window.confirm(`Autoriser ${result.nom} à repasser le test ?
+
+Le numéro ${result.contact} et son téléphone seront de nouveau libres.`)) return;
+    run("retake", async () => {
+      await allowRetake(result.contact);
+      setNotice("Nouveau test autorisé : le candidat peut repasser le test depuis le site.");
+    });
+  };
   const remove = () => {
     if (!window.confirm(`Supprimer définitivement le résultat de ${result.nom} ?`)) return;
     run("delete", async () => {
@@ -133,7 +148,7 @@ function DetailModal({ result, canEdit, onClose, onChanged }) {
           <StatusBadge status={result.statut} />
           <span>{formatDate(result.passe_le)}</span>
           <span aria-hidden="true">·</span>
-          <span>{result.source === "google_form" ? "Reçu du Google Form" : "Saisi à la main"}</span>
+          <span>{SOURCE_LABELS[result.source] || result.source}</span>
         </div>
 
         {result.contact ? (
@@ -156,7 +171,7 @@ function DetailModal({ result, canEdit, onClose, onChanged }) {
           </div>
         ) : (
           <p className="rounded-2xl bg-amber-50 p-4 text-xs text-amber-900">
-            Aucun contact enregistré pour ce candidat. Ajoutez une question « WhatsApp / email » dans le Google Form pour pouvoir le rappeler.
+            Aucun contact enregistré pour ce candidat.
           </p>
         )}
 
@@ -169,9 +184,15 @@ function DetailModal({ result, canEdit, onClose, onChanged }) {
             </p>
             {pct !== null && <p className="text-xs font-semibold text-ebp-blue">{pct} %</p>}
           </div>
-          <div>
+          <div className="space-y-5">
             <LevelBars detail={result.detail_niveaux} />
             {!result.detail_niveaux && <p className="text-xs text-ink/45">Pas de détail par niveau pour ce résultat.</p>}
+            {result.detail_competences && (
+              <div className="border-t border-ink/10 pt-4">
+                <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-ink/40">Par compétence</p>
+                <LevelBars detail={result.detail_competences} keys={Object.keys(SKILL_LABELS)} labels={SKILL_LABELS} labelWidth="w-36" />
+              </div>
+            )}
           </div>
         </div>
 
@@ -247,6 +268,23 @@ function DetailModal({ result, canEdit, onClose, onChanged }) {
             {error}
           </p>
         )}
+        {notice && (
+          <p role="status" className="rounded-xl border border-ebp-green/20 bg-ebp-green/10 px-4 py-3 text-xs text-ink/70">
+            {notice}
+          </p>
+        )}
+
+        {canEdit && result.source === "site" && result.contact && (
+          <button
+            type="button"
+            onClick={retake}
+            disabled={Boolean(busy)}
+            className="inline-flex items-center gap-2 rounded-full border border-ink/15 px-4 py-2.5 text-xs font-semibold text-ink/70 transition hover:border-ebp-blue hover:text-ebp-blue disabled:opacity-60"
+          >
+            <RotateCcw size={14} />
+            {busy === "retake" ? "Autorisation..." : "Autoriser un nouveau test"}
+          </button>
+        )}
 
         {canEdit && !locked && (
           <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
@@ -291,6 +329,64 @@ function DetailModal({ result, canEdit, onClose, onChanged }) {
           </div>
         )}
       </div>
+    </Modal>
+  );
+}
+
+function UnlockModal({ open, onClose }) {
+  const [phone, setPhone] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [done, setDone] = useState("");
+
+  const close = () => {
+    setPhone("");
+    setError("");
+    setDone("");
+    onClose();
+  };
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setBusy(true);
+    setError("");
+    setDone("");
+    try {
+      await allowRetake(phone);
+      setDone("Nouveau test autorisé : ce numéro et son téléphone peuvent repasser le test.");
+      setPhone("");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Modal open={open} onClose={close} title="Débloquer un numéro">
+      <form onSubmit={submit} className="space-y-4">
+        <p className="text-sm text-ink/60">
+          Pour un candidat qui n'a pas pu terminer son test (temps écoulé, téléphone en panne) ou qui doit le repasser.
+        </p>
+        <div>
+          <label htmlFor="unlock-phone" className="text-xs font-medium text-ink/60">Numéro WhatsApp du candidat</label>
+          <input
+            id="unlock-phone"
+            type="tel"
+            inputMode="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="Ex : 01 96 84 02 96"
+            className="mt-1.5 w-full rounded-xl border border-ink/10 bg-surface px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
+          />
+        </div>
+        {error && <p role="alert" className="text-xs text-ebp-red-soft">{error}</p>}
+        {done && <p role="status" className="rounded-xl bg-ebp-green/10 px-4 py-3 text-xs text-ink/70">{done}</p>}
+        <button type="submit" disabled={busy || phone.replace(/D/g, "").length < 8} className="btn-primary w-full disabled:opacity-60">
+          <Unlock size={15} />
+          {busy ? "Autorisation..." : "Autoriser un nouveau test"}
+        </button>
+      </form>
     </Modal>
   );
 }
@@ -393,6 +489,7 @@ export default function TestsView() {
   const [filter, setFilter] = useState("all");
   const [selectedId, setSelectedId] = useState(null);
   const [addOpen, setAddOpen] = useState(false);
+  const [unlockOpen, setUnlockOpen] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -468,11 +565,11 @@ export default function TestsView() {
           </h1>
           <p className="mt-1 text-sm text-ink/50">
             {canEdit
-              ? "Résultats du Google Form « Level Test EBP », reçus automatiquement."
+              ? "Résultats du test de niveau passé sur le site, reçus automatiquement."
               : "Résultats transmis par le secrétariat après évaluation."}
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button
             type="button"
             onClick={refresh}
@@ -482,10 +579,20 @@ export default function TestsView() {
             Actualiser
           </button>
           {canEdit && (
-            <button type="button" onClick={() => setAddOpen(true)} className="btn-primary !px-5 !py-2.5">
-              <Plus size={15} />
-              Ajouter
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() => setUnlockOpen(true)}
+                className="inline-flex items-center gap-2 rounded-xl border border-ink/10 bg-white px-4 py-2.5 text-xs font-semibold text-ink/70 shadow-sm hover:bg-surface"
+              >
+                <Unlock size={14} />
+                Débloquer un numéro
+              </button>
+              <button type="button" onClick={() => setAddOpen(true)} className="btn-primary !px-5 !py-2.5">
+                <Plus size={15} />
+                Ajouter
+              </button>
+            </>
           )}
         </div>
       </div>
@@ -656,6 +763,7 @@ export default function TestsView() {
         />
       )}
       {canEdit && <AddModal open={addOpen} onClose={() => setAddOpen(false)} onAdded={reload} />}
+      {canEdit && <UnlockModal open={unlockOpen} onClose={() => setUnlockOpen(false)} />}
     </div>
   );
 }

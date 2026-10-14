@@ -76,15 +76,13 @@ export default function BlogPost() {
             Envie de mettre ça en pratique dans un vrai cadre ?
           </p>
           <p className="mt-1 text-sm text-white/70">Passez le test de niveau gratuit et démarrez à votre rythme.</p>
-          <a
-            href={TEST_LEVEL_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to={TEST_LEVEL_URL}
             className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-ebp-blue shadow-[0_16px_30px_-10px_rgba(0,0,0,0.5)] transition hover:shadow-[0_20px_36px_-10px_rgba(0,0,0,0.6)] active:scale-[0.98]"
           >
             <ClipboardCheck size={16} />
             Passer le Test de Niveau
-          </a>
+          </Link>
         </div>
 
         {related.length > 0 && (

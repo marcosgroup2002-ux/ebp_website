@@ -85,15 +85,13 @@ export default function Navbar() {
           </nav>
 
           <div className="hidden items-center gap-3 lg:flex">
-            <a
-              href={TEST_LEVEL_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to={TEST_LEVEL_URL}
               className="inline-flex items-center gap-2 rounded-full bg-ebp-blue px-5 py-2.5 text-xs lg:text-sm font-semibold text-white shadow-sm transition-all hover:bg-ebp-blue-dark active:scale-95"
             >
               <ClipboardCheck size={16} />
               Test de Niveau
-            </a>
+            </Link>
           </div>
 
           <button
@@ -168,16 +166,14 @@ export default function Navbar() {
         </div>
 
         <div className="border-t border-ink/10 p-5 space-y-3 bg-slate-50/50">
-          <a
-            href={TEST_LEVEL_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to={TEST_LEVEL_URL}
             onClick={() => setOpen(false)}
             className="flex w-full items-center justify-center gap-2.5 rounded-full bg-ebp-blue px-5 py-3.5 text-sm font-bold text-white shadow-md active:scale-95 transition-all hover:bg-ebp-blue-dark"
           >
             <ClipboardCheck size={18} />
             Passer le Test de Niveau
-          </a>
+          </Link>
 
           <a
             href="tel:+2290196840296"

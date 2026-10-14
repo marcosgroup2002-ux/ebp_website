@@ -50,29 +50,43 @@ supabase secrets set RESEND_API_KEY=re_xxx PDG_ALERT_EMAIL=direction@exemple.com
 Les schémas sont versionnés dans `supabase/migrations/` (aucune commande `DROP TABLE` destructrice).
 Appliquer avec `supabase db push`.
 
-## Résultats du test de niveau (Google Form → espace secrétariat)
+## Test de niveau en ligne
 
-Le bouton « Passer le Test de Niveau » du site ouvre le Google Form « Level Test EBP » (`TEST_LEVEL_URL` dans
-`src/data/siteContent.js`). Les réponses arrivent dans la page **Tests de niveau** de l'espace admin.
+Le bouton « Passer le Test de Niveau » mène à la page `/test-de-niveau` du site (`TEST_LEVEL_URL` dans
+`src/data/siteContent.js`). Les résultats arrivent dans la page **Tests de niveau** de l'espace admin.
 
 ```
-Google Form ──(Apps Script, à l'envoi)──▶ Edge Function receive-test-result ──▶ table test_results
-                                                                              │
-                              secrétaire : lit, évalue, contacte, transmet ◀──┘
-                              PDG        : lit uniquement ce qui lui est transmis
+Apprenant ──(site : questions sans réponses)──▶ level_test_start / level_test_submit (RPC publiques)
+                                                         │ correction côté serveur (table level_test_key)
+                                                         ▼
+                              level_test_attempts  +  test_results (source = 'site')
+                                                         │
+                        secrétaire : lit, évalue, contacte, transmet ──▶ PDG : lit les résultats transmis
 ```
 
-- **Jeton** : l'Edge Function exige l'en-tête `x-webhook-token`. Seule l'empreinte SHA-256 est stockée
-  (table `integration_tokens`) ; le jeton lui-même se trouve uniquement dans le fichier local
-  `ebp-form-webhook.gs.local` (ignoré par Git), à coller dans l'éditeur de scripts du formulaire.
-- **Niveau estimé** : calculé côté serveur à partir des étiquettes `(A1)`…`(C2)` des questions ; un niveau est
-  validé à partir de 60 % de réussite, en montant de A1 à C2. Il reste indicatif tant que la rédaction (10 points,
-  correction manuelle) n'est pas lue : la secrétaire confirme le « niveau retenu ».
-- **Statuts** : `nouveau` → `contacte` → `transmis`. Un résultat transmis est verrouillé (ni modification ni suppression).
-- **Droits** : secrétaire = lecture/écriture via RPC (`add_test_result`, `review_test_result`,
-  `set_test_result_status`, `delete_test_result`) ; PDG = lecture des résultats `transmis` ; coach et anonyme = aucun accès.
-- **Renouveler le jeton** : générer 32 octets aléatoires, mettre à jour `integration_tokens.token_hash`
-  avec leur SHA-256, puis remplacer `TOKEN` dans le script Google.
-- **Contact du candidat** : le formulaire ne demande que le nom. Ajouter une question courte « WhatsApp / email »
-  (ou activer « Collecter les adresses e-mail ») pour que la secrétaire puisse rappeler le candidat ; le script la
-  reconnaît automatiquement.
+- **Questions** : `src/data/levelTest.js` (généré à partir du formulaire d'origine, **sans aucune réponse**).
+- **Clé de correction** : table `level_test_key` (réponses acceptées, niveau CECRL, compétence, points, `actif`).
+  Le dépôt GitHub étant public, la clé n'est volontairement **pas versionnée** : elle se modifie directement en base
+  (SQL Editor de Supabase). Elle est inaccessible au navigateur (RLS sans politique, aucun droit pour `anon`).
+  Exemples :
+  ```sql
+  -- Activer la partie écoute une fois les bonnes réponses connues (0 = A, 1 = B, 2 = C, 3 = D)
+  update level_test_key set correct = '{1}', actif = true where question_id = 'q44';
+  -- Accepter deux réponses pour une même question
+  update level_test_key set correct = '{0,3}' where question_id = 'q22';
+  ```
+  Seules les questions `actif = true` sont posées et comptées : le test s'adapte sans redéploiement.
+- **Une seule tentative** : par numéro WhatsApp (8 derniers chiffres) **et** par téléphone (identifiant anonyme stocké
+  dans le navigateur), garantie par deux index uniques partiels. La secrétaire peut autoriser une reprise
+  (« Autoriser un nouveau test » sur un résultat, ou « Débloquer un numéro »). Limite honnête : vider les données du
+  navigateur *et* utiliser un autre numéro permet de contourner la règle ; un code SMS serait nécessaire pour l'éviter.
+- **Temps** : 45 minutes (le serveur accepte l'envoi jusqu'à 5 minutes après l'échéance et refuse tout envoi
+  en moins de 90 secondes). Le site envoie automatiquement le test à 0.
+- **Niveau estimé** : un niveau est acquis à partir de 60 % de réussite ; les niveaux de moins de 4 questions sont
+  regroupés avec le suivant (`level_test_estimate`). Il reste indicatif tant que la rédaction (correction manuelle)
+  n'est pas lue : la secrétaire confirme le « niveau retenu ».
+- **Statuts** : `nouveau` → `contacte` → `transmis`. Un résultat transmis au PDG est verrouillé.
+- **Protection** : champ piège anti-robot, limite par adresse IP (120 démarrages/heure), disjoncteur global
+  (3 000/heure), validation stricte des réponses, texte de rédaction toujours affiché comme du texte.
+- **Droits** : secrétaire = lecture/écriture via RPC ; PDG = lecture des résultats `transmis` ; coach = aucun accès.
+- **Ancienne chaîne Google Form** : abandonnée. La fonction Edge `receive-test-result` ne renvoie plus que 410.

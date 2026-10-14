@@ -19,8 +19,21 @@ export const STATUS_INFO = {
   transmis: { label: "Transmis au PDG", classes: "bg-ebp-green/10 text-ebp-green" },
 };
 
+export const SKILL_LABELS = {
+  grammaire: "Grammaire",
+  vocabulaire: "Vocabulaire",
+  lecture: "Compréhension écrite",
+  ecoute: "Compréhension orale",
+};
+
+export const SOURCE_LABELS = {
+  site: "Passé sur le site",
+  google_form: "Reçu du Google Form",
+  manuel: "Saisi à la main",
+};
+
 const COLUMNS =
-  "id, nom, contact, score, score_max, niveau_estime, niveau_valide, detail_niveaux, redaction, source, statut, note, passe_le, transmis_at, transmis_par";
+  "id, nom, contact, score, score_max, niveau_estime, niveau_valide, detail_niveaux, detail_competences, redaction, source, statut, note, passe_le, transmis_at, transmis_par";
 
 export async function fetchTestResults() {
   const { data, error } = await requireSupabase()
@@ -56,6 +69,12 @@ export async function reviewTestResult(id, niveau, note) {
 export async function setTestStatus(id, statut) {
   const { error } = await requireSupabase().rpc("set_test_result_status", { p_id: id, p_statut: statut });
   if (error) throw new Error(toUserMessage(error, "Changement de statut impossible."));
+}
+
+export async function allowRetake(whatsapp) {
+  const { data, error } = await requireSupabase().rpc("allow_level_retake", { p_whatsapp: whatsapp });
+  if (error) throw new Error(toUserMessage(error, "Autorisation impossible."));
+  return data;
 }
 
 export async function deleteTestResult(id) {
