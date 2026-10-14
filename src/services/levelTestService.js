@@ -82,6 +82,10 @@ export function saveResult(attemptId, result) {
   store.set(RESULT_KEY, JSON.stringify({ attemptId, result }));
 }
 
+export function clearSavedResult() {
+  store.remove(RESULT_KEY);
+}
+
 const NETWORK_MESSAGE = "Connexion impossible pour le moment. Vérifiez votre réseau, vos réponses sont conservées.";
 
 const REQUEST_TIMEOUT_MS = 20000;

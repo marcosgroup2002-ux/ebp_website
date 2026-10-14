@@ -10,6 +10,7 @@ import {
   START_ERRORS,
   SUBMIT_ERRORS,
   clearProgress,
+  clearSavedResult,
   fetchResult,
   loadProgress,
   loadSavedResult,
@@ -222,6 +223,23 @@ export default function LevelTest() {
   const answeredCount = questionSteps.filter((s) => answers[s.question.id] !== undefined).length;
   const step = steps[Math.min(stepIndex, steps.length - 1)];
   const secondsLeft = useCountdown(session?.expiresAt, phase === "test");
+
+  // Un résultat gardé sur l'appareil mais supprimé côté serveur (ex. test remis à zéro) ne doit plus bloquer.
+  useEffect(() => {
+    if (boot.phase !== "result") return;
+    const saved = loadSavedResult();
+    if (!saved?.attemptId) return;
+    fetchResult(saved.attemptId)
+      .then((res) => {
+        if (res?.status === "error" && res.code === "not_found") {
+          clearSavedResult();
+          clearProgress();
+          setResult(null);
+          setPhase("intro");
+        }
+      })
+      .catch(() => {});
+  }, [boot.phase]);
 
   useEffect(() => {
     if (phase !== "test" || !session) return;
