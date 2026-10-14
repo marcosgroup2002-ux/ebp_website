@@ -41,6 +41,14 @@ export default {
           "0%": { transform: "scale(0.9)", opacity: "0.8" },
           "100%": { transform: "scale(1.9)", opacity: "0" },
         },
+        floatSoft: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-3px)" },
+        },
+        dotFill: {
+          from: { transform: "scaleX(0)" },
+          to: { transform: "scaleX(1)" },
+        },
         marquee: {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(-50%)" },
@@ -58,6 +66,8 @@ export default {
         wave5: "wave 1.1s ease-in-out infinite 0.6s",
         floatY: "floatY 4s ease-in-out infinite",
         pulseRing: "pulseRing 2s cubic-bezier(0,0,0.2,1) infinite",
+        floatSoft: "floatSoft 3s ease-in-out infinite",
+        dotFill: "dotFill 3s linear forwards",
         marquee: "marquee 35s linear infinite",
         glowShift: "glowShift 8s ease-in-out infinite",
       },

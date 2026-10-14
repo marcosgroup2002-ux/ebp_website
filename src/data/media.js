@@ -86,6 +86,12 @@ export const MEDIA = {
     Users: "/pillars/equipe-mentors.jpg",
     Award: "/pillars/certification-attestation.jpg",
   },
+  pillarsFocus: {
+    Zap: "52% 30%",
+    ClipboardCheck: "42% 28%",
+    Users: "22% 35%",
+    Award: "50% 30%",
+  },
   blog: {
     "parler-anglais-confiance": "/photos/classroom-group.jpeg",
     "reussir-entretien-embauche-anglais": "/photos/team-meeting.jpeg",

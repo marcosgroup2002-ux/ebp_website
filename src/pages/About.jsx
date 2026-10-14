@@ -1,13 +1,13 @@
 import { motion } from "framer-motion";
-import { MessageCircle } from "lucide-react";
+import { ClipboardCheck } from "lucide-react";
 import {
   FOUNDER_NAME,
   CREED_PRINCIPLES,
   CULTURE_VALUES,
   PHILOSOPHY_QUOTE,
+  TEST_LEVEL_URL,
 } from "../data/siteContent";
 import { MEDIA, img, imgSrcSet } from "../data/media";
-import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
 import Waveform from "../components/Waveform";
 import Seo from "../components/Seo";
 
@@ -179,12 +179,12 @@ export default function About() {
             Envie de rejoindre la prochaine cohorte ?
           </h2>
           <a
-            href={buildWhatsAppLink(WHATSAPP_MESSAGES.levelTest)}
+            href={TEST_LEVEL_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-primary"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-ebp-blue shadow-[0_16px_30px_-10px_rgba(0,0,0,0.5)] transition hover:shadow-[0_20px_36px_-10px_rgba(0,0,0,0.6)] active:scale-[0.98]"
           >
-            <MessageCircle size={16} />
+            <ClipboardCheck size={16} />
             Passer le Test de Niveau
           </a>
         </motion.div>

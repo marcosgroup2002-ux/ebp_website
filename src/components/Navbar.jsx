@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { Menu, X, MessageCircle, ChevronRight, Phone } from "lucide-react";
-import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
-import { WHATSAPP_DISPLAY } from "../data/siteContent";
+import { Menu, X, ClipboardCheck, ChevronRight, Phone } from "lucide-react";
+import { WHATSAPP_DISPLAY, TEST_LEVEL_URL } from "../data/siteContent";
 import AnnouncementBar from "./AnnouncementBar";
 
 const NAV_ITEMS = [
@@ -87,12 +86,12 @@ export default function Navbar() {
 
           <div className="hidden items-center gap-3 lg:flex">
             <a
-              href={buildWhatsAppLink(WHATSAPP_MESSAGES.levelTest)}
+              href={TEST_LEVEL_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-ebp-blue px-5 py-2.5 text-xs lg:text-sm font-semibold text-white shadow-sm transition-all hover:bg-ebp-blue-dark active:scale-95"
             >
-              <MessageCircle size={16} />
+              <ClipboardCheck size={16} />
               Test de Niveau
             </a>
           </div>
@@ -170,13 +169,13 @@ export default function Navbar() {
 
         <div className="border-t border-ink/10 p-5 space-y-3 bg-slate-50/50">
           <a
-            href={buildWhatsAppLink(WHATSAPP_MESSAGES.levelTest)}
+            href={TEST_LEVEL_URL}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setOpen(false)}
             className="flex w-full items-center justify-center gap-2.5 rounded-full bg-ebp-blue px-5 py-3.5 text-sm font-bold text-white shadow-md active:scale-95 transition-all hover:bg-ebp-blue-dark"
           >
-            <MessageCircle size={18} />
+            <ClipboardCheck size={18} />
             Passer le Test de Niveau
           </a>
 

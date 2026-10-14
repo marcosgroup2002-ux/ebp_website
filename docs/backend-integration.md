@@ -49,3 +49,30 @@ supabase secrets set RESEND_API_KEY=re_xxx PDG_ALERT_EMAIL=direction@exemple.com
 
 Les schémas sont versionnés dans `supabase/migrations/` (aucune commande `DROP TABLE` destructrice).
 Appliquer avec `supabase db push`.
+
+## Résultats du test de niveau (Google Form → espace secrétariat)
+
+Le bouton « Passer le Test de Niveau » du site ouvre le Google Form « Level Test EBP » (`TEST_LEVEL_URL` dans
+`src/data/siteContent.js`). Les réponses arrivent dans la page **Tests de niveau** de l'espace admin.
+
+```
+Google Form ──(Apps Script, à l'envoi)──▶ Edge Function receive-test-result ──▶ table test_results
+                                                                              │
+                              secrétaire : lit, évalue, contacte, transmet ◀──┘
+                              PDG        : lit uniquement ce qui lui est transmis
+```
+
+- **Jeton** : l'Edge Function exige l'en-tête `x-webhook-token`. Seule l'empreinte SHA-256 est stockée
+  (table `integration_tokens`) ; le jeton lui-même se trouve uniquement dans le fichier local
+  `ebp-form-webhook.gs.local` (ignoré par Git), à coller dans l'éditeur de scripts du formulaire.
+- **Niveau estimé** : calculé côté serveur à partir des étiquettes `(A1)`…`(C2)` des questions ; un niveau est
+  validé à partir de 60 % de réussite, en montant de A1 à C2. Il reste indicatif tant que la rédaction (10 points,
+  correction manuelle) n'est pas lue : la secrétaire confirme le « niveau retenu ».
+- **Statuts** : `nouveau` → `contacte` → `transmis`. Un résultat transmis est verrouillé (ni modification ni suppression).
+- **Droits** : secrétaire = lecture/écriture via RPC (`add_test_result`, `review_test_result`,
+  `set_test_result_status`, `delete_test_result`) ; PDG = lecture des résultats `transmis` ; coach et anonyme = aucun accès.
+- **Renouveler le jeton** : générer 32 octets aléatoires, mettre à jour `integration_tokens.token_hash`
+  avec leur SHA-256, puis remplacer `TOKEN` dans le script Google.
+- **Contact du candidat** : le formulaire ne demande que le nom. Ajouter une question courte « WhatsApp / email »
+  (ou activer « Collecter les adresses e-mail ») pour que la secrétaire puisse rappeler le candidat ; le script la
+  reconnaît automatiquement.

@@ -1,8 +1,8 @@
 import { Link, Navigate, useParams } from "react-router-dom";
-import { ArrowLeft, Clock, MessageCircle } from "lucide-react";
+import { ArrowLeft, Clock, ClipboardCheck } from "lucide-react";
 import { getPostBySlug, BLOG_POSTS } from "../data/blogPosts";
+import { TEST_LEVEL_URL } from "../data/siteContent";
 import { MEDIA, img, imgSrcSet } from "../data/media";
-import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
 import Seo from "../components/Seo";
 
 export default function BlogPost() {
@@ -77,12 +77,12 @@ export default function BlogPost() {
           </p>
           <p className="mt-1 text-sm text-white/70">Passez le test de niveau gratuit et démarrez à votre rythme.</p>
           <a
-            href={buildWhatsAppLink(WHATSAPP_MESSAGES.levelTest)}
+            href={TEST_LEVEL_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-primary mt-5"
+            className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-ebp-blue shadow-[0_16px_30px_-10px_rgba(0,0,0,0.5)] transition hover:shadow-[0_20px_36px_-10px_rgba(0,0,0,0.6)] active:scale-[0.98]"
           >
-            <MessageCircle size={16} />
+            <ClipboardCheck size={16} />
             Passer le Test de Niveau
           </a>
         </div>

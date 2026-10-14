@@ -13,13 +13,14 @@ import {
   X,
   ChevronRight,
   Tag,
+  ClipboardList,
 } from "lucide-react";
 import { useAdminUser } from "../../context/AdminUserContext";
 
 const ROLE_SECTIONS = {
-  secretaire: ["paiements", "checklists", "tarifs"],
+  secretaire: ["paiements", "tests", "checklists", "tarifs"],
   coach: ["coachs"],
-  pdg: ["analytics", "pdg", "paiements", "audit", "coachs"],
+  pdg: ["analytics", "pdg", "paiements", "tests", "audit", "coachs"],
 };
 
 export default function AdminLayout() {
@@ -70,6 +71,7 @@ export default function AdminLayout() {
         { to: "/admin/analytics", label: "Audience & Clics", icon: BarChart3 },
         { to: "/admin/pdg", label: "Supervision Générale", icon: TrendingUp },
         { to: "/admin/paiements", label: "Suivi Apprenants (Lecture)", icon: CreditCard },
+        { to: "/admin/tests", label: "Tests de niveau", icon: ClipboardList },
         { to: "/admin/audit", label: "Journaux d'Audit", icon: ShieldAlert },
         { to: "/admin/coachs", label: "Aperçu Espace Coachs", icon: GraduationCap },
       ];
@@ -77,6 +79,7 @@ export default function AdminLayout() {
 
     return [
       { to: "/admin/paiements", label: "Paiements & Apprenants", icon: CreditCard },
+      { to: "/admin/tests", label: "Tests de niveau", icon: ClipboardList },
       { to: "/admin/checklists", label: "Checklists Secrétariat", icon: ListChecks },
       { to: "/admin/tarifs", label: "Tarifs des formules", icon: Tag },
     ];
