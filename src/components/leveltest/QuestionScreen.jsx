@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Check, ChevronLeft, ChevronRight, Headphones, BookOpen, PenLine, Languages, Sparkles } from "lucide-react";
-import { AUDIOS, PASSAGES } from "../../data/levelTest";
+import { PASSAGES } from "../../data/levelTest";
+import VoicePlayer from "./VoicePlayer";
 
 export const SKILL_INFO = {
   grammaire: {
@@ -62,29 +63,6 @@ function PassageCard({ passageId }) {
           <p key={i}>{p}</p>
         ))}
       </div>
-    </section>
-  );
-}
-
-function AudioCard({ audioId }) {
-  const audio = AUDIOS[audioId];
-  return (
-    <section aria-label={audio.title} className="rounded-3xl bg-white p-4 shadow-soft ring-1 ring-ink/5">
-      <p className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-ebp-blue">
-        <Headphones size={14} />
-        {audio.title}
-      </p>
-      <div className="aspect-video w-full overflow-hidden rounded-2xl bg-ink">
-        <iframe
-          title={audio.title}
-          src={`https://www.youtube-nocookie.com/embed/${audio.youtubeId}?rel=0&modestbranding=1&playsinline=1`}
-          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          loading="lazy"
-          className="h-full w-full border-0"
-        />
-      </div>
-      <p className="mt-3 text-xs text-ink/50">Vous pouvez réécouter l'enregistrement autant de fois que vous le souhaitez.</p>
     </section>
   );
 }
@@ -197,7 +175,7 @@ export function QuestionScreen({ question, number, total, answer, onAnswer, onPr
 
       <div className={hasAside ? "grid gap-5 lg:grid-cols-2 lg:items-start" : "mx-auto max-w-2xl space-y-5"}>
         {question.passage && <PassageCard passageId={question.passage} />}
-        {question.audio && <AudioCard audioId={question.audio} />}
+        {question.audio && <VoicePlayer key={question.audio} audioId={question.audio} />}
 
         <div className="space-y-5">
           <div className="rounded-3xl bg-white p-6 shadow-card ring-1 ring-ink/5 sm:p-7">

@@ -41,7 +41,7 @@
       ]
     },
     {
-      "source": "/(photos|graduation|brand|prospectus)/(.*)",
+      "source": "/(photos|graduation|pillars|brand|prospectus|audio)/(.*)",
       "headers": [
         {
           "key": "Cache-Control",

@@ -20,10 +20,12 @@ export const PASSAGES = {
   }
 };
 
+// Enregistrements hébergés par le site (lecteur « assistant vocal »). Source des dialogues : lingoneo.org.
 export const AUDIOS = {
-  audio1: { title: "Audio 1 · Se présenter", youtubeId: "-UGRkuEURrs" },
-  audio2: { title: "Audio 2 · Entretien d'embauche", youtubeId: "klfv-iwu6D4" },
+  audio1: { title: "Audio 1 · Se présenter", src: "/audio/introducing-yourself.mp3" },
+  audio2: { title: "Audio 2 · Entretien d'embauche", src: "/audio/at-the-job-interview.mp3" },
 };
+export const AUDIO_CREDIT = "Source des dialogues : lingoneo.org";
 
 export const WRITING_PROMPTS = [
   { id: "A", label: "Option A · E-mail professionnel", text: "Write an email to your project lead explaining why a task deadline will be missed and proposing a revised timeline." },

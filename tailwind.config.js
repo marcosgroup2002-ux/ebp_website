@@ -49,6 +49,14 @@ export default {
           from: { transform: "scaleX(0)" },
           to: { transform: "scaleX(1)" },
         },
+        orbBreath: {
+          "0%, 100%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.045)" },
+        },
+        orbRipple: {
+          "0%": { transform: "scale(0.78)", opacity: "0.55" },
+          "100%": { transform: "scale(1.38)", opacity: "0" },
+        },
         marquee: {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(-50%)" },
@@ -68,6 +76,8 @@ export default {
         pulseRing: "pulseRing 2s cubic-bezier(0,0,0.2,1) infinite",
         floatSoft: "floatSoft 3s ease-in-out infinite",
         dotFill: "dotFill 3s linear forwards",
+        orbBreath: "orbBreath 3.4s ease-in-out infinite",
+        orbRipple: "orbRipple 2.6s ease-out infinite",
         marquee: "marquee 35s linear infinite",
         glowShift: "glowShift 8s ease-in-out infinite",
       },
