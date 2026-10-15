@@ -127,7 +127,120 @@ export default function Contact() {
         </div>
       </section>
 
+      <section className="section-pad bg-white">
+        <div className="container">
+          <div className="mx-auto max-w-xl">
+            <form onSubmit={handleSubmit(onSubmit)} className="rounded-3xl border border-ink/10 bg-surface p-7 sm:p-9">
+                        <p className="font-display text-lg font-semibold text-ink">Envoyez-nous un message</p>
+                        <p className="mt-1 text-sm text-ink/50">Votre message s'ouvrira directement dans WhatsApp, prêt à envoyer.</p>
+            
+                        <div className="mt-6 space-y-4">
+                          <div>
+                            <label className="mb-1.5 block text-xs font-medium text-ink/50">Nom complet</label>
+                            <input
+                              className="w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
+                              placeholder="Votre nom"
+                              {...register("name", {
+                                required: "Ce champ est requis.",
+                                minLength: { value: 2, message: "Le nom doit contenir au moins 2 caractères." },
+                                maxLength: { value: 80, message: "Le nom est trop long." },
+                              })}
+                            />
+                            {errors.name && <p className="mt-1 text-xs text-ebp-red-soft">{errors.name.message}</p>}
+                          </div>
+                          <div>
+                            <label className="mb-1.5 block text-xs font-medium text-ink/50">WhatsApp ou email</label>
+                            <input
+                              className="w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
+                              placeholder="01 96 84 02 96 ou vous@exemple.com"
+                              {...register("contact", {
+                                required: "Ce champ est requis.",
+                                validate: (value) =>
+                                  isValidEmailOrPhone(value) || "Entrez un numéro (8 à 15 chiffres) ou un email valide.",
+                              })}
+                            />
+                            {errors.contact && <p className="mt-1 text-xs text-ebp-red-soft">{errors.contact.message}</p>}
+                          </div>
+                          <div>
+                            <label className="mb-1.5 block text-xs font-medium text-ink/50">Message</label>
+                            <textarea
+                              rows={4}
+                              className="w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
+                              placeholder="Votre question ou votre objectif avec l'anglais..."
+                              {...register("message", {
+                                required: "Ce champ est requis.",
+                                minLength: { value: 10, message: "Décrivez votre demande en quelques mots de plus (10 caractères min.)." },
+                                maxLength: { value: 1000, message: "Le message est trop long (1000 caractères max.)." },
+                              })}
+                            />
+                            {errors.message && <p className="mt-1 text-xs text-ebp-red-soft">{errors.message.message}</p>}
+                          </div>
+                        </div>
+            
+                        <button type="submit" className="btn-whatsapp mt-6 w-full">
+                          <MessageCircle size={16} />
+                          Envoyer via WhatsApp
+                        </button>
+                      </form>
+          </div>
+        </div>
+      </section>
+
       <section className="section-pad bg-surface">
+        <div className="container">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold text-ink sm:text-4xl">Une question ? Écrivez-nous</h2>
+            <p className="mt-4 text-ink/60">Notre équipe vous répond rapidement, du lundi au samedi.</p>
+          </div>
+          <div className="mx-auto mt-10 grid max-w-5xl gap-4 md:grid-cols-3">
+    
+                <a
+                  href={buildWhatsAppLink(WHATSAPP_MESSAGES.general)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 rounded-2xl border border-ink/10 p-5 transition-colors hover:border-ebp-green"
+                >
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ebp-green/10 text-ebp-green">
+                    <MessageCircle size={18} />
+                  </span>
+                  <div>
+                    <p className="font-display text-sm font-semibold text-ink">WhatsApp</p>
+                    <p className="mt-0.5 text-sm text-ink/60">{WHATSAPP_DISPLAY} · réponse sous 5 minutes</p>
+                  </div>
+                </a>
+    
+                <a
+                  href={`mailto:${CONTACT_INFO.email}`}
+                  className="flex items-center gap-4 rounded-2xl border border-ink/10 p-5 transition-colors hover:border-ebp-blue"
+                >
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ebp-blue/10 text-ebp-blue">
+                    <Mail size={18} />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="font-display text-sm font-semibold text-ink">Email</p>
+                    <p className="mt-0.5 break-all text-sm text-ink/60">{CONTACT_INFO.email}</p>
+                  </div>
+                </a>
+    
+                <div className="flex items-center gap-4 rounded-2xl border border-ink/10 p-5">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ebp-blue/10 text-ebp-blue">
+                    <Monitor size={18} />
+                  </span>
+                  <div>
+                    <p className="font-display text-sm font-semibold text-ink">{CONTACT_INFO.online.name}</p>
+                    <p className="mt-0.5 text-sm text-ink/60">{CONTACT_INFO.online.address}</p>
+                    <p className="mt-1 flex items-center gap-1.5 text-xs text-ink/45">
+                      <Clock size={12} />
+                      {CONTACT_INFO.online.hours}
+                    </p>
+                  </div>
+                </div>
+              
+          </div>
+        </div>
+      </section>
+
+      <section className="section-pad bg-white">
         <div className="container">
           <div className="mx-auto max-w-2xl text-center">
             <span className="eyebrow justify-center">
@@ -145,110 +258,6 @@ export default function Contact() {
               <CenterCard key={center.id} center={center} />
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="section-pad bg-white">
-        <div className="container grid gap-12 md:grid-cols-2 md:gap-8 lg:grid-cols-[1fr,1.1fr] lg:gap-12">
-          <div className="space-y-4">
-            <h2 className="font-display text-2xl font-bold text-ink">Une question ? Écrivez-nous</h2>
-            <p className="text-sm text-ink/60">Notre équipe vous répond rapidement, du lundi au samedi.</p>
-
-            <a
-              href={buildWhatsAppLink(WHATSAPP_MESSAGES.general)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-4 rounded-2xl border border-ink/10 p-5 transition-colors hover:border-ebp-green"
-            >
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ebp-green/10 text-ebp-green">
-                <MessageCircle size={18} />
-              </span>
-              <div>
-                <p className="font-display text-sm font-semibold text-ink">WhatsApp</p>
-                <p className="mt-0.5 text-sm text-ink/60">{WHATSAPP_DISPLAY} · réponse sous 5 minutes</p>
-              </div>
-            </a>
-
-            <a
-              href={`mailto:${CONTACT_INFO.email}`}
-              className="flex items-center gap-4 rounded-2xl border border-ink/10 p-5 transition-colors hover:border-ebp-blue"
-            >
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ebp-blue/10 text-ebp-blue">
-                <Mail size={18} />
-              </span>
-              <div className="min-w-0">
-                <p className="font-display text-sm font-semibold text-ink">Email</p>
-                <p className="mt-0.5 break-all text-sm text-ink/60">{CONTACT_INFO.email}</p>
-              </div>
-            </a>
-
-            <div className="flex items-center gap-4 rounded-2xl border border-ink/10 p-5">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ebp-blue/10 text-ebp-blue">
-                <Monitor size={18} />
-              </span>
-              <div>
-                <p className="font-display text-sm font-semibold text-ink">{CONTACT_INFO.online.name}</p>
-                <p className="mt-0.5 text-sm text-ink/60">{CONTACT_INFO.online.address}</p>
-                <p className="mt-1 flex items-center gap-1.5 text-xs text-ink/45">
-                  <Clock size={12} />
-                  {CONTACT_INFO.online.hours}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <form onSubmit={handleSubmit(onSubmit)} className="rounded-3xl border border-ink/10 bg-surface p-7 sm:p-9">
-            <p className="font-display text-lg font-semibold text-ink">Envoyez-nous un message</p>
-            <p className="mt-1 text-sm text-ink/50">Votre message s'ouvrira directement dans WhatsApp, prêt à envoyer.</p>
-
-            <div className="mt-6 space-y-4">
-              <div>
-                <label className="mb-1.5 block text-xs font-medium text-ink/50">Nom complet</label>
-                <input
-                  className="w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
-                  placeholder="Votre nom"
-                  {...register("name", {
-                    required: "Ce champ est requis.",
-                    minLength: { value: 2, message: "Le nom doit contenir au moins 2 caractères." },
-                    maxLength: { value: 80, message: "Le nom est trop long." },
-                  })}
-                />
-                {errors.name && <p className="mt-1 text-xs text-ebp-red-soft">{errors.name.message}</p>}
-              </div>
-              <div>
-                <label className="mb-1.5 block text-xs font-medium text-ink/50">WhatsApp ou email</label>
-                <input
-                  className="w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
-                  placeholder="01 96 84 02 96 ou vous@exemple.com"
-                  {...register("contact", {
-                    required: "Ce champ est requis.",
-                    validate: (value) =>
-                      isValidEmailOrPhone(value) || "Entrez un numéro (8 à 15 chiffres) ou un email valide.",
-                  })}
-                />
-                {errors.contact && <p className="mt-1 text-xs text-ebp-red-soft">{errors.contact.message}</p>}
-              </div>
-              <div>
-                <label className="mb-1.5 block text-xs font-medium text-ink/50">Message</label>
-                <textarea
-                  rows={4}
-                  className="w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ebp-blue"
-                  placeholder="Votre question ou votre objectif avec l'anglais..."
-                  {...register("message", {
-                    required: "Ce champ est requis.",
-                    minLength: { value: 10, message: "Décrivez votre demande en quelques mots de plus (10 caractères min.)." },
-                    maxLength: { value: 1000, message: "Le message est trop long (1000 caractères max.)." },
-                  })}
-                />
-                {errors.message && <p className="mt-1 text-xs text-ebp-red-soft">{errors.message.message}</p>}
-              </div>
-            </div>
-
-            <button type="submit" className="btn-whatsapp mt-6 w-full">
-              <MessageCircle size={16} />
-              Envoyer via WhatsApp
-            </button>
-          </form>
         </div>
       </section>
     </>

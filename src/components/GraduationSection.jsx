@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Play, GraduationCap, Images, ChevronLeft, ChevronRight, X, ArrowRight } from "lucide-react";
 import { GRADUATION_ALBUM_URL, GRADUATION_PHOTOS, GRADUATION_VIDEOS } from "../data/siteContent";
-import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
 import { img } from "../data/media";
 import Waveform from "./Waveform";
 
@@ -250,15 +250,17 @@ export default function GraduationSection({ pageTop = false }) {
             <p className="font-display text-2xl font-bold">La cérémonie en images</p>
             <p className="mt-1 text-sm text-white/60">Remises d'attestations, discours et fierté partagée.</p>
           </div>
-          <a
-            href={GRADUATION_ALBUM_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden shrink-0 items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-xs font-semibold text-white hover:bg-white/10 sm:inline-flex"
-          >
-            <Images size={15} />
-            Voir l'album complet
-          </a>
+          {GRADUATION_ALBUM_URL && (
+            <a
+              href={GRADUATION_ALBUM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden shrink-0 items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-xs font-semibold text-white hover:bg-white/10 sm:inline-flex"
+            >
+              <Images size={15} />
+              Voir l'album complet
+            </a>
+          )}
         </div>
 
         <div className="mt-6 grid grid-flow-row-dense auto-rows-[130px] grid-cols-2 gap-3 sm:auto-rows-[170px] sm:grid-cols-4">
@@ -306,24 +308,24 @@ export default function GraduationSection({ pageTop = false }) {
             Rejoignez la prochaine cohorte et préparez votre propre projet Capstone en anglais.
           </p>
           <div className="flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
-            <a
-              href={buildWhatsAppLink(WHATSAPP_MESSAGES.enroll)}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/contact"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-ebp-blue shadow-lg transition hover:bg-ebp-sky active:scale-[0.98]"
             >
               Je réserve ma place
               <ArrowRight size={16} />
-            </a>
-            <a
-              href={GRADUATION_ALBUM_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/30 px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-white/10"
-            >
-              <Images size={16} />
-              Voir toutes les photos
-            </a>
+            </Link>
+            {GRADUATION_ALBUM_URL && (
+              <a
+                href={GRADUATION_ALBUM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/30 px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                <Images size={16} />
+                Voir toutes les photos sur Facebook
+              </a>
+            )}
           </div>
         </motion.div>
       </div>

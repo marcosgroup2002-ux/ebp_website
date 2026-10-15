@@ -339,8 +339,8 @@ export const GRADUATION_PHOTOS = [
   { src: "/graduation/equipe-laureats.jpg", alt: "Lauréats et équipe EBP réunis", orientation: "landscape" },
 ];
 
-export const GRADUATION_ALBUM_URL =
-  "https://drive.google.com/drive/folders/1fm6Y7qwmcK4JbAuKCrMsaicPfI-ghpnK";
+// Page Facebook EBP avec toutes les photos : à renseigner (les boutons « photos » sont masqués tant qu'il est vide).
+export const GRADUATION_ALBUM_URL = "";
 
 export const PROSPECTUS_URL = "/prospectus/EBP-Prospectus.pdf";
 

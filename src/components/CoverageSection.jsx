@@ -26,8 +26,8 @@ export default function CoverageSection() {
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
         >
-          <span className="eyebrow">
-            <Waveform barClassName="w-[2.5px] h-3" />
+          <span className="eyebrow text-white">
+            <Waveform color="bg-white" barClassName="w-[2.5px] h-3" />
             Portée Régionale
           </span>
           <h2 className="mt-4 text-3xl font-bold text-white sm:text-4xl">
@@ -76,16 +76,16 @@ export default function CoverageSection() {
               <motion.span
                 animate={{ scale: [1, 1.6, 1], opacity: [0.6, 0, 0.6] }}
                 transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-                className={`absolute h-3 w-3 rounded-full ${hub.primary ? "bg-white" : "bg-white/40"}`}
+                className={`absolute h-3 w-3 rounded-full ${hub.primary ? "bg-ebp-green" : "bg-white/40"}`}
               />
               <span
                 className={`relative rounded-full ${
-                  hub.primary ? "h-2.5 w-2.5 bg-ebp-sky" : "h-1.5 w-1.5 bg-white/70"
+                  hub.primary ? "h-2.5 w-2.5 bg-ebp-green" : "h-1.5 w-1.5 bg-white/70"
                 }`}
               />
               <span
                 className={`mt-1.5 whitespace-nowrap rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                  hub.primary ? "bg-white text-ebp-blue" : "bg-white/10 text-white/70"
+                  hub.primary ? "bg-ebp-green text-white" : "bg-white/10 text-white/70"
                 }`}
               >
                 {hub.name}
