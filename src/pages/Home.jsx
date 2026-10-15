@@ -7,7 +7,6 @@ import MethodSection from "../components/MethodSection";
 import CoverageSection from "../components/CoverageSection";
 import TeamSection from "../components/TeamSection";
 import PricingSection from "../components/PricingSection";
-import GraduationSection from "../components/GraduationSection";
 import CTASection from "../components/CTASection";
 
 export default function Home() {
@@ -26,7 +25,6 @@ export default function Home() {
       <CoverageSection />
       <TeamSection />
       <PricingSection />
-      <GraduationSection />
       <CTASection />
     </>
   );

@@ -45,7 +45,7 @@ const ROOT_DIR = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const DIST_DIR = path.join(ROOT_DIR, "dist");
 const PORT = 4174; // différent de celui de `npm run preview` / responsive-audit.mjs
 
-const STATIC_ROUTES = ["/", "/a-propos", "/blog", "/contact"];
+const STATIC_ROUTES = ["/", "/a-propos", "/graduation", "/blog", "/contact"];
 const BLOG_ROUTES = BLOG_POSTS.map((p) => `/blog/${p.slug}`);
 const ROUTES = [...STATIC_ROUTES, ...BLOG_ROUTES];
 

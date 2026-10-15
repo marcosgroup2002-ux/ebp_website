@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Play, GraduationCap, Images, ChevronLeft, ChevronRight, X, ArrowRight, Sparkles } from "lucide-react";
+import { Play, GraduationCap, Images, ChevronLeft, ChevronRight, X, ArrowRight } from "lucide-react";
 import { GRADUATION_ALBUM_URL, GRADUATION_PHOTOS, GRADUATION_VIDEOS } from "../data/siteContent";
 import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
 import { img } from "../data/media";
@@ -143,7 +143,7 @@ function Lightbox({ index, onClose, onPrev, onNext }) {
   );
 }
 
-export default function GraduationSection() {
+export default function GraduationSection({ pageTop = false }) {
   const [activeVideo, setActiveVideo] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(null);
@@ -161,7 +161,7 @@ export default function GraduationSection() {
   return (
     <section
       id="temoignages"
-      className="relative overflow-hidden bg-gradient-to-br from-ebp-blue via-[#0a2a8a] to-ink py-20 text-white sm:py-28"
+      className={`relative overflow-hidden bg-gradient-to-br from-ebp-blue via-[#0a2a8a] to-ink pb-20 text-white sm:pb-28 ${pageTop ? "pt-[140px] sm:pt-[170px]" : "pt-20 sm:pt-28"}`}
     >
       {CONFETTI.map((c, i) => (
         <motion.span
@@ -211,7 +211,7 @@ export default function GraduationSection() {
 
           <div className="flex flex-col gap-3">
             <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/50">
-              <Sparkles size={14} className="text-ebp-sky" />
+              <Play size={13} className="text-ebp-sky" fill="currentColor" />
               {GRADUATION_VIDEOS.length} vidéos complètes
             </p>
             {GRADUATION_VIDEOS.map((video, i) => (

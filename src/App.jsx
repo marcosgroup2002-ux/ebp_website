@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 const About = lazy(() => import("./pages/About"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
+const Graduation = lazy(() => import("./pages/Graduation"));
 const Contact = lazy(() => import("./pages/Contact"));
 const AdminGate = lazy(() => import("./pages/admin/AdminGate"));
 const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
@@ -42,6 +43,7 @@ export default function App() {
           <Route path="/a-propos" element={<About />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/graduation" element={<Graduation />} />
           <Route path="/contact" element={<Contact />} />
         </Route>
 

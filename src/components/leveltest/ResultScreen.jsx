@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Home, MessageCircle, Sparkles, PartyPopper, FileCheck2 } from "lucide-react";
+import { ArrowRight, Home, MessageCircle, Target, PartyPopper, FileCheck2 } from "lucide-react";
 import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../../lib/whatsapp";
 import { SKILL_INFO } from "./QuestionScreen";
 
@@ -162,7 +162,7 @@ export default function ResultScreen({ result }) {
           className="mt-5 rounded-[2rem] bg-white p-6 shadow-card ring-1 ring-ink/5 sm:p-7"
         >
           <h2 className="flex items-center gap-2 font-display text-lg font-bold text-ink">
-            <Sparkles size={17} className="text-ebp-blue" />
+            <Target size={17} className="text-ebp-blue" />
             Vos points forts
           </h2>
           <ul className="mt-4 space-y-4">

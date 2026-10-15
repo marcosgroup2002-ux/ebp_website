@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { MessageCircle, MapPin, Mail, Navigation } from "lucide-react";
-import { WHATSAPP_DISPLAY, CONTACT_INFO, mapsDirectionsLink } from "../data/siteContent";
+import { WHATSAPP_DISPLAY, CONTACT_INFO, YOUTUBE_CHANNEL_URL, mapsDirectionsLink } from "../data/siteContent";
 import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
 
 function InstagramGlyph(props) {
@@ -9,6 +9,15 @@ function InstagramGlyph(props) {
       <rect x="3" y="3" width="18" height="18" rx="5" />
       <circle cx="12" cy="12" r="4" />
       <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function YoutubeGlyph(props) {
+  return (
+    <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>
+      <rect x="2.5" y="5.5" width="19" height="13" rx="4" />
+      <path d="M10.5 9.5v5l4.2-2.5z" fill="currentColor" stroke="none" />
     </svg>
   );
 }
@@ -29,6 +38,7 @@ const FOOTER_LINKS = {
   ],
   École: [
     { label: "À propos", to: "/a-propos" },
+    { label: "Graduation", to: "/graduation" },
     { label: "Blog", to: "/blog" },
     { label: "Contact", to: "/contact" },
   ],
@@ -84,6 +94,9 @@ export default function Footer() {
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-white/40">Suivez-nous</p>
           <div className="mt-4 flex items-center gap-4">
+            <a href={YOUTUBE_CHANNEL_URL} target="_blank" rel="noopener noreferrer" aria-label="Chaîne YouTube EBP" className="text-white/50 hover:text-white">
+              <YoutubeGlyph />
+            </a>
             <a href="#" aria-label="Instagram" className="text-white/50 hover:text-white">
               <InstagramGlyph />
             </a>

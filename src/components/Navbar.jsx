@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { label: "Accueil", to: "/" },
   { label: "Programme (6 Mois)", to: "/#programme" },
   { label: "Formats & Tarifs", to: "/#formats" },
+  { label: "Graduation", to: "/graduation" },
   { label: "À propos", to: "/a-propos" },
   { label: "Blog & Astuces", to: "/blog" },
   { label: "Contact", to: "/contact" },
@@ -75,7 +76,7 @@ export default function Navbar() {
                 end={item.to === "/"}
                 className={({ isActive }) =>
                   `text-xs lg:text-sm font-semibold transition-colors hover:text-ebp-blue ${
-                    isActive ? "text-ebp-blue font-bold" : "text-ink/75"
+                    isActive && !item.to.includes("#") ? "text-ebp-blue font-bold" : "text-ink/75"
                   }`
                 }
               >
@@ -129,9 +130,6 @@ export default function Navbar() {
               alt="EBP"
               className="h-8 w-auto rounded-md shadow-xs"
             />
-            <span className="font-display text-xs font-bold uppercase tracking-wider text-ink">
-              Navigation
-            </span>
           </div>
 
           <button
@@ -153,7 +151,7 @@ export default function Navbar() {
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
                 `flex items-center justify-between rounded-xl px-4 py-3.5 text-sm font-semibold transition-all ${
-                  isActive
+                  isActive && !item.to.includes("#")
                     ? "bg-ebp-blue text-white shadow-sm"
                     : "text-ink/80 hover:bg-slate-50 hover:text-ebp-blue"
                 }`

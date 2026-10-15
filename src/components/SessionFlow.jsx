@@ -11,11 +11,19 @@ import {
   Headphones,
   MessageCircle,
   Play,
-  Sparkles,
 } from "lucide-react";
-import { NEXT_COHORT_DATE, SEATS_LEFT, SESSION_STEPS, TEST_LEVEL_LABEL, TEST_LEVEL_URL } from "../data/siteContent";
+import { NEXT_COHORT_DATE, SEATS_LEFT, SESSION_STEPS, TEST_LEVEL_URL, YOUTUBE_CHANNEL_URL } from "../data/siteContent";
 import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
 import Waveform from "./Waveform";
+
+function YoutubeGlyph({ size = 18, className = "" }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} className={className} aria-hidden="true">
+      <rect x="1.5" y="5" width="21" height="14" rx="4.5" fill="currentColor" />
+      <path d="M10 9v6l5.2-3z" fill="#fff" />
+    </svg>
+  );
+}
 
 // Même famille de bleus que la section des 4 piliers.
 const TONES = ["#002B9A", "#1E5BE6", "#001B6B", "#0F6FD6", "#002B9A", "#1E5BE6", "#001B6B"];
@@ -140,10 +148,7 @@ function StepCard({ step, index, total, tone, active, playing, onPlay, onPrev, o
         </p>
         <h3 className="mt-2 font-display text-xl font-bold leading-snug sm:text-[1.4rem] lg:mt-3 lg:text-3xl">{step.title}</h3>
         <p className="mt-3 text-sm leading-relaxed text-white/85 sm:text-[15px] lg:mt-4 lg:text-base">{step.description}</p>
-        <p className="mt-4 flex items-start gap-2 rounded-2xl bg-white/10 p-3.5 text-sm text-white/90">
-          <Sparkles size={16} className="mt-0.5 shrink-0 text-ebp-sky" />
-          {step.benefit}
-        </p>
+        <p className="mt-4 rounded-2xl border-l-4 border-ebp-sky bg-white/10 p-3.5 text-sm text-white/90">{step.benefit}</p>
 
         <div className="mt-auto flex items-center gap-3 pt-6 lg:mt-8 lg:pt-0">
           <div className="flex items-center gap-1 rounded-full bg-white/95 p-1 shadow-soft">
@@ -166,14 +171,17 @@ function StepCard({ step, index, total, tone, active, playing, onPlay, onPrev, o
               <ChevronRight size={18} />
             </button>
           </div>
-          <Link
-            to={TEST_LEVEL_URL}
+          <a
+            href={YOUTUBE_CHANNEL_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             tabIndex={active ? 0 : -1}
-            className="inline-flex min-w-0 flex-1 items-center justify-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-bold text-ebp-blue shadow-[0_16px_30px_-10px_rgba(0,0,0,0.5)] transition-shadow hover:shadow-[0_20px_36px_-10px_rgba(0,0,0,0.6)] motion-safe:animate-floatSoft motion-safe:hover:animate-none lg:flex-none lg:px-7"
+            className="inline-flex min-w-0 flex-1 items-center justify-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-bold text-ebp-blue shadow-[0_16px_30px_-10px_rgba(0,0,0,0.5)] transition-shadow hover:shadow-[0_20px_36px_-10px_rgba(0,0,0,0.6)] lg:flex-none lg:px-7"
           >
-            <span className="truncate">{TEST_LEVEL_LABEL}</span>
-            <ArrowUpRight size={17} className="shrink-0" />
-          </Link>
+            <YoutubeGlyph size={20} className="shrink-0 text-ebp-red" />
+            <span className="truncate">Notre chaîne YouTube</span>
+            <ArrowUpRight size={16} className="shrink-0" />
+          </a>
         </div>
       </div>
     </article>

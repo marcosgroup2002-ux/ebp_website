@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { Check, ChevronLeft, ChevronRight, Headphones, BookOpen, PenLine, Languages, Sparkles } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Headphones, BookOpen, PenLine, Languages, Flag } from "lucide-react";
 import { PASSAGES } from "../../data/levelTest";
 import VoicePlayer from "./VoicePlayer";
 
@@ -247,7 +247,7 @@ export function Milestone({ message }) {
       className="pointer-events-none fixed inset-x-0 bottom-[5.5rem] z-40 flex justify-center px-4 sm:bottom-auto sm:top-24"
     >
       <span className="inline-flex items-center gap-2 rounded-full bg-ebp-blue px-5 py-2.5 text-sm font-semibold text-white shadow-[0_16px_32px_-12px_rgba(0,43,154,0.8)]">
-        <Sparkles size={15} />
+        <Flag size={15} />
         {message}
       </span>
     </motion.div>

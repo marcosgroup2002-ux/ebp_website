@@ -14,7 +14,7 @@ export const NAV_LINKS = [
   { label: "Programme (6 Mois)", href: "#programme" },
   { label: "Formats", href: "#formats" },
   { label: "Tarifs & Paiements", href: "#tarifs" },
-  { label: "Témoignages & Graduation", href: "#temoignages" },
+  { label: "Graduation", href: "/graduation" },
 ];
 
 export const CENTERS = [
@@ -345,6 +345,7 @@ export const GRADUATION_ALBUM_URL =
 export const PROSPECTUS_URL = "/prospectus/EBP-Prospectus.pdf";
 
 // Test de niveau passé directement sur le site. Les résultats arrivent dans l'espace secrétariat (page « Tests de niveau »).
+export const YOUTUBE_CHANNEL_URL = "https://www.youtube.com/@englishforbusypeople6939";
 export const TEST_LEVEL_URL = "/test-de-niveau";
 export const TEST_LEVEL_LABEL = "Passer le Test de Niveau";
 

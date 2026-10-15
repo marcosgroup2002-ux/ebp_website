@@ -28,7 +28,7 @@ const VIEWPORTS = [
   { name: "1440x900", w: 1440, h: 900 },
 ];
 
-const PAGES = ["/", "/a-propos", "/blog", "/contact"];
+const PAGES = ["/", "/a-propos", "/graduation", "/blog", "/contact"];
 
 async function checkPage(page, path, viewport) {
   await page.goto(`${BASE_URL}${path}`, { waitUntil: "networkidle", timeout: 15000 });

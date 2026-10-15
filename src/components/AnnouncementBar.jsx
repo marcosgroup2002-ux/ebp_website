@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { X, ArrowRight, CalendarDays, Sparkles, MapPin, Monitor } from "lucide-react";
+import { X, ArrowRight, CalendarDays, MapPin, Monitor } from "lucide-react";
 import { NEXT_COHORT_DATE, NEXT_COHORT_ISO } from "../data/siteContent";
 import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
 
@@ -29,7 +29,7 @@ function TickerItems({ countdown }) {
         <CalendarDays size={14} className="text-white/90" />
         Prochaine rentrée : <strong className="font-bold text-white">{NEXT_COHORT_DATE}</strong>
       </span>
-      <Sparkles size={12} className="text-white/50" />
+      <span aria-hidden="true" className="h-1 w-1 rounded-full bg-white/50" />
       <span className="inline-flex items-center gap-2">
         Inscriptions ouvertes
         {countdown > 0 && (
@@ -38,19 +38,19 @@ function TickerItems({ countdown }) {
           </span>
         )}
       </span>
-      <Sparkles size={12} className="text-white/50" />
+      <span aria-hidden="true" className="h-1 w-1 rounded-full bg-white/50" />
       <span className="inline-flex items-center gap-2">
         <MapPin size={14} className="text-white/90" />
         Cotonou (Vedoko) · Calavi (Zogbadjè)
       </span>
-      <Sparkles size={12} className="text-white/50" />
+      <span aria-hidden="true" className="h-1 w-1 rounded-full bg-white/50" />
       <span className="inline-flex items-center gap-2">
         <Monitor size={14} className="text-white/90" />
         Aussi en ligne via Google Meet
       </span>
-      <Sparkles size={12} className="text-white/50" />
+      <span aria-hidden="true" className="h-1 w-1 rounded-full bg-white/50" />
       <span>Places limitées : réservez la vôtre dès maintenant</span>
-      <Sparkles size={12} className="text-white/50" />
+      <span aria-hidden="true" className="h-1 w-1 rounded-full bg-white/50" />
     </>
   );
 }

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
-import { ArrowRight, Download, Star } from "lucide-react";
+import { ArrowRight, Download } from "lucide-react";
 import { buildWhatsAppLink, WHATSAPP_MESSAGES } from "../lib/whatsapp";
 import { NEXT_COHORT_DATE, PROSPECTUS_URL } from "../data/siteContent";
 import { MEDIA, img } from "../data/media";
@@ -162,12 +162,6 @@ export default function HeroSection() {
               ))}
             </div>
             <div className="text-sm text-white/80">
-              <div className="flex items-center gap-1 text-amber-400">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} size={12} fill="currentColor" strokeWidth={0} />
-                ))}
-                <span className="ml-1 font-semibold text-white">4.9/5</span>
-              </div>
               <p>Cotonou · Calavi · En Ligne · Prochaine rentrée le {NEXT_COHORT_DATE}</p>
             </div>
           </div>

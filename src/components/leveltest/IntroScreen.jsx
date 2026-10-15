@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Clock, Gift, ShieldCheck, Sparkles, Headphones, Wifi } from "lucide-react";
+import { ArrowRight, Clock, Gift, ShieldCheck, Zap, Headphones, Wifi } from "lucide-react";
 
 const rise = (delay = 0) => ({
   initial: { opacity: 0, y: 18 },
@@ -10,7 +10,7 @@ const rise = (delay = 0) => ({
 
 const PERKS = [
   { icon: Clock, title: "≈ 45 minutes", text: "À votre rythme" },
-  { icon: Sparkles, title: "Résultat immédiat", text: "Dès la dernière question" },
+  { icon: Zap, title: "Résultat immédiat", text: "Dès la dernière question" },
   { icon: Gift, title: "100 % gratuit", text: "Sans engagement" },
 ];
 
@@ -39,7 +39,7 @@ export default function IntroScreen({ onStart, busy, error }) {
     <div className="mx-auto max-w-xl pt-2 sm:pt-6">
       <motion.div {...rise(0)} className="text-center">
         <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-semibold text-ebp-blue shadow-sm ring-1 ring-ebp-blue/15">
-          <Sparkles size={13} />
+          <Gift size={13} />
           Test de niveau d'anglais
         </span>
         <h1 className="mt-5 font-display text-3xl font-bold leading-tight text-ink sm:text-[2.6rem]">
