@@ -218,7 +218,7 @@ export const SESSION_STEPS = [
     minutes: 10,
     description: "Mesure du niveau de départ, sans correction immédiate.",
     benefit: "Un point de départ honnête : à la fin de la séance, vous voyez votre progression en chiffres.",
-    video: null,
+    video: { id: "s69xnIkVhnU" },
   },
   {
     title: "Cours principal",
@@ -242,7 +242,7 @@ export const SESSION_STEPS = [
     minutes: 15,
     description: "Écoute authentique : identification, transcription, reformulation.",
     benefit: "Votre oreille s'habitue à l'anglais réel, parlé à vitesse naturelle, pas à celui des manuels.",
-    video: null,
+    video: { id: "Q8gwSPjq5bk" },
     audio: true,
   },
   {
